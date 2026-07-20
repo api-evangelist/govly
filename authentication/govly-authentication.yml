@@ -1,0 +1,30 @@
+generated: '2026-07-19'
+method: searched
+source: openapi/govly-tools-v1-openapi-original.yml
+docs: https://docs.govly.com/getting-started/introduction
+notes: >-
+  Govly authenticates with a personal API key generated from Settings -> API ->
+  API Keys in the Govly app. Keys carry a "gk_" prefix and are shown only once.
+  The key may be sent either as an HTTP bearer token (Authorization: Bearer
+  gk_...) or in the X-API-KEY header. The API only responds over HTTPS and returns
+  JSON. The hosted MCP server additionally supports an OAuth sign-in flow (managed
+  under Settings -> API -> Connected Apps) as an alternative to a personal key.
+summary:
+  types:
+  - apiKey
+  - http
+  api_key_in:
+  - header
+schemes:
+- name: bearerApiKey
+  type: http
+  scheme: bearer
+  bearerFormat: API key
+  sources:
+  - openapi/govly-tools-v1-openapi-original.yml
+- name: headerApiKey
+  type: apiKey
+  in: header
+  parameter: X-API-KEY
+  sources:
+  - openapi/govly-tools-v1-openapi-original.yml
