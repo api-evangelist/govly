@@ -1,0 +1,487 @@
+openapi: 3.1.0
+info:
+  title: Govly Tools API (Alpha) Awards Saved Searches API
+  version: 1.0.0-alpha
+  description: 'ALPHA / UNSTABLE: This API is still in active development. Endpoint behavior, request fields, response fields, error codes, and operation names may change before the Tools API is declared stable.
+
+    REST-callable tool surface for agent and automation workflows. Agents are the primary consumer, but integrations can be built on this API. Responses are JSON for typed clients; MCP tools may render action results into text-oriented formats separately.
+
+    '
+servers:
+- url: https://app.govly.com
+security:
+- bearerApiKey: []
+- headerApiKey: []
+tags:
+- name: Saved Searches
+  description: List saved opportunity searches and cached matches.
+paths:
+  /api/tools/v1/opportunities/saved_searches:
+    get:
+      tags:
+      - Saved Searches
+      operationId: list_opportunity_saved_searches
+      summary: List opportunity saved searches
+      description: Latest match previews exclude prediction records.
+      parameters:
+      - $ref: '#/components/parameters/cursor'
+      - $ref: '#/components/parameters/perPage'
+      responses:
+        '200':
+          description: Opportunity saved searches
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - data
+                - meta
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/OppSearch'
+                  meta:
+                    $ref: '#/components/schemas/CursorMeta'
+        '401':
+          $ref: '#/components/responses/Error'
+        '403':
+          $ref: '#/components/responses/Error'
+        '422':
+          $ref: '#/components/responses/Error'
+  /api/tools/v1/opportunities/saved_searches/{id}:
+    get:
+      tags:
+      - Saved Searches
+      operationId: show_opportunity_saved_search
+      summary: Show an opportunity saved search
+      parameters:
+      - $ref: '#/components/parameters/id'
+      responses:
+        '200':
+          description: Opportunity saved search
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - data
+                properties:
+                  data:
+                    $ref: '#/components/schemas/OppSearch'
+        '401':
+          $ref: '#/components/responses/Error'
+        '403':
+          $ref: '#/components/responses/Error'
+        '404':
+          $ref: '#/components/responses/Error'
+  /api/tools/v1/opportunities/saved_searches/{savedSearchId}/results:
+    get:
+      tags:
+      - Saved Searches
+      operationId: list_opportunity_saved_search_results
+      summary: List cached opportunity results for a saved search
+      description: Returns cached saved-search matches, excluding prediction records.
+      parameters:
+      - $ref: '#/components/parameters/savedSearchId'
+      - $ref: '#/components/parameters/cursor'
+      - $ref: '#/components/parameters/perPage'
+      responses:
+        '200':
+          description: Cached saved-search matches
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - data
+                - meta
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/OppSearchMatch'
+                  meta:
+                    $ref: '#/components/schemas/CursorMeta'
+        '401':
+          $ref: '#/components/responses/Error'
+        '403':
+          $ref: '#/components/responses/Error'
+        '404':
+          $ref: '#/components/responses/Error'
+        '422':
+          $ref: '#/components/responses/Error'
+components:
+  schemas:
+    WorkspaceMember:
+      type: object
+      required:
+      - id
+      - member
+      properties:
+        id:
+          type: string
+        state:
+          type: string
+        notifications:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        member:
+          type: object
+          required:
+          - type
+          - id
+          properties:
+            type:
+              type: string
+              enum:
+              - user
+              - team
+            id:
+              type: string
+            name:
+              type: string
+            email:
+              type: string
+              format: email
+            organization:
+              type: object
+              properties:
+                id:
+                  type: string
+                name:
+                  type: string
+    OpportunityAttachment:
+      type: object
+      required:
+      - id
+      - documentType
+      - filename
+      - redacted
+      properties:
+        id:
+          type: string
+          description: Canonical OppAttachment.id. Pass this value to document_read and document_download.
+        documentType:
+          type: string
+          const: opportunity_attachment
+        filename:
+          type: string
+        contentType:
+          type: string
+        byteSize:
+          type: integer
+        redacted:
+          type: boolean
+        tags:
+          type: array
+          items:
+            type: string
+        file:
+          $ref: '#/components/schemas/AttachmentFile'
+    OpportunitySource:
+      type: object
+      required:
+      - id
+      - attachments
+      properties:
+        id:
+          type: string
+        postedAt:
+          type: string
+          format: date-time
+        externalUrl:
+          type: string
+          format: uri
+        noticeType:
+          type: string
+        recordType:
+          type: string
+        attachments:
+          type: array
+          items:
+            $ref: '#/components/schemas/OpportunityAttachment'
+    Opportunity:
+      type: object
+      required:
+      - id
+      properties:
+        id:
+          type: string
+          description: Govly opportunity ID. Use this ID for show requests, workspace associations, and links.
+        title:
+          type: string
+        displayName:
+          type: string
+          description: Human-readable opportunity reference, usually source name plus identifier.
+        identifier:
+          type: string
+          description: Public opportunity identifier, such as a solicitation or request number. This may differ from raw source-system IDs when Govly merges related notices.
+        externalUrl:
+          type: string
+          format: uri
+        recordType:
+          type: string
+        status:
+          type: string
+          enum:
+          - open
+          - expired
+          - cancelled
+          - awarded
+          - forecasted
+          - unknown
+        postedAt:
+          type: string
+          format: date-time
+        modifiedAt:
+          type: string
+          format: date-time
+        respondBy:
+          type: string
+          format: date-time
+        cancelledAt:
+          type: string
+          format: date-time
+        awardedAt:
+          type: string
+          format: date-time
+        aiTitle:
+          type: string
+        aiSummary:
+          type: string
+        jurisdiction:
+          type: object
+          properties:
+            id:
+              type: string
+            name:
+              type: string
+            isoCode:
+              type: string
+        contractVehicle:
+          type: object
+          properties:
+            id:
+              type: string
+            name:
+              type: string
+        followerCount:
+          type: integer
+          description: Count of active follow rows across visible workspaces for this opportunity.
+        followedByCurrentUser:
+          type: boolean
+          description: Whether the authenticated user actively follows any visible workspace for this opportunity.
+        followedByCurrentOrganization:
+          type: boolean
+          description: Whether the authenticated user's organization actively follows any visible workspace for this opportunity.
+        workspaces:
+          type: array
+          description: Visible workspaces associated with this opportunity, including active follow context.
+          items:
+            $ref: '#/components/schemas/OpportunityWorkspace'
+        aggregateAttachments:
+          type: array
+          items:
+            $ref: '#/components/schemas/OpportunityAttachment'
+        opportunitySources:
+          type: array
+          items:
+            $ref: '#/components/schemas/OpportunitySource'
+    OppSearch:
+      type: object
+      required:
+      - id
+      - name
+      - active
+      - criteria
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        active:
+          type: boolean
+        criteria:
+          type: object
+          description: Stored search criteria for this saved search.
+        matchCount:
+          type: integer
+        lastMatchedAt:
+          type: string
+          format: date-time
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    CursorMeta:
+      type: object
+      required:
+      - count
+      properties:
+        count:
+          type: integer
+          description: Number of records in this page.
+        totalCount:
+          type: integer
+          description: 'Total matching records (award search only), capped at 10,000 by the search engine. Pagination via nextCursor is not limited by this cap.
+
+            '
+        perPage:
+          type: integer
+        nextCursor:
+          type:
+          - string
+          - 'null'
+    OpportunityWorkspace:
+      type: object
+      required:
+      - id
+      - name
+      - status
+      - followerCount
+      - follows
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        organizationDefault:
+          type: boolean
+        organization:
+          type: object
+          properties:
+            id:
+              type: string
+            name:
+              type: string
+        status:
+          type: object
+          required:
+          - category
+          - label
+          properties:
+            category:
+              type: string
+            label:
+              type: string
+        followerCount:
+          type: integer
+          description: Count of active follow rows on this workspace.
+        followedByCurrentUser:
+          type: boolean
+        followedByCurrentOrganization:
+          type: boolean
+        follows:
+          type: array
+          description: Active workspace follows. Inactive/unfollowed/disinterested rows are omitted.
+          items:
+            $ref: '#/components/schemas/WorkspaceMember'
+    ErrorEnvelope:
+      type: object
+      required:
+      - errors
+      properties:
+        errors:
+          type: array
+          items:
+            type: object
+            required:
+            - status
+            - code
+            - title
+            - detail
+            properties:
+              status:
+                type: string
+              code:
+                type: string
+              title:
+                type: string
+              detail:
+                type: string
+              source:
+                type: object
+                properties:
+                  pointer:
+                    type: string
+    OppSearchMatch:
+      type: object
+      required:
+      - id
+      - matchedAt
+      - savedSearchId
+      - opportunity
+      properties:
+        id:
+          type: string
+        matchedAt:
+          type: string
+          format: date-time
+        savedSearchId:
+          type: string
+        opportunity:
+          $ref: '#/components/schemas/Opportunity'
+    AttachmentFile:
+      type: object
+      description: Presigned download metadata. Omitted when the attachment is redacted or URLs are excluded.
+      required:
+      - url
+      - expiresAt
+      properties:
+        url:
+          type: string
+          format: uri
+        expiresAt:
+          type: string
+          format: date-time
+  parameters:
+    cursor:
+      name: cursor
+      in: query
+      required: false
+      schema:
+        type: string
+    savedSearchId:
+      name: savedSearchId
+      in: path
+      required: true
+      schema:
+        type: string
+    id:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: string
+    perPage:
+      name: perPage
+      in: query
+      required: false
+      schema:
+        type: integer
+        default: 25
+        maximum: 100
+  responses:
+    Error:
+      description: Error response
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorEnvelope'
+  securitySchemes:
+    bearerApiKey:
+      type: http
+      scheme: bearer
+      bearerFormat: API key
+    headerApiKey:
+      type: apiKey
+      in: header
+      name: X-API-KEY

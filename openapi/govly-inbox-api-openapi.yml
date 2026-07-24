@@ -1,0 +1,540 @@
+openapi: 3.1.0
+info:
+  title: Govly Tools API (Alpha) Awards Inbox API
+  version: 1.0.0-alpha
+  description: 'ALPHA / UNSTABLE: This API is still in active development. Endpoint behavior, request fields, response fields, error codes, and operation names may change before the Tools API is declared stable.
+
+    REST-callable tool surface for agent and automation workflows. Agents are the primary consumer, but integrations can be built on this API. Responses are JSON for typed clients; MCP tools may render action results into text-oriented formats separately.
+
+    '
+servers:
+- url: https://app.govly.com
+security:
+- bearerApiKey: []
+- headerApiKey: []
+tags:
+- name: Inbox
+  description: Read and triage the authenticated user's matched inbox items.
+paths:
+  /api/tools/v1/inbox_items:
+    get:
+      tags:
+      - Inbox
+      operationId: list_inbox_items
+      summary: List inbox items
+      description: 'List the authenticated user''s active inbox items (Govly AI matches and saved-search matches), newest first.
+
+        '
+      parameters:
+      - $ref: '#/components/parameters/cursor'
+      - $ref: '#/components/parameters/perPage'
+      responses:
+        '200':
+          description: Inbox items
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - data
+                - meta
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/InboxItem'
+                  meta:
+                    $ref: '#/components/schemas/CursorMeta'
+        '401':
+          $ref: '#/components/responses/Error'
+        '403':
+          $ref: '#/components/responses/Error'
+        '422':
+          $ref: '#/components/responses/Error'
+  /api/tools/v1/inbox_items/search:
+    post:
+      tags:
+      - Inbox
+      operationId: search_inbox_items
+      summary: Search inbox items
+      description: 'Full-text search and filter the authenticated user''s inbox items. Returns matchable-type aggregation counts.
+
+        '
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              properties:
+                query:
+                  type: string
+                cursor:
+                  type: string
+                  description: Opaque cursor from the previous response's meta.nextCursor. Omit for the first page.
+                perPage:
+                  type: integer
+                  default: 25
+                  maximum: 100
+                sort:
+                  type: string
+                  enum:
+                  - ranked_score
+                  - created_at
+                  - deadline_at
+                sortDirection:
+                  type: string
+                  enum:
+                  - asc
+                  - desc
+                state:
+                  type: array
+                  items:
+                    type: string
+                    enum:
+                    - unread
+                    - seen
+                    - actioned
+                    - dismissed
+                matchableType:
+                  type: array
+                  items:
+                    type: string
+                    enum:
+                    - Opp
+                    - Award
+                    - ProcurementSignal::Cluster
+                recordType:
+                  type: array
+                  items:
+                    type: string
+                sourceType:
+                  type: string
+                  enum:
+                  - govly_ai
+                  - saved_search
+                naicsCodes:
+                  type: array
+                  items:
+                    type: string
+                createdAfter:
+                  type: string
+                createdBefore:
+                  type: string
+                deadlineAtFrom:
+                  type: string
+                deadlineAtTo:
+                  type: string
+      responses:
+        '200':
+          description: Matching inbox items
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - data
+                - meta
+                - aggregations
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/InboxItem'
+                  meta:
+                    $ref: '#/components/schemas/InboxSearchMeta'
+                  aggregations:
+                    $ref: '#/components/schemas/InboxAggregations'
+        '400':
+          $ref: '#/components/responses/Error'
+        '401':
+          $ref: '#/components/responses/Error'
+        '403':
+          $ref: '#/components/responses/Error'
+        '422':
+          $ref: '#/components/responses/Error'
+  /api/tools/v1/inbox_items/{id}:
+    get:
+      tags:
+      - Inbox
+      operationId: show_inbox_item
+      summary: Show an inbox item
+      parameters:
+      - $ref: '#/components/parameters/id'
+      responses:
+        '200':
+          description: Inbox item
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InboxItemEnvelope'
+        '401':
+          $ref: '#/components/responses/Error'
+        '403':
+          $ref: '#/components/responses/Error'
+        '404':
+          $ref: '#/components/responses/Error'
+  /api/tools/v1/inbox_items/{id}/accept:
+    post:
+      tags:
+      - Inbox
+      operationId: accept_inbox_item
+      summary: Accept (follow) an inbox item
+      description: 'Follow the underlying opportunity, award, or signal and create or reuse its default workspace. Accept is FINAL and cannot be reversed with restore. The response meta includes the resulting workspaceId.
+
+        '
+      parameters:
+      - $ref: '#/components/parameters/id'
+      responses:
+        '200':
+          description: Accepted inbox item
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - data
+                - meta
+                properties:
+                  data:
+                    $ref: '#/components/schemas/InboxItem'
+                  meta:
+                    $ref: '#/components/schemas/InboxAcceptMeta'
+        '401':
+          $ref: '#/components/responses/Error'
+        '403':
+          $ref: '#/components/responses/Error'
+        '404':
+          $ref: '#/components/responses/Error'
+  /api/tools/v1/inbox_items/{id}/dismiss:
+    post:
+      tags:
+      - Inbox
+      operationId: dismiss_inbox_item
+      summary: Dismiss an inbox item
+      parameters:
+      - $ref: '#/components/parameters/id'
+      responses:
+        '200':
+          description: Dismissed inbox item
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InboxItemEnvelope'
+        '401':
+          $ref: '#/components/responses/Error'
+        '403':
+          $ref: '#/components/responses/Error'
+        '404':
+          $ref: '#/components/responses/Error'
+  /api/tools/v1/inbox_items/{id}/decline:
+    post:
+      tags:
+      - Inbox
+      operationId: decline_inbox_item
+      summary: Decline (reject) an inbox item as a bad fit
+      description: 'Mark the item a bad fit, optionally with a reason that feeds the organization''s matching-exclusions memory. Reversible with restore.
+
+        '
+      parameters:
+      - $ref: '#/components/parameters/id'
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              properties:
+                reason:
+                  type: string
+                  enum:
+                  - bad_fit
+                  - irrelevant
+                  - cannot_bid
+                  - bad_timing
+                  - other
+      responses:
+        '200':
+          description: Declined inbox item
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InboxItemEnvelope'
+        '401':
+          $ref: '#/components/responses/Error'
+        '403':
+          $ref: '#/components/responses/Error'
+        '404':
+          $ref: '#/components/responses/Error'
+        '422':
+          $ref: '#/components/responses/Error'
+  /api/tools/v1/inbox_items/{id}/restore:
+    post:
+      tags:
+      - Inbox
+      operationId: restore_inbox_item
+      summary: Restore a dismissed or declined inbox item
+      description: 'Return a dismissed or bad-fit item to the active inbox. Only dismissed or bad-fit items can be restored — an accepted item cannot.
+
+        '
+      parameters:
+      - $ref: '#/components/parameters/id'
+      responses:
+        '200':
+          description: Restored inbox item
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InboxItemEnvelope'
+        '401':
+          $ref: '#/components/responses/Error'
+        '403':
+          $ref: '#/components/responses/Error'
+        '404':
+          $ref: '#/components/responses/Error'
+        '422':
+          $ref: '#/components/responses/Error'
+components:
+  parameters:
+    cursor:
+      name: cursor
+      in: query
+      required: false
+      schema:
+        type: string
+    id:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: string
+    perPage:
+      name: perPage
+      in: query
+      required: false
+      schema:
+        type: integer
+        default: 25
+        maximum: 100
+  schemas:
+    InboxItemOrigin:
+      type: object
+      required:
+      - sourceType
+      properties:
+        sourceType:
+          type: string
+          enum:
+          - govly_ai
+          - saved_search
+        savedSearchId:
+          type: string
+        savedSearchName:
+          type: string
+    CursorMeta:
+      type: object
+      required:
+      - count
+      properties:
+        count:
+          type: integer
+          description: Number of records in this page.
+        totalCount:
+          type: integer
+          description: 'Total matching records (award search only), capped at 10,000 by the search engine. Pagination via nextCursor is not limited by this cap.
+
+            '
+        perPage:
+          type: integer
+        nextCursor:
+          type:
+          - string
+          - 'null'
+    InboxAggregations:
+      type: object
+      required:
+      - matchableType
+      properties:
+        matchableType:
+          type: object
+          description: Count of matching items per matchable type.
+          additionalProperties:
+            type: integer
+    InboxAcceptMeta:
+      type: object
+      required:
+      - state
+      - feedback
+      - matchableType
+      - matchableId
+      - final
+      properties:
+        state:
+          type: string
+        feedback:
+          type: string
+        matchableType:
+          type: string
+        matchableId:
+          type: string
+        workspaceId:
+          type:
+          - string
+          - 'null'
+          description: Default workspace the accept followed, when one exists.
+        final:
+          type: boolean
+          description: Always true — accept is irreversible.
+    InboxSearchMeta:
+      type: object
+      required:
+      - total
+      - nextCursor
+      properties:
+        total:
+          type: integer
+          description: Total matching items (capped at 10000 by the search index).
+        nextCursor:
+          type:
+          - string
+          - 'null'
+    InboxItem:
+      type: object
+      required:
+      - id
+      - matchableId
+      - matchableType
+      - state
+      - origins
+      properties:
+        id:
+          type: string
+        matchableId:
+          type: string
+        matchableType:
+          type: string
+          enum:
+          - Opp
+          - Award
+          - ProcurementSignal::Cluster
+        state:
+          type: string
+          enum:
+          - unread
+          - seen
+          - actioned
+          - dismissed
+        feedback:
+          type: string
+          enum:
+          - followed
+          - dismissed
+          - bad_fit
+        feedbackReason:
+          type: string
+          enum:
+          - bad_fit
+          - irrelevant
+          - cannot_bid
+          - bad_timing
+          - other
+        title:
+          type: string
+        description:
+          type: string
+        fitReason:
+          type: string
+        fitScore:
+          type: number
+        sourceType:
+          type: string
+          enum:
+          - govly_ai
+          - saved_search
+          description: How the item first reached the inbox.
+        identifier:
+          type: string
+        recordType:
+          type: string
+        deadlineAt:
+          type: string
+          format: date-time
+        postedOrAwardedDate:
+          type: string
+          format: date
+        publicEntityNames:
+          type: array
+          items:
+            type: string
+        isoCode:
+          type: string
+        naicsCodes:
+          type: array
+          items:
+            type: string
+        createdAt:
+          type: string
+          format: date-time
+        highlight:
+          type: object
+          description: Per-field search highlights. Only present on search results.
+          additionalProperties:
+            type: string
+        origins:
+          type: array
+          description: Every source that surfaced this (deduped) item.
+          items:
+            $ref: '#/components/schemas/InboxItemOrigin'
+    InboxItemEnvelope:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          $ref: '#/components/schemas/InboxItem'
+    ErrorEnvelope:
+      type: object
+      required:
+      - errors
+      properties:
+        errors:
+          type: array
+          items:
+            type: object
+            required:
+            - status
+            - code
+            - title
+            - detail
+            properties:
+              status:
+                type: string
+              code:
+                type: string
+              title:
+                type: string
+              detail:
+                type: string
+              source:
+                type: object
+                properties:
+                  pointer:
+                    type: string
+  responses:
+    Error:
+      description: Error response
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorEnvelope'
+  securitySchemes:
+    bearerApiKey:
+      type: http
+      scheme: bearer
+      bearerFormat: API key
+    headerApiKey:
+      type: apiKey
+      in: header
+      name: X-API-KEY

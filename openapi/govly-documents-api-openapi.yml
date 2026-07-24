@@ -1,0 +1,339 @@
+openapi: 3.1.0
+info:
+  title: Govly Tools API (Alpha) Awards Documents API
+  version: 1.0.0-alpha
+  description: 'ALPHA / UNSTABLE: This API is still in active development. Endpoint behavior, request fields, response fields, error codes, and operation names may change before the Tools API is declared stable.
+
+    REST-callable tool surface for agent and automation workflows. Agents are the primary consumer, but integrations can be built on this API. Responses are JSON for typed clients; MCP tools may render action results into text-oriented formats separately.
+
+    '
+servers:
+- url: https://app.govly.com
+security:
+- bearerApiKey: []
+- headerApiKey: []
+tags:
+- name: Documents
+  description: Read document representations and request temporary original-file downloads.
+paths:
+  /api/tools/v1/documents/read:
+    get:
+      tags:
+      - Documents
+      operationId: document_read
+      summary: Read bounded document content
+      description: 'Reads a bounded portion of an authorized document without creating an analysis or enqueueing extraction work. Start a read with documentType and id. Continue when meta.hasMore is true by sending only meta.nextCursor and, optionally, maxChars. Cursors are opaque, source-bound, and re-authorized on every request. Opportunity document IDs are OppAttachment.id values returned as opportunity attachment id; access is derived from any associated opportunity/source path visible to the caller rather than from a client-supplied opportunity ID. Use positioned_text only when data.availableRepresentations advertises it. PDF page ranges are supported with pageStart and pageEnd. Processing and representation_unavailable are successful structured states. Failed or unavailable extraction returns the standard 422 error envelope, inaccessible records return the standard 404 error envelope, and invalid parameters return the standard 422 error envelope.
+
+        '
+      parameters:
+      - name: documentType
+        in: query
+        required: false
+        description: Required with id for an initial read. Omit when continuing with cursor.
+        schema:
+          $ref: '#/components/schemas/DocumentType'
+      - name: id
+        in: query
+        required: false
+        description: Required with documentType for an initial read. Omit when continuing with cursor.
+        schema:
+          type: string
+      - name: representation
+        in: query
+        required: false
+        description: Initial-read representation. Omit when continuing with cursor.
+        schema:
+          $ref: '#/components/schemas/DocumentRepresentation'
+      - name: maxChars
+        in: query
+        required: false
+        description: Maximum characters returned in this response.
+        schema:
+          type: integer
+          default: 100000
+          minimum: 1
+          maximum: 100000
+      - name: cursor
+        in: query
+        required: false
+        description: Opaque continuation token from meta.nextCursor. May be combined only with maxChars.
+        schema:
+          type: string
+      - name: pageStart
+        in: query
+        required: false
+        description: First PDF page to read, inclusive. Omit when continuing with cursor.
+        schema:
+          type: integer
+          minimum: 1
+      - name: pageEnd
+        in: query
+        required: false
+        description: Last PDF page to read, inclusive. Omit when continuing with cursor.
+        schema:
+          type: integer
+          minimum: 1
+      responses:
+        '200':
+          description: Document content, processing state, or representation availability state.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DocumentReadEnvelope'
+        '401':
+          $ref: '#/components/responses/Error'
+        '403':
+          $ref: '#/components/responses/Error'
+        '404':
+          $ref: '#/components/responses/Error'
+        '422':
+          $ref: '#/components/responses/Error'
+  /api/tools/v1/documents/download:
+    get:
+      tags:
+      - Documents
+      operationId: document_download
+      summary: Get a temporary original-file download
+      description: 'Returns a fresh presigned URL for the authorized original file. The URL expires at data.expiresAt. This operation is separate from document_read so reading representations never downloads the full file implicitly.
+
+        '
+      parameters:
+      - name: documentType
+        in: query
+        required: true
+        schema:
+          $ref: '#/components/schemas/DocumentType'
+      - name: id
+        in: query
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Temporary original-file download descriptor.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DocumentDownloadEnvelope'
+        '401':
+          $ref: '#/components/responses/Error'
+        '403':
+          $ref: '#/components/responses/Error'
+        '404':
+          $ref: '#/components/responses/Error'
+        '422':
+          $ref: '#/components/responses/Error'
+components:
+  schemas:
+    DocumentReadMeta:
+      allOf:
+      - $ref: '#/components/schemas/ActionMeta'
+      - type: object
+        required:
+        - hasMore
+        - nextCursor
+        properties:
+          totalLength:
+            type: integer
+          returnedLength:
+            type: integer
+          pageCount:
+            type: integer
+          contentRange:
+            $ref: '#/components/schemas/DocumentContentRange'
+          hasMore:
+            type: boolean
+          nextCursor:
+            type:
+            - string
+            - 'null'
+            description: Opaque continuation token. Present only in meta and non-null when hasMore is true.
+    DocumentRead:
+      type: object
+      required:
+      - id
+      - documentType
+      - filename
+      - status
+      - representation
+      properties:
+        id:
+          type: string
+        documentType:
+          $ref: '#/components/schemas/DocumentType'
+        filename:
+          type: string
+        contentType:
+          type: string
+        byteSize:
+          type: integer
+        status:
+          type: string
+          enum:
+          - ready
+          - processing
+          - representation_unavailable
+        representation:
+          $ref: '#/components/schemas/DocumentRepresentation'
+        content:
+          type: string
+          description: Bounded content for a ready representation.
+        references:
+          type: object
+          additionalProperties: true
+          description: Reference metadata emitted by positioned_text content.
+        summary:
+          type: string
+          description: Optional orientation summary on the initial read. Read source content for precise or exhaustive work.
+        availableRepresentations:
+          type: array
+          description: Representations available for this document, returned on the initial read.
+          items:
+            $ref: '#/components/schemas/DocumentRepresentation'
+        usageHint:
+          type: string
+          description: MCP-oriented guidance based on summary, continuation, and representation availability.
+        message:
+          type: string
+          description: Guidance when extraction is processing or a requested representation is unavailable.
+    AvailableAction:
+      type: object
+      required:
+      - name
+      - description
+      - arguments
+      - idPaths
+      properties:
+        name:
+          type: string
+          description: MCP/tool operation name.
+        description:
+          type: string
+        arguments:
+          type: object
+          description: Static arguments to pass to the action.
+        idPaths:
+          type: array
+          description: JSON paths where IDs for this action can be found in the current response.
+          items:
+            type: string
+    DocumentContentRange:
+      type: object
+      required:
+      - pageStart
+      - pageEnd
+      properties:
+        pageStart:
+          type: integer
+          minimum: 1
+        pageEnd:
+          type: integer
+          minimum: 1
+    DocumentDownloadEnvelope:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          $ref: '#/components/schemas/DocumentDownload'
+    ActionMeta:
+      type: object
+      properties:
+        availableActions:
+          type: array
+          description: Structured hints for useful follow-up actions. These are advisory; clients should still rely on tool schemas and authorization.
+          items:
+            $ref: '#/components/schemas/AvailableAction'
+    DocumentRepresentation:
+      type: string
+      enum:
+      - text
+      - positioned_text
+      default: text
+    DocumentDownload:
+      type: object
+      required:
+      - id
+      - documentType
+      - filename
+      - url
+      - expiresAt
+      properties:
+        id:
+          type: string
+        documentType:
+          $ref: '#/components/schemas/DocumentType'
+        filename:
+          type: string
+        contentType:
+          type: string
+        byteSize:
+          type: integer
+        url:
+          type: string
+          format: uri
+          description: Temporary presigned URL for the original file.
+        expiresAt:
+          type: string
+          format: date-time
+    DocumentType:
+      type: string
+      enum:
+      - opportunity_attachment
+      - workspace_attachment
+      - session_attachment
+      - document
+    DocumentReadEnvelope:
+      type: object
+      required:
+      - data
+      - meta
+      properties:
+        data:
+          $ref: '#/components/schemas/DocumentRead'
+        meta:
+          $ref: '#/components/schemas/DocumentReadMeta'
+    ErrorEnvelope:
+      type: object
+      required:
+      - errors
+      properties:
+        errors:
+          type: array
+          items:
+            type: object
+            required:
+            - status
+            - code
+            - title
+            - detail
+            properties:
+              status:
+                type: string
+              code:
+                type: string
+              title:
+                type: string
+              detail:
+                type: string
+              source:
+                type: object
+                properties:
+                  pointer:
+                    type: string
+  responses:
+    Error:
+      description: Error response
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorEnvelope'
+  securitySchemes:
+    bearerApiKey:
+      type: http
+      scheme: bearer
+      bearerFormat: API key
+    headerApiKey:
+      type: apiKey
+      in: header
+      name: X-API-KEY

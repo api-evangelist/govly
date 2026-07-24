@@ -1,0 +1,407 @@
+openapi: 3.1.0
+info:
+  title: Govly Tools API (Alpha) Awards Workspaces API
+  version: 1.0.0-alpha
+  description: 'ALPHA / UNSTABLE: This API is still in active development. Endpoint behavior, request fields, response fields, error codes, and operation names may change before the Tools API is declared stable.
+
+    REST-callable tool surface for agent and automation workflows. Agents are the primary consumer, but integrations can be built on this API. Responses are JSON for typed clients; MCP tools may render action results into text-oriented formats separately.
+
+    '
+servers:
+- url: https://app.govly.com
+security:
+- bearerApiKey: []
+- headerApiKey: []
+tags:
+- name: Workspaces
+  description: Create, update, and inspect opportunity workspaces.
+paths:
+  /api/tools/v1/workspaces:
+    get:
+      tags:
+      - Workspaces
+      operationId: list_workspaces
+      summary: List workspaces associated with an entity
+      parameters:
+      - $ref: '#/components/parameters/associatedType'
+      - $ref: '#/components/parameters/associatedId'
+      responses:
+        '200':
+          description: Matching workspaces
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - data
+                - meta
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Workspace'
+                  meta:
+                    type: object
+                    required:
+                    - count
+                    properties:
+                      count:
+                        type: integer
+        '401':
+          $ref: '#/components/responses/Error'
+        '403':
+          $ref: '#/components/responses/Error'
+        '422':
+          $ref: '#/components/responses/Error'
+    post:
+      tags:
+      - Workspaces
+      operationId: create_workspace
+      summary: Create a workspace
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - name
+              properties:
+                name:
+                  type: string
+                description:
+                  type: string
+                primaryFocus:
+                  $ref: '#/components/schemas/PrimaryFocusInput'
+                privateAccess:
+                  type: boolean
+                workflowStage:
+                  type: string
+                statusCategory:
+                  type: string
+                status:
+                  type: string
+                  description: Human-readable workspace status name, status category, or legacy workflow stage. Prefer this for agent and MCP-style clients.
+                workspaceStatusId:
+                  type: string
+                  description: Current-organization workspace status ID. Prefer status unless the caller already has this ID.
+                organizationDefault:
+                  type: boolean
+                autoFollowCreator:
+                  type: boolean
+      responses:
+        '201':
+          description: Created workspace
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkspaceEnvelope'
+        '401':
+          $ref: '#/components/responses/Error'
+        '403':
+          $ref: '#/components/responses/Error'
+        '422':
+          $ref: '#/components/responses/Error'
+  /api/tools/v1/workspaces/{id}:
+    get:
+      tags:
+      - Workspaces
+      operationId: show_workspace
+      summary: Show a workspace
+      parameters:
+      - $ref: '#/components/parameters/id'
+      responses:
+        '200':
+          description: Workspace
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkspaceEnvelope'
+        '401':
+          $ref: '#/components/responses/Error'
+        '403':
+          $ref: '#/components/responses/Error'
+        '404':
+          $ref: '#/components/responses/Error'
+    patch:
+      tags:
+      - Workspaces
+      operationId: update_workspace
+      summary: Update a workspace
+      parameters:
+      - $ref: '#/components/parameters/id'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                description:
+                  type: string
+                privateAccess:
+                  type: boolean
+                workflowStage:
+                  type: string
+                statusCategory:
+                  type: string
+                status:
+                  type: string
+                  description: Human-readable workspace status name, status category, or legacy workflow stage. Prefer this for agent and MCP-style clients.
+                workspaceStatusId:
+                  type: string
+                  description: Current-organization workspace status ID. Prefer status unless the caller already has this ID.
+      responses:
+        '200':
+          description: Updated workspace
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkspaceEnvelope'
+        '401':
+          $ref: '#/components/responses/Error'
+        '403':
+          $ref: '#/components/responses/Error'
+        '404':
+          $ref: '#/components/responses/Error'
+        '422':
+          $ref: '#/components/responses/Error'
+components:
+  schemas:
+    PrimaryFocusInput:
+      type: object
+      required:
+      - type
+      - id
+      properties:
+        type:
+          type: string
+          enum:
+          - opportunity
+        id:
+          type: string
+    AssociatedEntity:
+      type: object
+      required:
+      - type
+      - id
+      properties:
+        type:
+          type: string
+          enum:
+          - opportunity
+        id:
+          type: string
+    AvailableAction:
+      type: object
+      required:
+      - name
+      - description
+      - arguments
+      - idPaths
+      properties:
+        name:
+          type: string
+          description: MCP/tool operation name.
+        description:
+          type: string
+        arguments:
+          type: object
+          description: Static arguments to pass to the action.
+        idPaths:
+          type: array
+          description: JSON paths where IDs for this action can be found in the current response.
+          items:
+            type: string
+    WorkspaceEnvelope:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          $ref: '#/components/schemas/Workspace'
+        meta:
+          $ref: '#/components/schemas/ActionMeta'
+    WorkspaceAttachment:
+      type: object
+      required:
+      - id
+      - workspaceId
+      - filename
+      properties:
+        id:
+          type: string
+        workspaceId:
+          type: string
+        commentId:
+          type: string
+          nullable: true
+        filename:
+          type: string
+        contentType:
+          type: string
+        byteSize:
+          type: integer
+        createdAt:
+          type: string
+          format: date-time
+        file:
+          description: Present only on the workspace attachments endpoint. Workspace show responses surface attachments without download metadata.
+          $ref: '#/components/schemas/AttachmentFile'
+    ActionMeta:
+      type: object
+      properties:
+        availableActions:
+          type: array
+          description: Structured hints for useful follow-up actions. These are advisory; clients should still rely on tool schemas and authorization.
+          items:
+            $ref: '#/components/schemas/AvailableAction'
+    Workspace:
+      type: object
+      required:
+      - id
+      - name
+      - status
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        commentsCount:
+          type: integer
+        status:
+          type: object
+          required:
+          - category
+          - label
+          properties:
+            category:
+              type: string
+              description: Coarse status bucket. Triage is the default for newly created workspaces.
+            label:
+              type: string
+              description: Human-readable status name. Falls back to the category label when no custom status is set.
+        primaryFocus:
+          $ref: '#/components/schemas/AssociatedEntity'
+        comments:
+          type: array
+          description: Recent comments. Only present on show/create/update responses, capped at the most recent 20.
+          items:
+            $ref: '#/components/schemas/Comment'
+        attachments:
+          type: array
+          description: Workspace attachments. Only present on show/create/update responses.
+          items:
+            $ref: '#/components/schemas/WorkspaceAttachment'
+    ErrorEnvelope:
+      type: object
+      required:
+      - errors
+      properties:
+        errors:
+          type: array
+          items:
+            type: object
+            required:
+            - status
+            - code
+            - title
+            - detail
+            properties:
+              status:
+                type: string
+              code:
+                type: string
+              title:
+                type: string
+              detail:
+                type: string
+              source:
+                type: object
+                properties:
+                  pointer:
+                    type: string
+    Comment:
+      type: object
+      required:
+      - id
+      - body
+      - createdAt
+      - attachments
+      properties:
+        id:
+          type: string
+        body:
+          type: string
+          description: Markdown body for the comment.
+        attachments:
+          type: array
+          description: Workspace attachments tied to this comment.
+          items:
+            $ref: '#/components/schemas/WorkspaceAttachment'
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    AttachmentFile:
+      type: object
+      description: Presigned download metadata. Omitted when the attachment is redacted or URLs are excluded.
+      required:
+      - url
+      - expiresAt
+      properties:
+        url:
+          type: string
+          format: uri
+        expiresAt:
+          type: string
+          format: date-time
+  parameters:
+    associatedId:
+      name: associatedId
+      in: query
+      required: true
+      schema:
+        type: string
+    id:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: string
+    associatedType:
+      name: associatedType
+      in: query
+      required: true
+      schema:
+        type: string
+        enum:
+        - opportunity
+  responses:
+    Error:
+      description: Error response
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorEnvelope'
+  securitySchemes:
+    bearerApiKey:
+      type: http
+      scheme: bearer
+      bearerFormat: API key
+    headerApiKey:
+      type: apiKey
+      in: header
+      name: X-API-KEY

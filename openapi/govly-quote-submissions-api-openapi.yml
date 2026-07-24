@@ -1,0 +1,399 @@
+openapi: 3.1.0
+info:
+  title: Govly Tools API (Alpha) Awards Quote Submissions API
+  version: 1.0.0-alpha
+  description: 'ALPHA / UNSTABLE: This API is still in active development. Endpoint behavior, request fields, response fields, error codes, and operation names may change before the Tools API is declared stable.
+
+    REST-callable tool surface for agent and automation workflows. Agents are the primary consumer, but integrations can be built on this API. Responses are JSON for typed clients; MCP tools may render action results into text-oriented formats separately.
+
+    '
+servers:
+- url: https://app.govly.com
+security:
+- bearerApiKey: []
+- headerApiKey: []
+tags:
+- name: Quote Submissions
+  description: Inspect quote submission requirements, submit quotes, and poll submission status.
+paths:
+  /api/tools/v1/quote/submissions/requirements:
+    get:
+      tags:
+      - Quote Submissions
+      operationId: get_quote_submission_requirements
+      summary: Check quote submission requirements
+      description: 'Returns portal-specific quote submission requirements and blocking reasons for the authenticated actor and workspace.
+
+        '
+      parameters:
+      - name: workspaceId
+        in: query
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Quote submission requirements
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QuoteSubmissionRequirementsEnvelope'
+        '401':
+          $ref: '#/components/responses/Error'
+        '403':
+          $ref: '#/components/responses/Error'
+        '404':
+          $ref: '#/components/responses/Error'
+        '422':
+          $ref: '#/components/responses/Error'
+  /api/tools/v1/quote/submissions:
+    get:
+      tags:
+      - Quote Submissions
+      operationId: list_quote_submissions
+      summary: List quote submissions for a workspace
+      parameters:
+      - name: workspaceId
+        in: query
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Quote submissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QuoteSubmissionListEnvelope'
+        '401':
+          $ref: '#/components/responses/Error'
+        '403':
+          $ref: '#/components/responses/Error'
+        '404':
+          $ref: '#/components/responses/Error'
+        '422':
+          $ref: '#/components/responses/Error'
+    post:
+      tags:
+      - Quote Submissions
+      operationId: create_quote_submission
+      summary: Submit a quote
+      description: 'Submit a quote to the portal for an opportunity workspace. Upload the quote file to the workspace attachments endpoint first, then pass the returned workspaceAttachmentId here. The response returns a submission ID that can be polled with show_quote_submission.
+
+        '
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              required:
+              - workspaceId
+              - workspaceAttachmentId
+              - quoteTotal
+              properties:
+                workspaceId:
+                  type: string
+                workspaceAttachmentId:
+                  type: string
+                quoteTotal:
+                  type: string
+                  description: Decimal quote total. Must be greater than 0.
+                comment:
+                  type: string
+                  description: Optional portal submission comment.
+      responses:
+        '201':
+          description: Created quote submission
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QuoteSubmissionEnvelope'
+        '401':
+          $ref: '#/components/responses/Error'
+        '403':
+          $ref: '#/components/responses/Error'
+        '404':
+          $ref: '#/components/responses/Error'
+        '422':
+          $ref: '#/components/responses/Error'
+  /api/tools/v1/quote/submissions/{id}:
+    get:
+      tags:
+      - Quote Submissions
+      operationId: show_quote_submission
+      summary: Show quote submission status
+      description: 'Poll this endpoint after create_quote_submission until meta.terminal is true. Completed submissions include confirmation details when the portal returns them; failed submissions include failureReason when available.
+
+        '
+      parameters:
+      - $ref: '#/components/parameters/id'
+      responses:
+        '200':
+          description: Quote submission status
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QuoteSubmissionEnvelope'
+        '401':
+          $ref: '#/components/responses/Error'
+        '403':
+          $ref: '#/components/responses/Error'
+        '404':
+          $ref: '#/components/responses/Error'
+        '422':
+          $ref: '#/components/responses/Error'
+components:
+  schemas:
+    QuoteSubmissionField:
+      type: object
+      required:
+      - name
+      - type
+      properties:
+        name:
+          type: string
+        type:
+          type: string
+        description:
+          type: string
+    QuoteSubmissionFileRules:
+      type: object
+      required:
+      - maxBytes
+      - allowedExtensions
+      properties:
+        maxBytes:
+          type: integer
+        allowedExtensions:
+          type: array
+          items:
+            type: string
+    QuoteSubmissionStatusMeta:
+      type: object
+      required:
+      - terminal
+      properties:
+        terminal:
+          type: boolean
+          description: True when the submission no longer needs polling.
+        nextPollAfterSeconds:
+          type: integer
+          description: Suggested delay before polling again. Omitted for terminal submissions.
+        retryable:
+          type: boolean
+          description: Present for failed submissions when creating a new submission is reasonable.
+    QuoteSubmission:
+      type: object
+      required:
+      - id
+      - status
+      - portal
+      - workspaceId
+      - opportunityId
+      - quoteTotal
+      - createdAt
+      properties:
+        id:
+          type: string
+        status:
+          type: string
+          enum:
+          - pending
+          - running
+          - completed
+          - failed
+          - cancelled
+        portal:
+          type: string
+          enum:
+          - chess
+        workspaceId:
+          type: string
+        opportunityId:
+          type: string
+        quoteTotal:
+          type: string
+        comment:
+          type: string
+        confirmationNumber:
+          type: string
+        failureReason:
+          type: string
+        submittedAt:
+          type: string
+          format: date-time
+        confirmedAt:
+          type: string
+          format: date-time
+        createdAt:
+          type: string
+          format: date-time
+        file:
+          $ref: '#/components/schemas/QuoteSubmissionAttachment'
+        evidence:
+          $ref: '#/components/schemas/QuoteSubmissionAttachment'
+    CountMeta:
+      type: object
+      required:
+      - count
+      properties:
+        count:
+          type: integer
+    QuoteSubmissionListEnvelope:
+      type: object
+      required:
+      - data
+      - meta
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/QuoteSubmission'
+        meta:
+          $ref: '#/components/schemas/CountMeta'
+    QuoteSubmissionAttachment:
+      type: object
+      required:
+      - id
+      - filename
+      properties:
+        id:
+          type: string
+        filename:
+          type: string
+        contentType:
+          type: string
+        byteSize:
+          type: integer
+        file:
+          $ref: '#/components/schemas/AttachmentFile'
+    QuoteSubmissionEnvelope:
+      type: object
+      required:
+      - data
+      - meta
+      properties:
+        data:
+          $ref: '#/components/schemas/QuoteSubmission'
+        meta:
+          $ref: '#/components/schemas/QuoteSubmissionStatusMeta'
+    QuoteSubmissionRequirements:
+      type: object
+      required:
+      - eligible
+      - requiredFields
+      - optionalFields
+      - blockingReasons
+      properties:
+        workspaceId:
+          type: string
+        opportunityId:
+          type: string
+        portal:
+          type: string
+          enum:
+          - chess
+        eligible:
+          type: boolean
+          description: True when the authenticated actor can submit with the returned requirements.
+        requiredFields:
+          type: array
+          items:
+            $ref: '#/components/schemas/QuoteSubmissionField'
+        optionalFields:
+          type: array
+          items:
+            $ref: '#/components/schemas/QuoteSubmissionField'
+        fileRules:
+          $ref: '#/components/schemas/QuoteSubmissionFileRules'
+        blockingReasons:
+          type: array
+          items:
+            $ref: '#/components/schemas/QuoteSubmissionBlockingReason'
+    QuoteSubmissionRequirementsEnvelope:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          $ref: '#/components/schemas/QuoteSubmissionRequirements'
+    ErrorEnvelope:
+      type: object
+      required:
+      - errors
+      properties:
+        errors:
+          type: array
+          items:
+            type: object
+            required:
+            - status
+            - code
+            - title
+            - detail
+            properties:
+              status:
+                type: string
+              code:
+                type: string
+              title:
+                type: string
+              detail:
+                type: string
+              source:
+                type: object
+                properties:
+                  pointer:
+                    type: string
+    QuoteSubmissionBlockingReason:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          enum:
+          - quote_submission_not_available_for_portal
+          - missing_or_inactive_portal_account
+          - workspace_not_linked_to_opportunity
+        message:
+          type: string
+    AttachmentFile:
+      type: object
+      description: Presigned download metadata. Omitted when the attachment is redacted or URLs are excluded.
+      required:
+      - url
+      - expiresAt
+      properties:
+        url:
+          type: string
+          format: uri
+        expiresAt:
+          type: string
+          format: date-time
+  parameters:
+    id:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: string
+  responses:
+    Error:
+      description: Error response
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorEnvelope'
+  securitySchemes:
+    bearerApiKey:
+      type: http
+      scheme: bearer
+      bearerFormat: API key
+    headerApiKey:
+      type: apiKey
+      in: header
+      name: X-API-KEY

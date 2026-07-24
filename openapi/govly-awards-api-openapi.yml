@@ -1,0 +1,415 @@
+openapi: 3.1.0
+info:
+  title: Govly Tools API (Alpha) Awards API
+  version: 1.0.0-alpha
+  description: 'ALPHA / UNSTABLE: This API is still in active development. Endpoint behavior, request fields, response fields, error codes, and operation names may change before the Tools API is declared stable.
+
+    REST-callable tool surface for agent and automation workflows. Agents are the primary consumer, but integrations can be built on this API. Responses are JSON for typed clients; MCP tools may render action results into text-oriented formats separately.
+
+    '
+servers:
+- url: https://app.govly.com
+security:
+- bearerApiKey: []
+- headerApiKey: []
+tags:
+- name: Awards
+  description: Search and inspect awarded government contracts.
+paths:
+  /api/tools/v1/awards/{id}:
+    get:
+      tags:
+      - Awards
+      operationId: show_award
+      summary: Show an award
+      description: 'Show a single awarded contract with transactions, sub-awards, related opportunities, program links, line items, places, classification codes, and contacts. The path parameter accepts either identifier shape: an all-digit value is treated as the Govly award database id; anything else is treated as the award uniqueKey (such as CONT_AWD_... or CONT_IDV_...).
+
+        '
+      parameters:
+      - $ref: '#/components/parameters/id'
+      responses:
+        '200':
+          description: Award
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - data
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Award'
+        '401':
+          $ref: '#/components/responses/Error'
+        '403':
+          $ref: '#/components/responses/Error'
+        '404':
+          $ref: '#/components/responses/Error'
+  /api/tools/v1/awards/search:
+    post:
+      tags:
+      - Awards
+      operationId: search_awards
+      summary: Search awards
+      description: 'Search awarded government contracts with the constrained public parameter set shared by MCP search_awards. Searches all time unless dateRange is given. searchType defaults to the authenticated user''s market focus (fed or sled); sled and international require the matching organization subscription.
+
+        '
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              properties:
+                query:
+                  type: string
+                  description: Search text. Supports keywords, quoted phrases, and boolean operators such as AND, OR, and NOT.
+                cursor:
+                  type: string
+                  description: 'Opaque pagination token from the previous response''s meta.nextCursor. Omit for the first page. Tokens are bound to the query, filters, and sort inputs and carry no format guarantee.
+
+                    '
+                perPage:
+                  type: integer
+                  default: 25
+                  maximum: 100
+                searchType:
+                  type: string
+                  enum:
+                  - fed
+                  - sled
+                  - international
+                  description: 'Market type. Defaults to the authenticated user''s market focus (fed or sled). sled and international require the matching organization subscription.
+
+                    '
+                dateRange:
+                  type: array
+                  items:
+                    type: string
+                  minItems: 2
+                  maxItems: 2
+                  description: Filter by award action dates as [start, end] in ISO 8601 format. Searches all time when omitted.
+                recipientNames:
+                  type: array
+                  items:
+                    type: string
+                  description: Filter to awards won by any of these recipient (vendor) names.
+                buyerNames:
+                  type: array
+                  items:
+                    type: string
+                  description: Filter to awards bought by any of these government buyer names.
+                funderNames:
+                  type: array
+                  items:
+                    type: string
+                  description: Filter to awards funded by any of these government funder names.
+                naics:
+                  type: array
+                  items:
+                    type: string
+                  description: NAICS codes to filter by, such as 334111.
+                psc:
+                  type: array
+                  items:
+                    type: string
+                  description: Product or service codes (PSC) to filter by.
+                amountRange:
+                  type: array
+                  items:
+                    type: number
+                  minItems: 2
+                  maxItems: 2
+                  description: Filter by award amount as [minimum, maximum].
+                sort:
+                  type: string
+                  enum:
+                  - period_of_performance_start_date
+                  - awarded_date
+                  - last_modified_date
+                  - award_amount
+                  description: Sort field. Defaults to period_of_performance_start_date. Use awarded_date for recency or award_amount for contract size. SLED awards often lack period_of_performance_start_date, so prefer awarded_date when searchType is sled.
+                sortDirection:
+                  type: string
+                  enum:
+                  - asc
+                  - desc
+      responses:
+        '200':
+          description: Matching awards
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - data
+                - meta
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Award'
+                  meta:
+                    $ref: '#/components/schemas/CursorMeta'
+        '400':
+          $ref: '#/components/responses/Error'
+        '401':
+          $ref: '#/components/responses/Error'
+        '403':
+          $ref: '#/components/responses/Error'
+        '422':
+          $ref: '#/components/responses/Error'
+components:
+  schemas:
+    AwardGovernmentEntity:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        code:
+          type: string
+    Award:
+      type: object
+      required:
+      - id
+      description: 'Stable external award shape. Empty members are omitted rather than rendered blank, and money fields are JSON numbers. Detail responses (show_award) add bounded collections; search responses return the summary shape.
+
+        '
+      properties:
+        id:
+          type: string
+        uniqueKey:
+          type: string
+          description: Stable award business key, such as CONT_AWD_... or CONT_IDV_....
+        displayName:
+          type: string
+        title:
+          type: string
+        identifier:
+          type: string
+        description:
+          type: string
+        aiSummary:
+          type: string
+        externalUrl:
+          type: string
+        awardUrl:
+          type: string
+        acquisitionType:
+          type: string
+        acquisitionCategory:
+          type: string
+        searchType:
+          type: string
+          enum:
+          - fed
+          - sled
+          - international
+        treasuryAccountIds:
+          type: array
+          items:
+            type: string
+        dates:
+          type: object
+          properties:
+            awardedDate:
+              type: string
+            lastModifiedDate:
+              type: string
+            periodOfPerformanceStartDate:
+              type: string
+            periodOfPerformanceEndDate:
+              type: string
+            periodOfPerformancePotentialEndDate:
+              type: string
+        amounts:
+          type: object
+          properties:
+            awardAmount:
+              type: number
+            obligatedAmount:
+              type: number
+            paidAmount:
+              type: number
+            ceilingAmount:
+              type: number
+        recipient:
+          type: object
+          properties:
+            name:
+              type: string
+            uniqueKey:
+              type: string
+            uei:
+              type: string
+            cageCode:
+              type: string
+            parentUniqueKey:
+              type: string
+            parentName:
+              type: string
+        buyer:
+          $ref: '#/components/schemas/AwardGovernmentEntity'
+        buyingOffice:
+          $ref: '#/components/schemas/AwardGovernmentEntity'
+        funder:
+          $ref: '#/components/schemas/AwardGovernmentEntity'
+        fundingOffice:
+          $ref: '#/components/schemas/AwardGovernmentEntity'
+        classification:
+          type: object
+          properties:
+            psc:
+              type: string
+            naics:
+              type: string
+            setAside:
+              type: object
+              properties:
+                id:
+                  type: string
+                code:
+                  type: string
+                name:
+                  type: string
+        contractVehicle:
+          type: object
+          properties:
+            id:
+              type: string
+            slug:
+              type: string
+            name:
+              type: string
+        parentAward:
+          type: object
+          properties:
+            uniqueKey:
+              type: string
+            identifier:
+              type: string
+        jurisdiction:
+          type: object
+          properties:
+            id:
+              type: string
+            name:
+              type: string
+            isoCode:
+              type: string
+        transactions:
+          type: array
+          description: Detail only. Up to 100, newest action first.
+          items:
+            type: object
+        subAwards:
+          type: array
+          description: Detail only. Up to 100 award summaries.
+          items:
+            type: object
+        subAwardsCount:
+          type: integer
+          description: Detail only.
+        relatedOpportunities:
+          type: array
+          description: Detail only. Up to 25, newest posting first.
+          items:
+            type: object
+        programLinks:
+          type: array
+          description: Detail only. Up to 100.
+          items:
+            type: object
+        awardLineItems:
+          type: array
+          description: Detail only. Up to 100.
+          items:
+            type: object
+        places:
+          type: array
+          description: Detail only. AI-extracted places, most specific category first.
+          items:
+            type: object
+        classificationCodes:
+          type: array
+          description: Detail only. Up to 100 resolved classification codes with codeset.
+          items:
+            type: object
+        contacts:
+          type: array
+          description: Detail only. Up to 100 associated contacts (id, name, email).
+          items:
+            type: object
+    CursorMeta:
+      type: object
+      required:
+      - count
+      properties:
+        count:
+          type: integer
+          description: Number of records in this page.
+        totalCount:
+          type: integer
+          description: 'Total matching records (award search only), capped at 10,000 by the search engine. Pagination via nextCursor is not limited by this cap.
+
+            '
+        perPage:
+          type: integer
+        nextCursor:
+          type:
+          - string
+          - 'null'
+    ErrorEnvelope:
+      type: object
+      required:
+      - errors
+      properties:
+        errors:
+          type: array
+          items:
+            type: object
+            required:
+            - status
+            - code
+            - title
+            - detail
+            properties:
+              status:
+                type: string
+              code:
+                type: string
+              title:
+                type: string
+              detail:
+                type: string
+              source:
+                type: object
+                properties:
+                  pointer:
+                    type: string
+  responses:
+    Error:
+      description: Error response
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorEnvelope'
+  parameters:
+    id:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: string
+  securitySchemes:
+    bearerApiKey:
+      type: http
+      scheme: bearer
+      bearerFormat: API key
+    headerApiKey:
+      type: apiKey
+      in: header
+      name: X-API-KEY

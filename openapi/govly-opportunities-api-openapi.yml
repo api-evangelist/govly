@@ -1,0 +1,625 @@
+openapi: 3.1.0
+info:
+  title: Govly Tools API (Alpha) Awards Opportunities API
+  version: 1.0.0-alpha
+  description: 'ALPHA / UNSTABLE: This API is still in active development. Endpoint behavior, request fields, response fields, error codes, and operation names may change before the Tools API is declared stable.
+
+    REST-callable tool surface for agent and automation workflows. Agents are the primary consumer, but integrations can be built on this API. Responses are JSON for typed clients; MCP tools may render action results into text-oriented formats separately.
+
+    '
+servers:
+- url: https://app.govly.com
+security:
+- bearerApiKey: []
+- headerApiKey: []
+tags:
+- name: Opportunities
+  description: Search, fetch, and inspect Govly opportunity records.
+paths:
+  /api/tools/v1/opportunities:
+    get:
+      tags:
+      - Opportunities
+      operationId: fetch_opportunities
+      summary: Fetch opportunities by ID
+      parameters:
+      - name: ids
+        in: query
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: array
+          items:
+            type: string
+      responses:
+        '200':
+          description: Opportunities
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - data
+                - meta
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Opportunity'
+                  meta:
+                    $ref: '#/components/schemas/CountMeta'
+        '401':
+          $ref: '#/components/responses/Error'
+        '403':
+          $ref: '#/components/responses/Error'
+        '422':
+          $ref: '#/components/responses/Error'
+  /api/tools/v1/opportunities/{id}:
+    get:
+      tags:
+      - Opportunities
+      operationId: show_opportunity
+      summary: Show an opportunity
+      parameters:
+      - $ref: '#/components/parameters/id'
+      responses:
+        '200':
+          description: Opportunity
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - data
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Opportunity'
+                  meta:
+                    $ref: '#/components/schemas/ActionMeta'
+        '401':
+          $ref: '#/components/responses/Error'
+        '403':
+          $ref: '#/components/responses/Error'
+        '404':
+          $ref: '#/components/responses/Error'
+  /api/tools/v1/opportunities/search:
+    post:
+      tags:
+      - Opportunities
+      operationId: search_opportunities
+      summary: Search opportunities
+      description: 'Search opportunities with the constrained public parameter set shared by MCP search_opportunities. Defaults to open opportunities and excludes prediction records from search results.
+
+        '
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              properties:
+                query:
+                  type: string
+                cursor:
+                  type: string
+                  description: Opaque cursor from the previous response's meta.nextCursor. Omit for the first page.
+                perPage:
+                  type: integer
+                  default: 25
+                  maximum: 100
+                status:
+                  type: string
+                  default: open
+                  enum:
+                  - open
+                  - all
+                  - expired
+                  - cancelled
+                  - awarded
+                  - not_cancelled
+                  description: 'Defaults to open for actionable opportunities. Use all, expired, cancelled, awarded, or not_cancelled for historical or specific lookup requests. Prediction records are always excluded.
+
+                    '
+                naics:
+                  type: array
+                  items:
+                    type: string
+                  description: NAICS codes to filter by, such as 541519.
+                postedAfter:
+                  type: string
+                  description: Only include opportunities posted at or after this date/time. ISO 8601 dates work best.
+                postedBefore:
+                  type: string
+                  description: Only include opportunities posted at or before this date/time. ISO 8601 dates work best.
+                modifiedAfter:
+                  type: string
+                  description: Only include opportunities modified at or after this date/time. ISO 8601 dates work best.
+                modifiedBefore:
+                  type: string
+                  description: Only include opportunities modified at or before this date/time. ISO 8601 dates work best.
+                respondByAfter:
+                  type: string
+                  description: Only include opportunities with a response deadline at or after this date/time. ISO 8601 dates work best.
+                respondByBefore:
+                  type: string
+                  description: Only include opportunities with a response deadline at or before this date/time. ISO 8601 dates work best.
+                awardedAfter:
+                  type: string
+                  description: Only include awarded opportunities awarded at or after this date/time. ISO 8601 dates work best.
+                awardedBefore:
+                  type: string
+                  description: Only include awarded opportunities awarded at or before this date/time. ISO 8601 dates work best.
+                sort:
+                  type: string
+                  enum:
+                  - modified_at
+                  - posted_at
+                  - respond_by
+                  - relevance
+                sortDirection:
+                  type: string
+                  enum:
+                  - asc
+                  - desc
+      responses:
+        '200':
+          description: Matching opportunities
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - data
+                - meta
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Opportunity'
+                  meta:
+                    $ref: '#/components/schemas/CursorMeta'
+        '400':
+          $ref: '#/components/responses/Error'
+        '401':
+          $ref: '#/components/responses/Error'
+        '403':
+          $ref: '#/components/responses/Error'
+        '422':
+          $ref: '#/components/responses/Error'
+  /api/tools/v1/opportunities/{opportunityId}/not_interested:
+    post:
+      tags:
+      - Opportunities
+      operationId: mark_opportunity_not_interested
+      summary: Mark an opportunity not interested
+      description: 'Marks the opportunity not interested / dismissed for the authenticated user. Sets a team-visible disinterested status on the user''s workspace follow, unfollows the user, and dismisses the user''s matching inbox items.
+
+        '
+      parameters:
+      - name: opportunityId
+        in: path
+        required: true
+        schema:
+          type: string
+        description: Govly opportunity ID.
+      responses:
+        '201':
+          description: Opportunity marked not interested
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotInterestedResult'
+        '401':
+          $ref: '#/components/responses/Error'
+        '403':
+          $ref: '#/components/responses/Error'
+        '404':
+          $ref: '#/components/responses/Error'
+        '422':
+          $ref: '#/components/responses/Error'
+    delete:
+      tags:
+      - Opportunities
+      operationId: undo_opportunity_not_interested
+      summary: Undo a not-interested mark
+      description: 'Removes a previous not-interested mark for the authenticated user and restores matching dismissed inbox items. The user returns to a neutral (not following) state.
+
+        '
+      parameters:
+      - name: opportunityId
+        in: path
+        required: true
+        schema:
+          type: string
+        description: Govly opportunity ID.
+      responses:
+        '200':
+          description: Not-interested mark removed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotInterestedResult'
+        '401':
+          $ref: '#/components/responses/Error'
+        '403':
+          $ref: '#/components/responses/Error'
+        '404':
+          $ref: '#/components/responses/Error'
+        '422':
+          $ref: '#/components/responses/Error'
+components:
+  schemas:
+    WorkspaceMember:
+      type: object
+      required:
+      - id
+      - member
+      properties:
+        id:
+          type: string
+        state:
+          type: string
+        notifications:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        member:
+          type: object
+          required:
+          - type
+          - id
+          properties:
+            type:
+              type: string
+              enum:
+              - user
+              - team
+            id:
+              type: string
+            name:
+              type: string
+            email:
+              type: string
+              format: email
+            organization:
+              type: object
+              properties:
+                id:
+                  type: string
+                name:
+                  type: string
+    OpportunityAttachment:
+      type: object
+      required:
+      - id
+      - documentType
+      - filename
+      - redacted
+      properties:
+        id:
+          type: string
+          description: Canonical OppAttachment.id. Pass this value to document_read and document_download.
+        documentType:
+          type: string
+          const: opportunity_attachment
+        filename:
+          type: string
+        contentType:
+          type: string
+        byteSize:
+          type: integer
+        redacted:
+          type: boolean
+        tags:
+          type: array
+          items:
+            type: string
+        file:
+          $ref: '#/components/schemas/AttachmentFile'
+    AvailableAction:
+      type: object
+      required:
+      - name
+      - description
+      - arguments
+      - idPaths
+      properties:
+        name:
+          type: string
+          description: MCP/tool operation name.
+        description:
+          type: string
+        arguments:
+          type: object
+          description: Static arguments to pass to the action.
+        idPaths:
+          type: array
+          description: JSON paths where IDs for this action can be found in the current response.
+          items:
+            type: string
+    OpportunitySource:
+      type: object
+      required:
+      - id
+      - attachments
+      properties:
+        id:
+          type: string
+        postedAt:
+          type: string
+          format: date-time
+        externalUrl:
+          type: string
+          format: uri
+        noticeType:
+          type: string
+        recordType:
+          type: string
+        attachments:
+          type: array
+          items:
+            $ref: '#/components/schemas/OpportunityAttachment'
+    Opportunity:
+      type: object
+      required:
+      - id
+      properties:
+        id:
+          type: string
+          description: Govly opportunity ID. Use this ID for show requests, workspace associations, and links.
+        title:
+          type: string
+        displayName:
+          type: string
+          description: Human-readable opportunity reference, usually source name plus identifier.
+        identifier:
+          type: string
+          description: Public opportunity identifier, such as a solicitation or request number. This may differ from raw source-system IDs when Govly merges related notices.
+        externalUrl:
+          type: string
+          format: uri
+        recordType:
+          type: string
+        status:
+          type: string
+          enum:
+          - open
+          - expired
+          - cancelled
+          - awarded
+          - forecasted
+          - unknown
+        postedAt:
+          type: string
+          format: date-time
+        modifiedAt:
+          type: string
+          format: date-time
+        respondBy:
+          type: string
+          format: date-time
+        cancelledAt:
+          type: string
+          format: date-time
+        awardedAt:
+          type: string
+          format: date-time
+        aiTitle:
+          type: string
+        aiSummary:
+          type: string
+        jurisdiction:
+          type: object
+          properties:
+            id:
+              type: string
+            name:
+              type: string
+            isoCode:
+              type: string
+        contractVehicle:
+          type: object
+          properties:
+            id:
+              type: string
+            name:
+              type: string
+        followerCount:
+          type: integer
+          description: Count of active follow rows across visible workspaces for this opportunity.
+        followedByCurrentUser:
+          type: boolean
+          description: Whether the authenticated user actively follows any visible workspace for this opportunity.
+        followedByCurrentOrganization:
+          type: boolean
+          description: Whether the authenticated user's organization actively follows any visible workspace for this opportunity.
+        workspaces:
+          type: array
+          description: Visible workspaces associated with this opportunity, including active follow context.
+          items:
+            $ref: '#/components/schemas/OpportunityWorkspace'
+        aggregateAttachments:
+          type: array
+          items:
+            $ref: '#/components/schemas/OpportunityAttachment'
+        opportunitySources:
+          type: array
+          items:
+            $ref: '#/components/schemas/OpportunitySource'
+    CountMeta:
+      type: object
+      required:
+      - count
+      properties:
+        count:
+          type: integer
+    ActionMeta:
+      type: object
+      properties:
+        availableActions:
+          type: array
+          description: Structured hints for useful follow-up actions. These are advisory; clients should still rely on tool schemas and authorization.
+          items:
+            $ref: '#/components/schemas/AvailableAction'
+    NotInterestedResult:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          required:
+          - id
+          - type
+          - notInterested
+          properties:
+            id:
+              type: string
+              description: Govly opportunity ID.
+            type:
+              type: string
+              enum:
+              - opportunity
+            notInterested:
+              type: boolean
+              description: Whether the opportunity is now marked not interested for the authenticated user.
+        meta:
+          type: object
+          properties:
+            oppId:
+              type: string
+            undo:
+              type: boolean
+    CursorMeta:
+      type: object
+      required:
+      - count
+      properties:
+        count:
+          type: integer
+          description: Number of records in this page.
+        totalCount:
+          type: integer
+          description: 'Total matching records (award search only), capped at 10,000 by the search engine. Pagination via nextCursor is not limited by this cap.
+
+            '
+        perPage:
+          type: integer
+        nextCursor:
+          type:
+          - string
+          - 'null'
+    OpportunityWorkspace:
+      type: object
+      required:
+      - id
+      - name
+      - status
+      - followerCount
+      - follows
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        organizationDefault:
+          type: boolean
+        organization:
+          type: object
+          properties:
+            id:
+              type: string
+            name:
+              type: string
+        status:
+          type: object
+          required:
+          - category
+          - label
+          properties:
+            category:
+              type: string
+            label:
+              type: string
+        followerCount:
+          type: integer
+          description: Count of active follow rows on this workspace.
+        followedByCurrentUser:
+          type: boolean
+        followedByCurrentOrganization:
+          type: boolean
+        follows:
+          type: array
+          description: Active workspace follows. Inactive/unfollowed/disinterested rows are omitted.
+          items:
+            $ref: '#/components/schemas/WorkspaceMember'
+    ErrorEnvelope:
+      type: object
+      required:
+      - errors
+      properties:
+        errors:
+          type: array
+          items:
+            type: object
+            required:
+            - status
+            - code
+            - title
+            - detail
+            properties:
+              status:
+                type: string
+              code:
+                type: string
+              title:
+                type: string
+              detail:
+                type: string
+              source:
+                type: object
+                properties:
+                  pointer:
+                    type: string
+    AttachmentFile:
+      type: object
+      description: Presigned download metadata. Omitted when the attachment is redacted or URLs are excluded.
+      required:
+      - url
+      - expiresAt
+      properties:
+        url:
+          type: string
+          format: uri
+        expiresAt:
+          type: string
+          format: date-time
+  parameters:
+    id:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: string
+  responses:
+    Error:
+      description: Error response
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorEnvelope'
+  securitySchemes:
+    bearerApiKey:
+      type: http
+      scheme: bearer
+      bearerFormat: API key
+    headerApiKey:
+      type: apiKey
+      in: header
+      name: X-API-KEY
