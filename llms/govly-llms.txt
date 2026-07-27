@@ -1,0 +1,67 @@
+# Govly Developer Documentation
+
+## Docs
+
+- [List awards](https://docs.govly.com/api-reference/enterprise/awards/list.md): Retrieve federal contract awards with filtering by date range, unique key, or recipient
+- [List Saved Searches](https://docs.govly.com/api-reference/enterprise/awards/saved_searches/list.md): Returns a paginated list of saved award searches for your organization
+- [Execute a search on a saved search](https://docs.govly.com/api-reference/enterprise/awards/saved_searches/search.md): Search awards using a saved search query
+- [List opportunities by ID](https://docs.govly.com/api-reference/enterprise/opportunities/list.md): Retrieve detailed information about specific opportunities by their IDs
+- [List saved search matches](https://docs.govly.com/api-reference/enterprise/opportunities/saved_search_matches/list.md): Retrieve opportunities that match your saved searches
+- [List Saved Searches](https://docs.govly.com/api-reference/enterprise/opportunities/saved_searches/list.md): Returns a paginated list of saved opportunity searches for your organization
+- [Execute a search on a saved search](https://docs.govly.com/api-reference/enterprise/opportunities/saved_searches/search.md): Search opportunities using a saved search query
+- [Webhooks Overview](https://docs.govly.com/api-reference/enterprise/webhooks/overview.md): Learn about Govly Enterprise webhooks
+- [Search awards](https://docs.govly.com/api-reference/tools-v1/awards/search-awards.md): Search awarded government contracts with the constrained public parameter set shared by MCP search_awards. Searches all time unless dateRange is given. searchType defaults to the authenticated user's market focus (fed or sled); sled and international require the matching organization subscription.
+- [Show an award](https://docs.govly.com/api-reference/tools-v1/awards/show-an-award.md): Show a single awarded contract with transactions, sub-awards, related opportunities, program links, line items, places, classification codes, and contacts. The path parameter accepts either identifier shape: an all-digit value is treated as the Govly award database id; anything else is treated as th…
+- [Get a temporary original-file download](https://docs.govly.com/api-reference/tools-v1/documents/get-a-temporary-original-file-download.md): Returns a fresh presigned URL for the authorized original file. The URL expires at data.expiresAt. This operation is separate from document_read so reading representations never downloads the full file implicitly.
+- [Read bounded document content](https://docs.govly.com/api-reference/tools-v1/documents/read-bounded-document-content.md): Reads a bounded portion of an authorized document without creating an analysis or enqueueing extraction work. Start a read with documentType and id. Continue when meta.hasMore is true by sending only meta.nextCursor and, optionally, maxChars. Cursors are opaque, source-bound, and re-authorized on ev…
+- [Follow a Govly entity](https://docs.govly.com/api-reference/tools-v1/follows/follow-a-govly-entity.md): Follow, track, or subscribe to changes for a Govly entity. For opportunities, this creates or reuses the default opportunity workspace and follows that workspace for the authenticated user.
+- [Accept (follow) an inbox item](https://docs.govly.com/api-reference/tools-v1/inbox/accept-follow-an-inbox-item.md): Follow the underlying opportunity, award, or signal and create or reuse its default workspace. Accept is FINAL and cannot be reversed with restore. The response meta includes the resulting workspaceId.
+- [Decline (reject) an inbox item as a bad fit](https://docs.govly.com/api-reference/tools-v1/inbox/decline-reject-an-inbox-item-as-a-bad-fit.md): Mark the item a bad fit, optionally with a reason that feeds the organization's matching-exclusions memory. Reversible with restore.
+- [Dismiss an inbox item](https://docs.govly.com/api-reference/tools-v1/inbox/dismiss-an-inbox-item.md)
+- [List inbox items](https://docs.govly.com/api-reference/tools-v1/inbox/list-inbox-items.md): List the authenticated user's active inbox items (Govly AI matches and saved-search matches), newest first.
+- [Restore a dismissed or declined inbox item](https://docs.govly.com/api-reference/tools-v1/inbox/restore-a-dismissed-or-declined-inbox-item.md): Return a dismissed or bad-fit item to the active inbox. Only dismissed or bad-fit items can be restored — an accepted item cannot.
+- [Search inbox items](https://docs.govly.com/api-reference/tools-v1/inbox/search-inbox-items.md): Full-text search and filter the authenticated user's inbox items. Returns matchable-type aggregation counts.
+- [Show an inbox item](https://docs.govly.com/api-reference/tools-v1/inbox/show-an-inbox-item.md)
+- [Fetch opportunities by ID](https://docs.govly.com/api-reference/tools-v1/opportunities/fetch-opportunities-by-id.md)
+- [Mark an opportunity not interested](https://docs.govly.com/api-reference/tools-v1/opportunities/mark-an-opportunity-not-interested.md): Marks the opportunity not interested / dismissed for the authenticated user. Sets a team-visible disinterested status on the user's workspace follow, unfollows the user, and dismisses the user's matching inbox items.
+- [Search opportunities](https://docs.govly.com/api-reference/tools-v1/opportunities/search-opportunities.md): Search opportunities with the constrained public parameter set shared by MCP search_opportunities. Defaults to open opportunities and excludes prediction records from search results.
+- [Show an opportunity](https://docs.govly.com/api-reference/tools-v1/opportunities/show-an-opportunity.md)
+- [Undo a not-interested mark](https://docs.govly.com/api-reference/tools-v1/opportunities/undo-a-not-interested-mark.md): Removes a previous not-interested mark for the authenticated user and restores matching dismissed inbox items. The user returns to a neutral (not following) state.
+- [Check quote submission requirements](https://docs.govly.com/api-reference/tools-v1/quote-submissions/check-quote-submission-requirements.md): Returns portal-specific quote submission requirements and blocking reasons for the authenticated actor and workspace.
+- [List quote submissions for a workspace](https://docs.govly.com/api-reference/tools-v1/quote-submissions/list-quote-submissions-for-a-workspace.md)
+- [Show quote submission status](https://docs.govly.com/api-reference/tools-v1/quote-submissions/show-quote-submission-status.md): Poll this endpoint after create_quote_submission until meta.terminal is true. Completed submissions include confirmation details when the portal returns them; failed submissions include failureReason when available.
+- [Submit a quote](https://docs.govly.com/api-reference/tools-v1/quote-submissions/submit-a-quote.md): Submit a quote to the portal for an opportunity workspace. Upload the quote file to the workspace attachments endpoint first, then pass the returned workspaceAttachmentId here. The response returns a submission ID that can be polled with show_quote_submission.
+- [List cached opportunity results for a saved search](https://docs.govly.com/api-reference/tools-v1/saved-searches/list-cached-opportunity-results-for-a-saved-search.md): Returns cached saved-search matches, excluding prediction records.
+- [List opportunity saved searches](https://docs.govly.com/api-reference/tools-v1/saved-searches/list-opportunity-saved-searches.md): Latest match previews exclude prediction records.
+- [Show an opportunity saved search](https://docs.govly.com/api-reference/tools-v1/saved-searches/show-an-opportunity-saved-search.md)
+- [List workspace attachments](https://docs.govly.com/api-reference/tools-v1/workspace-attachments/list-workspace-attachments.md)
+- [Upload workspace attachments](https://docs.govly.com/api-reference/tools-v1/workspace-attachments/upload-workspace-attachments.md)
+- [Post a Markdown comment to a workspace](https://docs.govly.com/api-reference/tools-v1/workspace-comments/post-a-markdown-comment-to-a-workspace.md)
+- [Add a user or team member to a workspace](https://docs.govly.com/api-reference/tools-v1/workspace-members/add-a-user-or-team-member-to-a-workspace.md)
+- [Create a workspace](https://docs.govly.com/api-reference/tools-v1/workspaces/create-a-workspace.md)
+- [List workspaces associated with an entity](https://docs.govly.com/api-reference/tools-v1/workspaces/list-workspaces-associated-with-an-entity.md)
+- [Show a workspace](https://docs.govly.com/api-reference/tools-v1/workspaces/show-a-workspace.md)
+- [Update a workspace](https://docs.govly.com/api-reference/tools-v1/workspaces/update-a-workspace.md)
+- [List Contract Vehicles](https://docs.govly.com/api-reference/v3/contract-vehicles/list.md)
+- [Filter Opportunities](https://docs.govly.com/api-reference/v3/opportunities/filter.md)
+- [Get Opportunity](https://docs.govly.com/api-reference/v3/opportunities/get.md): Retrieve a specific opportunity by ID
+- [Create Workspace](https://docs.govly.com/api-reference/v3/workspaces/create.md)
+- [Get Workspace](https://docs.govly.com/api-reference/v3/workspaces/get.md): Retrieve a specific opportunity workspace by ID
+- [Update Workspace](https://docs.govly.com/api-reference/v3/workspaces/update.md)
+- [Email Integration](https://docs.govly.com/enterprise/email-integration.md): Set up email forwarding for opportunity and award tracking
+- [HubSpot Integration](https://docs.govly.com/enterprise/integrations/hubspot.md): Sync Govly opportunities to HubSpot as deals
+- [MCP Server](https://docs.govly.com/enterprise/integrations/mcp.md): Use Govly tools from Claude and other AI clients via MCP
+- [Salesforce Integration](https://docs.govly.com/enterprise/integrations/sfdc.md): Sync Govly opportunities to Salesforce as custom Govly Opportunity objects
+- [Single Sign-On (SSO)](https://docs.govly.com/enterprise/integrations/sso.md): Govly supports SAML 2.0-based Single Sign-On, allowing your team to authenticate using your organization's identity provider
+- [Overview](https://docs.govly.com/enterprise/security.md): An overview of Govly’s approach to safeguarding data and supporting privacy requirements.
+- [CMMC Compliance](https://docs.govly.com/enterprise/security/cmmc.md): Govly CMMC Level 2 certification and compliance controls
+- [Secure Enclave](https://docs.govly.com/enterprise/security/secure-enclave.md): Govly CMMC-compliant secure enclave architecture
+- [SOC 2 Type 1](https://docs.govly.com/enterprise/security/soc2.md): Govly SOC 2 Type 1 compliance and audit details
+- [Web Automation](https://docs.govly.com/enterprise/web-automation.md): Automated procurement portal monitoring in the CMMC enclave
+- [Introduction](https://docs.govly.com/getting-started/introduction.md): Govly specializes in ingesting, parsing, and analyzing government contracting data. These docs will help you set up data ingestion pipelines, configure integrations with your existing systems, and implement webhooks for real-time notifications. While our enterprise API is currently only available to…
+- [Webhook Events](https://docs.govly.com/webhooks/events.md): Available webhook events
+- [Webhook Security](https://docs.govly.com/webhooks/security.md): Learn how to secure your webhooks
+
+## OpenAPI Specs
+
+- [tools-v1](https://docs.govly.com/openapi/tools-v1.yaml)

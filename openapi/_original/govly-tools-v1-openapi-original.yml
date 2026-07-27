@@ -1,0 +1,2391 @@
+openapi: 3.1.0
+info:
+  title: Govly Tools API (Alpha)
+  version: "1.0.0-alpha"
+  description: >
+    ALPHA / UNSTABLE: This API is still in active development. Endpoint
+    behavior, request fields, response fields, error codes, and operation names
+    may change before the Tools API is declared stable.
+
+    REST-callable tool surface for agent and automation workflows. Agents are
+    the primary consumer, but integrations can be built on this API. Responses
+    are JSON for typed clients; MCP tools may render action results into
+    text-oriented formats separately.
+servers:
+  - url: https://app.govly.com
+security:
+  - bearerApiKey: []
+  - headerApiKey: []
+tags:
+  - name: Opportunities
+    description: Search, fetch, and inspect Govly opportunity records.
+  - name: Awards
+    description: Search and inspect awarded government contracts.
+  - name: Workspaces
+    description: Create, update, and inspect opportunity workspaces.
+  - name: Workspace Members
+    description: Add users and teams to workspaces.
+  - name: Workspace Attachments
+    description: List and upload workspace attachments.
+  - name: Workspace Comments
+    description: Post comments to workspaces.
+  - name: Follows
+    description: Follow opportunities and related workspace activity.
+  - name: Saved Searches
+    description: List saved opportunity searches and cached matches.
+  - name: Documents
+    description: Read document representations and request temporary original-file downloads.
+  - name: Quote Submissions
+    description: Inspect quote submission requirements, submit quotes, and poll submission status.
+  - name: Inbox
+    description: Read and triage the authenticated user's matched inbox items.
+paths:
+  /api/tools/v1/opportunities:
+    get:
+      tags: [Opportunities]
+      operationId: fetch_opportunities
+      summary: Fetch opportunities by ID
+      parameters:
+        - name: ids
+          in: query
+          required: true
+          style: form
+          explode: true
+          schema:
+            type: array
+            items:
+              type: string
+      responses:
+        "200":
+          description: Opportunities
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [data, meta]
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Opportunity"
+                  meta:
+                    $ref: "#/components/schemas/CountMeta"
+        "401":
+          $ref: "#/components/responses/Error"
+        "403":
+          $ref: "#/components/responses/Error"
+        "422":
+          $ref: "#/components/responses/Error"
+  /api/tools/v1/opportunities/{id}:
+    get:
+      tags: [Opportunities]
+      operationId: show_opportunity
+      summary: Show an opportunity
+      parameters:
+        - $ref: "#/components/parameters/id"
+      responses:
+        "200":
+          description: Opportunity
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [data]
+                properties:
+                  data:
+                    $ref: "#/components/schemas/Opportunity"
+                  meta:
+                    $ref: "#/components/schemas/ActionMeta"
+        "401":
+          $ref: "#/components/responses/Error"
+        "403":
+          $ref: "#/components/responses/Error"
+        "404":
+          $ref: "#/components/responses/Error"
+  /api/tools/v1/opportunities/search:
+    post:
+      tags: [Opportunities]
+      operationId: search_opportunities
+      summary: Search opportunities
+      description: >
+        Search opportunities with the constrained public parameter set shared by
+        MCP search_opportunities. Defaults to open opportunities and excludes
+        prediction records from search results.
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              properties:
+                query:
+                  type: string
+                cursor:
+                  type: string
+                  description: Opaque cursor from the previous response's meta.nextCursor. Omit for the first page.
+                perPage:
+                  type: integer
+                  default: 25
+                  maximum: 100
+                status:
+                  type: string
+                  default: open
+                  enum: [open, all, expired, cancelled, awarded, not_cancelled]
+                  description: >
+                    Defaults to open for actionable opportunities. Use all,
+                    expired, cancelled, awarded, or not_cancelled for historical
+                    or specific lookup requests. Prediction records are always
+                    excluded.
+                naics:
+                  type: array
+                  items:
+                    type: string
+                  description: NAICS codes to filter by, such as 541519.
+                postedAfter:
+                  type: string
+                  description: Only include opportunities posted at or after this date/time. ISO 8601 dates work best.
+                postedBefore:
+                  type: string
+                  description: Only include opportunities posted at or before this date/time. ISO 8601 dates work best.
+                modifiedAfter:
+                  type: string
+                  description: Only include opportunities modified at or after this date/time. ISO 8601 dates work best.
+                modifiedBefore:
+                  type: string
+                  description: Only include opportunities modified at or before this date/time. ISO 8601 dates work best.
+                respondByAfter:
+                  type: string
+                  description: Only include opportunities with a response deadline at or after this date/time. ISO 8601 dates work best.
+                respondByBefore:
+                  type: string
+                  description: Only include opportunities with a response deadline at or before this date/time. ISO 8601 dates work best.
+                awardedAfter:
+                  type: string
+                  description: Only include awarded opportunities awarded at or after this date/time. ISO 8601 dates work best.
+                awardedBefore:
+                  type: string
+                  description: Only include awarded opportunities awarded at or before this date/time. ISO 8601 dates work best.
+                sort:
+                  type: string
+                  enum: [modified_at, posted_at, respond_by, relevance]
+                sortDirection:
+                  type: string
+                  enum: [asc, desc]
+      responses:
+        "200":
+          description: Matching opportunities
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [data, meta]
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Opportunity"
+                  meta:
+                    $ref: "#/components/schemas/CursorMeta"
+        "400":
+          $ref: "#/components/responses/Error"
+        "401":
+          $ref: "#/components/responses/Error"
+        "403":
+          $ref: "#/components/responses/Error"
+        "422":
+          $ref: "#/components/responses/Error"
+  /api/tools/v1/awards/{id}:
+    get:
+      tags: [Awards]
+      operationId: show_award
+      summary: Show an award
+      description: >
+        Show a single awarded contract with transactions, sub-awards, related
+        opportunities, program links, line items, places, classification codes,
+        and contacts. The path parameter accepts
+        either identifier shape: an all-digit value is treated as the Govly
+        award database id; anything else is treated as the award uniqueKey
+        (such as CONT_AWD_... or CONT_IDV_...).
+      parameters:
+        - $ref: "#/components/parameters/id"
+      responses:
+        "200":
+          description: Award
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [data]
+                properties:
+                  data:
+                    $ref: "#/components/schemas/Award"
+        "401":
+          $ref: "#/components/responses/Error"
+        "403":
+          $ref: "#/components/responses/Error"
+        "404":
+          $ref: "#/components/responses/Error"
+  /api/tools/v1/awards/search:
+    post:
+      tags: [Awards]
+      operationId: search_awards
+      summary: Search awards
+      description: >
+        Search awarded government contracts with the constrained public
+        parameter set shared by MCP search_awards. Searches all time unless
+        dateRange is given. searchType defaults to the authenticated user's
+        market focus (fed or sled); sled and international require the matching
+        organization subscription.
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              properties:
+                query:
+                  type: string
+                  description: Search text. Supports keywords, quoted phrases, and boolean operators such as AND, OR, and NOT.
+                cursor:
+                  type: string
+                  description: >
+                    Opaque pagination token from the previous response's
+                    meta.nextCursor. Omit for the first page. Tokens are bound
+                    to the query, filters, and sort inputs and carry no format
+                    guarantee.
+                perPage:
+                  type: integer
+                  default: 25
+                  maximum: 100
+                searchType:
+                  type: string
+                  enum: [fed, sled, international]
+                  description: >
+                    Market type. Defaults to the authenticated user's market
+                    focus (fed or sled). sled and international require the
+                    matching organization subscription.
+                dateRange:
+                  type: array
+                  items:
+                    type: string
+                  minItems: 2
+                  maxItems: 2
+                  description: Filter by award action dates as [start, end] in ISO 8601 format. Searches all time when omitted.
+                recipientNames:
+                  type: array
+                  items:
+                    type: string
+                  description: Filter to awards won by any of these recipient (vendor) names.
+                buyerNames:
+                  type: array
+                  items:
+                    type: string
+                  description: Filter to awards bought by any of these government buyer names.
+                funderNames:
+                  type: array
+                  items:
+                    type: string
+                  description: Filter to awards funded by any of these government funder names.
+                naics:
+                  type: array
+                  items:
+                    type: string
+                  description: NAICS codes to filter by, such as 334111.
+                psc:
+                  type: array
+                  items:
+                    type: string
+                  description: Product or service codes (PSC) to filter by.
+                amountRange:
+                  type: array
+                  items:
+                    type: number
+                  minItems: 2
+                  maxItems: 2
+                  description: Filter by award amount as [minimum, maximum].
+                sort:
+                  type: string
+                  enum: [period_of_performance_start_date, awarded_date, last_modified_date, award_amount]
+                  description: >-
+                    Sort field. Defaults to period_of_performance_start_date. Use awarded_date
+                    for recency or award_amount for contract size. SLED awards often lack
+                    period_of_performance_start_date, so prefer awarded_date when searchType is sled.
+                sortDirection:
+                  type: string
+                  enum: [asc, desc]
+      responses:
+        "200":
+          description: Matching awards
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [data, meta]
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Award"
+                  meta:
+                    $ref: "#/components/schemas/CursorMeta"
+        "400":
+          $ref: "#/components/responses/Error"
+        "401":
+          $ref: "#/components/responses/Error"
+        "403":
+          $ref: "#/components/responses/Error"
+        "422":
+          $ref: "#/components/responses/Error"
+  /api/tools/v1/workspaces:
+    get:
+      tags: [Workspaces]
+      operationId: list_workspaces
+      summary: List workspaces associated with an entity
+      parameters:
+        - $ref: "#/components/parameters/associatedType"
+        - $ref: "#/components/parameters/associatedId"
+      responses:
+        "200":
+          description: Matching workspaces
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [data, meta]
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Workspace"
+                  meta:
+                    type: object
+                    required: [count]
+                    properties:
+                      count:
+                        type: integer
+        "401":
+          $ref: "#/components/responses/Error"
+        "403":
+          $ref: "#/components/responses/Error"
+        "422":
+          $ref: "#/components/responses/Error"
+    post:
+      tags: [Workspaces]
+      operationId: create_workspace
+      summary: Create a workspace
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [name]
+              properties:
+                name:
+                  type: string
+                description:
+                  type: string
+                primaryFocus:
+                  $ref: "#/components/schemas/PrimaryFocusInput"
+                privateAccess:
+                  type: boolean
+                workflowStage:
+                  type: string
+                statusCategory:
+                  type: string
+                status:
+                  type: string
+                  description: Human-readable workspace status name, status category, or legacy workflow stage. Prefer this for agent and MCP-style clients.
+                workspaceStatusId:
+                  type: string
+                  description: Current-organization workspace status ID. Prefer status unless the caller already has this ID.
+                organizationDefault:
+                  type: boolean
+                autoFollowCreator:
+                  type: boolean
+      responses:
+        "201":
+          description: Created workspace
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WorkspaceEnvelope"
+        "401":
+          $ref: "#/components/responses/Error"
+        "403":
+          $ref: "#/components/responses/Error"
+        "422":
+          $ref: "#/components/responses/Error"
+  /api/tools/v1/workspaces/{id}:
+    get:
+      tags: [Workspaces]
+      operationId: show_workspace
+      summary: Show a workspace
+      parameters:
+        - $ref: "#/components/parameters/id"
+      responses:
+        "200":
+          description: Workspace
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WorkspaceEnvelope"
+        "401":
+          $ref: "#/components/responses/Error"
+        "403":
+          $ref: "#/components/responses/Error"
+        "404":
+          $ref: "#/components/responses/Error"
+    patch:
+      tags: [Workspaces]
+      operationId: update_workspace
+      summary: Update a workspace
+      parameters:
+        - $ref: "#/components/parameters/id"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                description:
+                  type: string
+                privateAccess:
+                  type: boolean
+                workflowStage:
+                  type: string
+                statusCategory:
+                  type: string
+                status:
+                  type: string
+                  description: Human-readable workspace status name, status category, or legacy workflow stage. Prefer this for agent and MCP-style clients.
+                workspaceStatusId:
+                  type: string
+                  description: Current-organization workspace status ID. Prefer status unless the caller already has this ID.
+      responses:
+        "200":
+          description: Updated workspace
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WorkspaceEnvelope"
+        "401":
+          $ref: "#/components/responses/Error"
+        "403":
+          $ref: "#/components/responses/Error"
+        "404":
+          $ref: "#/components/responses/Error"
+        "422":
+          $ref: "#/components/responses/Error"
+  /api/tools/v1/workspaces/{workspaceId}/members:
+    post:
+      tags: [Workspace Members]
+      operationId: add_workspace_member
+      summary: Add a user or team member to a workspace
+      parameters:
+        - $ref: "#/components/parameters/workspaceId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                userId:
+                  type: string
+                teamId:
+                  type: string
+                notifications:
+                  type: string
+                state:
+                  type: string
+      responses:
+        "201":
+          description: Created workspace membership
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [data]
+                properties:
+                  data:
+                    $ref: "#/components/schemas/WorkspaceMember"
+        "401":
+          $ref: "#/components/responses/Error"
+        "403":
+          $ref: "#/components/responses/Error"
+        "422":
+          $ref: "#/components/responses/Error"
+  /api/tools/v1/workspaces/{workspaceId}/attachments:
+    get:
+      tags: [Workspace Attachments]
+      operationId: list_workspace_attachments
+      summary: List workspace attachments
+      parameters:
+        - $ref: "#/components/parameters/workspaceId"
+      responses:
+        "200":
+          description: Workspace attachments
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [data, meta]
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/WorkspaceAttachment"
+                  meta:
+                    $ref: "#/components/schemas/CountMeta"
+        "401":
+          $ref: "#/components/responses/Error"
+        "403":
+          $ref: "#/components/responses/Error"
+        "404":
+          $ref: "#/components/responses/Error"
+    post:
+      tags: [Workspace Attachments]
+      operationId: upload_workspace_attachments
+      summary: Upload workspace attachments
+      parameters:
+        - $ref: "#/components/parameters/workspaceId"
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required: [attachments]
+              properties:
+                attachments:
+                  type: array
+                  items:
+                    type: string
+                    format: binary
+          application/json:
+            schema:
+              type: object
+              required: [attachments]
+              properties:
+                attachments:
+                  type: array
+                  items:
+                    type: string
+                    description: ActiveStorage signed blob ID
+      responses:
+        "201":
+          description: Created attachments
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [data, meta]
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/WorkspaceAttachment"
+                  meta:
+                    $ref: "#/components/schemas/CountMeta"
+        "401":
+          $ref: "#/components/responses/Error"
+        "403":
+          $ref: "#/components/responses/Error"
+        "422":
+          $ref: "#/components/responses/Error"
+  /api/tools/v1/workspaces/{workspaceId}/comments:
+    post:
+      tags: [Workspace Comments]
+      operationId: create_workspace_comment
+      summary: Post a Markdown comment to a workspace
+      parameters:
+        - $ref: "#/components/parameters/workspaceId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [body]
+              properties:
+                body:
+                  type: string
+                  description: Markdown comment body.
+      responses:
+        "201":
+          description: Created workspace comment
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [data]
+                properties:
+                  data:
+                    $ref: "#/components/schemas/Comment"
+                  meta:
+                    type: object
+                    properties:
+                      workspaceId:
+                        type: string
+        "401":
+          $ref: "#/components/responses/Error"
+        "403":
+          $ref: "#/components/responses/Error"
+        "404":
+          $ref: "#/components/responses/Error"
+        "422":
+          $ref: "#/components/responses/Error"
+  /api/tools/v1/follows:
+    post:
+      tags: [Follows]
+      operationId: follow_entity
+      summary: Follow a Govly entity
+      description: >
+        Follow, track, or subscribe to changes for a Govly entity. For
+        opportunities, this creates or reuses the default opportunity
+        workspace and follows that workspace for the authenticated user.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [type, id]
+              properties:
+                type:
+                  type: string
+                  enum: [opportunity, opp]
+                  description: Entity type to follow. opp is accepted as an alias for opportunity.
+                id:
+                  type: string
+                  description: Govly entity ID.
+                notifications:
+                  type: string
+                  description: Notification preference for this follow. Omit to use the user's default setting.
+      responses:
+        "201":
+          description: Active follow on the entity's default workspace
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [data]
+                properties:
+                  data:
+                    type: object
+                    required: [workspace, membership]
+                    properties:
+                      workspace:
+                        $ref: "#/components/schemas/Workspace"
+                      membership:
+                        $ref: "#/components/schemas/WorkspaceMember"
+                  meta:
+                    type: object
+                    properties:
+                      entityType:
+                        type: string
+                      entityId:
+                        type: string
+        "401":
+          $ref: "#/components/responses/Error"
+        "403":
+          $ref: "#/components/responses/Error"
+        "404":
+          $ref: "#/components/responses/Error"
+        "422":
+          $ref: "#/components/responses/Error"
+  /api/tools/v1/opportunities/{opportunityId}/not_interested:
+    post:
+      tags: [Opportunities]
+      operationId: mark_opportunity_not_interested
+      summary: Mark an opportunity not interested
+      description: >
+        Marks the opportunity not interested / dismissed for the authenticated
+        user. Sets a team-visible disinterested status on the user's workspace
+        follow, unfollows the user, and dismisses the user's matching inbox
+        items.
+      parameters:
+        - name: opportunityId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Govly opportunity ID.
+      responses:
+        "201":
+          description: Opportunity marked not interested
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotInterestedResult"
+        "401":
+          $ref: "#/components/responses/Error"
+        "403":
+          $ref: "#/components/responses/Error"
+        "404":
+          $ref: "#/components/responses/Error"
+        "422":
+          $ref: "#/components/responses/Error"
+    delete:
+      tags: [Opportunities]
+      operationId: undo_opportunity_not_interested
+      summary: Undo a not-interested mark
+      description: >
+        Removes a previous not-interested mark for the authenticated user and
+        restores matching dismissed inbox items. The user returns to a neutral
+        (not following) state.
+      parameters:
+        - name: opportunityId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Govly opportunity ID.
+      responses:
+        "200":
+          description: Not-interested mark removed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotInterestedResult"
+        "401":
+          $ref: "#/components/responses/Error"
+        "403":
+          $ref: "#/components/responses/Error"
+        "404":
+          $ref: "#/components/responses/Error"
+        "422":
+          $ref: "#/components/responses/Error"
+  /api/tools/v1/opportunities/saved_searches:
+    get:
+      tags: [Saved Searches]
+      operationId: list_opportunity_saved_searches
+      summary: List opportunity saved searches
+      description: Latest match previews exclude prediction records.
+      parameters:
+        - $ref: "#/components/parameters/cursor"
+        - $ref: "#/components/parameters/perPage"
+      responses:
+        "200":
+          description: Opportunity saved searches
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [data, meta]
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/OppSearch"
+                  meta:
+                    $ref: "#/components/schemas/CursorMeta"
+        "401":
+          $ref: "#/components/responses/Error"
+        "403":
+          $ref: "#/components/responses/Error"
+        "422":
+          $ref: "#/components/responses/Error"
+  /api/tools/v1/opportunities/saved_searches/{id}:
+    get:
+      tags: [Saved Searches]
+      operationId: show_opportunity_saved_search
+      summary: Show an opportunity saved search
+      parameters:
+        - $ref: "#/components/parameters/id"
+      responses:
+        "200":
+          description: Opportunity saved search
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [data]
+                properties:
+                  data:
+                    $ref: "#/components/schemas/OppSearch"
+        "401":
+          $ref: "#/components/responses/Error"
+        "403":
+          $ref: "#/components/responses/Error"
+        "404":
+          $ref: "#/components/responses/Error"
+  /api/tools/v1/opportunities/saved_searches/{savedSearchId}/results:
+    get:
+      tags: [Saved Searches]
+      operationId: list_opportunity_saved_search_results
+      summary: List cached opportunity results for a saved search
+      description: Returns cached saved-search matches, excluding prediction records.
+      parameters:
+        - $ref: "#/components/parameters/savedSearchId"
+        - $ref: "#/components/parameters/cursor"
+        - $ref: "#/components/parameters/perPage"
+      responses:
+        "200":
+          description: Cached saved-search matches
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [data, meta]
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/OppSearchMatch"
+                  meta:
+                    $ref: "#/components/schemas/CursorMeta"
+        "401":
+          $ref: "#/components/responses/Error"
+        "403":
+          $ref: "#/components/responses/Error"
+        "404":
+          $ref: "#/components/responses/Error"
+        "422":
+          $ref: "#/components/responses/Error"
+  /api/tools/v1/documents/read:
+    get:
+      tags: [Documents]
+      operationId: document_read
+      summary: Read bounded document content
+      description: >
+        Reads a bounded portion of an authorized document without creating an
+        analysis or enqueueing extraction work. Start a read with documentType
+        and id. Continue when meta.hasMore is true by sending only meta.nextCursor
+        and, optionally, maxChars. Cursors are opaque, source-bound, and
+        re-authorized on every request. Opportunity document IDs are
+        OppAttachment.id values returned as opportunity attachment id;
+        access is derived from any associated opportunity/source path visible to
+        the caller rather than from a client-supplied opportunity ID.
+        Use positioned_text only when data.availableRepresentations advertises it.
+        PDF page ranges are supported with pageStart and pageEnd.
+        Processing and representation_unavailable are successful structured
+        states. Failed or unavailable extraction returns the standard 422 error
+        envelope, inaccessible records return the standard 404 error envelope,
+        and invalid parameters return the standard 422 error envelope.
+      parameters:
+        - name: documentType
+          in: query
+          required: false
+          description: Required with id for an initial read. Omit when continuing with cursor.
+          schema:
+            $ref: "#/components/schemas/DocumentType"
+        - name: id
+          in: query
+          required: false
+          description: Required with documentType for an initial read. Omit when continuing with cursor.
+          schema:
+            type: string
+        - name: representation
+          in: query
+          required: false
+          description: Initial-read representation. Omit when continuing with cursor.
+          schema:
+            $ref: "#/components/schemas/DocumentRepresentation"
+        - name: maxChars
+          in: query
+          required: false
+          description: Maximum characters returned in this response.
+          schema:
+            type: integer
+            default: 100000
+            minimum: 1
+            maximum: 100000
+        - name: cursor
+          in: query
+          required: false
+          description: Opaque continuation token from meta.nextCursor. May be combined only with maxChars.
+          schema:
+            type: string
+        - name: pageStart
+          in: query
+          required: false
+          description: First PDF page to read, inclusive. Omit when continuing with cursor.
+          schema:
+            type: integer
+            minimum: 1
+        - name: pageEnd
+          in: query
+          required: false
+          description: Last PDF page to read, inclusive. Omit when continuing with cursor.
+          schema:
+            type: integer
+            minimum: 1
+      responses:
+        "200":
+          description: Document content, processing state, or representation availability state.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DocumentReadEnvelope"
+        "401":
+          $ref: "#/components/responses/Error"
+        "403":
+          $ref: "#/components/responses/Error"
+        "404":
+          $ref: "#/components/responses/Error"
+        "422":
+          $ref: "#/components/responses/Error"
+  /api/tools/v1/documents/download:
+    get:
+      tags: [Documents]
+      operationId: document_download
+      summary: Get a temporary original-file download
+      description: >
+        Returns a fresh presigned URL for the authorized original file. The URL
+        expires at data.expiresAt. This operation is separate from document_read
+        so reading representations never downloads the full file implicitly.
+      parameters:
+        - name: documentType
+          in: query
+          required: true
+          schema:
+            $ref: "#/components/schemas/DocumentType"
+        - name: id
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Temporary original-file download descriptor.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DocumentDownloadEnvelope"
+        "401":
+          $ref: "#/components/responses/Error"
+        "403":
+          $ref: "#/components/responses/Error"
+        "404":
+          $ref: "#/components/responses/Error"
+        "422":
+          $ref: "#/components/responses/Error"
+  /api/tools/v1/quote/submissions/requirements:
+    get:
+      tags: [Quote Submissions]
+      operationId: get_quote_submission_requirements
+      summary: Check quote submission requirements
+      description: >
+        Returns portal-specific quote submission requirements and blocking
+        reasons for the authenticated actor and workspace.
+      parameters:
+        - name: workspaceId
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Quote submission requirements
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/QuoteSubmissionRequirementsEnvelope"
+        "401":
+          $ref: "#/components/responses/Error"
+        "403":
+          $ref: "#/components/responses/Error"
+        "404":
+          $ref: "#/components/responses/Error"
+        "422":
+          $ref: "#/components/responses/Error"
+  /api/tools/v1/quote/submissions:
+    get:
+      tags: [Quote Submissions]
+      operationId: list_quote_submissions
+      summary: List quote submissions for a workspace
+      parameters:
+        - name: workspaceId
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Quote submissions
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/QuoteSubmissionListEnvelope"
+        "401":
+          $ref: "#/components/responses/Error"
+        "403":
+          $ref: "#/components/responses/Error"
+        "404":
+          $ref: "#/components/responses/Error"
+        "422":
+          $ref: "#/components/responses/Error"
+    post:
+      tags: [Quote Submissions]
+      operationId: create_quote_submission
+      summary: Submit a quote
+      description: >
+        Submit a quote to the portal for an opportunity workspace. Upload the
+        quote file to the workspace attachments endpoint first, then pass the
+        returned workspaceAttachmentId here. The response returns a submission
+        ID that can be polled with show_quote_submission.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              required: [workspaceId, workspaceAttachmentId, quoteTotal]
+              properties:
+                workspaceId:
+                  type: string
+                workspaceAttachmentId:
+                  type: string
+                quoteTotal:
+                  type: string
+                  description: Decimal quote total. Must be greater than 0.
+                comment:
+                  type: string
+                  description: Optional portal submission comment.
+      responses:
+        "201":
+          description: Created quote submission
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/QuoteSubmissionEnvelope"
+        "401":
+          $ref: "#/components/responses/Error"
+        "403":
+          $ref: "#/components/responses/Error"
+        "404":
+          $ref: "#/components/responses/Error"
+        "422":
+          $ref: "#/components/responses/Error"
+  /api/tools/v1/quote/submissions/{id}:
+    get:
+      tags: [Quote Submissions]
+      operationId: show_quote_submission
+      summary: Show quote submission status
+      description: >
+        Poll this endpoint after create_quote_submission until meta.terminal is
+        true. Completed submissions include confirmation details when the portal
+        returns them; failed submissions include failureReason when available.
+      parameters:
+        - $ref: "#/components/parameters/id"
+      responses:
+        "200":
+          description: Quote submission status
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/QuoteSubmissionEnvelope"
+        "401":
+          $ref: "#/components/responses/Error"
+        "403":
+          $ref: "#/components/responses/Error"
+        "404":
+          $ref: "#/components/responses/Error"
+        "422":
+          $ref: "#/components/responses/Error"
+  /api/tools/v1/inbox_items:
+    get:
+      tags: [Inbox]
+      operationId: list_inbox_items
+      summary: List inbox items
+      description: >
+        List the authenticated user's active inbox items (Govly AI matches and
+        saved-search matches), newest first.
+      parameters:
+        - $ref: "#/components/parameters/cursor"
+        - $ref: "#/components/parameters/perPage"
+      responses:
+        "200":
+          description: Inbox items
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [data, meta]
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/InboxItem"
+                  meta:
+                    $ref: "#/components/schemas/CursorMeta"
+        "401":
+          $ref: "#/components/responses/Error"
+        "403":
+          $ref: "#/components/responses/Error"
+        "422":
+          $ref: "#/components/responses/Error"
+  /api/tools/v1/inbox_items/search:
+    post:
+      tags: [Inbox]
+      operationId: search_inbox_items
+      summary: Search inbox items
+      description: >
+        Full-text search and filter the authenticated user's inbox items.
+        Returns matchable-type aggregation counts.
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              properties:
+                query:
+                  type: string
+                cursor:
+                  type: string
+                  description: Opaque cursor from the previous response's meta.nextCursor. Omit for the first page.
+                perPage:
+                  type: integer
+                  default: 25
+                  maximum: 100
+                sort:
+                  type: string
+                  enum: [ranked_score, created_at, deadline_at]
+                sortDirection:
+                  type: string
+                  enum: [asc, desc]
+                state:
+                  type: array
+                  items:
+                    type: string
+                    enum: [unread, seen, actioned, dismissed]
+                matchableType:
+                  type: array
+                  items:
+                    type: string
+                    enum: [Opp, Award, "ProcurementSignal::Cluster"]
+                recordType:
+                  type: array
+                  items:
+                    type: string
+                sourceType:
+                  type: string
+                  enum: [govly_ai, saved_search]
+                naicsCodes:
+                  type: array
+                  items:
+                    type: string
+                createdAfter:
+                  type: string
+                createdBefore:
+                  type: string
+                deadlineAtFrom:
+                  type: string
+                deadlineAtTo:
+                  type: string
+      responses:
+        "200":
+          description: Matching inbox items
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [data, meta, aggregations]
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/InboxItem"
+                  meta:
+                    $ref: "#/components/schemas/InboxSearchMeta"
+                  aggregations:
+                    $ref: "#/components/schemas/InboxAggregations"
+        "400":
+          $ref: "#/components/responses/Error"
+        "401":
+          $ref: "#/components/responses/Error"
+        "403":
+          $ref: "#/components/responses/Error"
+        "422":
+          $ref: "#/components/responses/Error"
+  /api/tools/v1/inbox_items/{id}:
+    get:
+      tags: [Inbox]
+      operationId: show_inbox_item
+      summary: Show an inbox item
+      parameters:
+        - $ref: "#/components/parameters/id"
+      responses:
+        "200":
+          description: Inbox item
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InboxItemEnvelope"
+        "401":
+          $ref: "#/components/responses/Error"
+        "403":
+          $ref: "#/components/responses/Error"
+        "404":
+          $ref: "#/components/responses/Error"
+  /api/tools/v1/inbox_items/{id}/accept:
+    post:
+      tags: [Inbox]
+      operationId: accept_inbox_item
+      summary: Accept (follow) an inbox item
+      description: >
+        Follow the underlying opportunity, award, or signal and create or reuse
+        its default workspace. Accept is FINAL and cannot be reversed with
+        restore. The response meta includes the resulting workspaceId.
+      parameters:
+        - $ref: "#/components/parameters/id"
+      responses:
+        "200":
+          description: Accepted inbox item
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [data, meta]
+                properties:
+                  data:
+                    $ref: "#/components/schemas/InboxItem"
+                  meta:
+                    $ref: "#/components/schemas/InboxAcceptMeta"
+        "401":
+          $ref: "#/components/responses/Error"
+        "403":
+          $ref: "#/components/responses/Error"
+        "404":
+          $ref: "#/components/responses/Error"
+  /api/tools/v1/inbox_items/{id}/dismiss:
+    post:
+      tags: [Inbox]
+      operationId: dismiss_inbox_item
+      summary: Dismiss an inbox item
+      parameters:
+        - $ref: "#/components/parameters/id"
+      responses:
+        "200":
+          description: Dismissed inbox item
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InboxItemEnvelope"
+        "401":
+          $ref: "#/components/responses/Error"
+        "403":
+          $ref: "#/components/responses/Error"
+        "404":
+          $ref: "#/components/responses/Error"
+  /api/tools/v1/inbox_items/{id}/decline:
+    post:
+      tags: [Inbox]
+      operationId: decline_inbox_item
+      summary: Decline (reject) an inbox item as a bad fit
+      description: >
+        Mark the item a bad fit, optionally with a reason that feeds the
+        organization's matching-exclusions memory. Reversible with restore.
+      parameters:
+        - $ref: "#/components/parameters/id"
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              properties:
+                reason:
+                  type: string
+                  enum: [bad_fit, irrelevant, cannot_bid, bad_timing, other]
+      responses:
+        "200":
+          description: Declined inbox item
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InboxItemEnvelope"
+        "401":
+          $ref: "#/components/responses/Error"
+        "403":
+          $ref: "#/components/responses/Error"
+        "404":
+          $ref: "#/components/responses/Error"
+        "422":
+          $ref: "#/components/responses/Error"
+  /api/tools/v1/inbox_items/{id}/restore:
+    post:
+      tags: [Inbox]
+      operationId: restore_inbox_item
+      summary: Restore a dismissed or declined inbox item
+      description: >
+        Return a dismissed or bad-fit item to the active inbox. Only dismissed
+        or bad-fit items can be restored — an accepted item cannot.
+      parameters:
+        - $ref: "#/components/parameters/id"
+      responses:
+        "200":
+          description: Restored inbox item
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InboxItemEnvelope"
+        "401":
+          $ref: "#/components/responses/Error"
+        "403":
+          $ref: "#/components/responses/Error"
+        "404":
+          $ref: "#/components/responses/Error"
+        "422":
+          $ref: "#/components/responses/Error"
+components:
+  securitySchemes:
+    bearerApiKey:
+      type: http
+      scheme: bearer
+      bearerFormat: API key
+    headerApiKey:
+      type: apiKey
+      in: header
+      name: X-API-KEY
+  parameters:
+    id:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: string
+    workspaceId:
+      name: workspaceId
+      in: path
+      required: true
+      schema:
+        type: string
+    savedSearchId:
+      name: savedSearchId
+      in: path
+      required: true
+      schema:
+        type: string
+    associatedType:
+      name: associatedType
+      in: query
+      required: true
+      schema:
+        type: string
+        enum: [opportunity]
+    associatedId:
+      name: associatedId
+      in: query
+      required: true
+      schema:
+        type: string
+    cursor:
+      name: cursor
+      in: query
+      required: false
+      schema:
+        type: string
+    perPage:
+      name: perPage
+      in: query
+      required: false
+      schema:
+        type: integer
+        default: 25
+        maximum: 100
+  responses:
+    Error:
+      description: Error response
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorEnvelope"
+  schemas:
+    NotInterestedResult:
+      type: object
+      required: [data]
+      properties:
+        data:
+          type: object
+          required: [id, type, notInterested]
+          properties:
+            id:
+              type: string
+              description: Govly opportunity ID.
+            type:
+              type: string
+              enum: [opportunity]
+            notInterested:
+              type: boolean
+              description: Whether the opportunity is now marked not interested for the authenticated user.
+        meta:
+          type: object
+          properties:
+            oppId:
+              type: string
+            undo:
+              type: boolean
+    WorkspaceEnvelope:
+      type: object
+      required: [data]
+      properties:
+        data:
+          $ref: "#/components/schemas/Workspace"
+        meta:
+          $ref: "#/components/schemas/ActionMeta"
+    Workspace:
+      type: object
+      required: [id, name, status]
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        commentsCount:
+          type: integer
+        status:
+          type: object
+          required: [category, label]
+          properties:
+            category:
+              type: string
+              description: Coarse status bucket. Triage is the default for newly created workspaces.
+            label:
+              type: string
+              description: Human-readable status name. Falls back to the category label when no custom status is set.
+        primaryFocus:
+          $ref: "#/components/schemas/AssociatedEntity"
+        comments:
+          type: array
+          description: Recent comments. Only present on show/create/update responses, capped at the most recent 20.
+          items:
+            $ref: "#/components/schemas/Comment"
+        attachments:
+          type: array
+          description: Workspace attachments. Only present on show/create/update responses.
+          items:
+            $ref: "#/components/schemas/WorkspaceAttachment"
+    Comment:
+      type: object
+      required: [id, body, createdAt, attachments]
+      properties:
+        id:
+          type: string
+        body:
+          type: string
+          description: Markdown body for the comment.
+        attachments:
+          type: array
+          description: Workspace attachments tied to this comment.
+          items:
+            $ref: "#/components/schemas/WorkspaceAttachment"
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    PrimaryFocusInput:
+      type: object
+      required: [type, id]
+      properties:
+        type:
+          type: string
+          enum: [opportunity]
+        id:
+          type: string
+    AssociatedEntity:
+      type: object
+      required: [type, id]
+      properties:
+        type:
+          type: string
+          enum: [opportunity]
+        id:
+          type: string
+    WorkspaceMember:
+      type: object
+      required: [id, member]
+      properties:
+        id:
+          type: string
+        state:
+          type: string
+        notifications:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        member:
+          type: object
+          required: [type, id]
+          properties:
+            type:
+              type: string
+              enum: [user, team]
+            id:
+              type: string
+            name:
+              type: string
+            email:
+              type: string
+              format: email
+            organization:
+              type: object
+              properties:
+                id:
+                  type: string
+                name:
+                  type: string
+    WorkspaceAttachment:
+      type: object
+      required: [id, workspaceId, filename]
+      properties:
+        id:
+          type: string
+        workspaceId:
+          type: string
+        commentId:
+          type: string
+          nullable: true
+        filename:
+          type: string
+        contentType:
+          type: string
+        byteSize:
+          type: integer
+        createdAt:
+          type: string
+          format: date-time
+        file:
+          description: Present only on the workspace attachments endpoint. Workspace show responses surface attachments without download metadata.
+          $ref: "#/components/schemas/AttachmentFile"
+    QuoteSubmissionEnvelope:
+      type: object
+      required: [data, meta]
+      properties:
+        data:
+          $ref: "#/components/schemas/QuoteSubmission"
+        meta:
+          $ref: "#/components/schemas/QuoteSubmissionStatusMeta"
+    QuoteSubmissionListEnvelope:
+      type: object
+      required: [data, meta]
+      properties:
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/QuoteSubmission"
+        meta:
+          $ref: "#/components/schemas/CountMeta"
+    QuoteSubmissionRequirementsEnvelope:
+      type: object
+      required: [data]
+      properties:
+        data:
+          $ref: "#/components/schemas/QuoteSubmissionRequirements"
+    QuoteSubmission:
+      type: object
+      required: [id, status, portal, workspaceId, opportunityId, quoteTotal, createdAt]
+      properties:
+        id:
+          type: string
+        status:
+          type: string
+          enum: [pending, running, completed, failed, cancelled]
+        portal:
+          type: string
+          enum: [chess]
+        workspaceId:
+          type: string
+        opportunityId:
+          type: string
+        quoteTotal:
+          type: string
+        comment:
+          type: string
+        confirmationNumber:
+          type: string
+        failureReason:
+          type: string
+        submittedAt:
+          type: string
+          format: date-time
+        confirmedAt:
+          type: string
+          format: date-time
+        createdAt:
+          type: string
+          format: date-time
+        file:
+          $ref: "#/components/schemas/QuoteSubmissionAttachment"
+        evidence:
+          $ref: "#/components/schemas/QuoteSubmissionAttachment"
+    QuoteSubmissionAttachment:
+      type: object
+      required: [id, filename]
+      properties:
+        id:
+          type: string
+        filename:
+          type: string
+        contentType:
+          type: string
+        byteSize:
+          type: integer
+        file:
+          $ref: "#/components/schemas/AttachmentFile"
+    QuoteSubmissionStatusMeta:
+      type: object
+      required: [terminal]
+      properties:
+        terminal:
+          type: boolean
+          description: True when the submission no longer needs polling.
+        nextPollAfterSeconds:
+          type: integer
+          description: Suggested delay before polling again. Omitted for terminal submissions.
+        retryable:
+          type: boolean
+          description: Present for failed submissions when creating a new submission is reasonable.
+    QuoteSubmissionRequirements:
+      type: object
+      required: [eligible, requiredFields, optionalFields, blockingReasons]
+      properties:
+        workspaceId:
+          type: string
+        opportunityId:
+          type: string
+        portal:
+          type: string
+          enum: [chess]
+        eligible:
+          type: boolean
+          description: True when the authenticated actor can submit with the returned requirements.
+        requiredFields:
+          type: array
+          items:
+            $ref: "#/components/schemas/QuoteSubmissionField"
+        optionalFields:
+          type: array
+          items:
+            $ref: "#/components/schemas/QuoteSubmissionField"
+        fileRules:
+          $ref: "#/components/schemas/QuoteSubmissionFileRules"
+        blockingReasons:
+          type: array
+          items:
+            $ref: "#/components/schemas/QuoteSubmissionBlockingReason"
+    QuoteSubmissionField:
+      type: object
+      required: [name, type]
+      properties:
+        name:
+          type: string
+        type:
+          type: string
+        description:
+          type: string
+    QuoteSubmissionFileRules:
+      type: object
+      required: [maxBytes, allowedExtensions]
+      properties:
+        maxBytes:
+          type: integer
+        allowedExtensions:
+          type: array
+          items:
+            type: string
+    QuoteSubmissionBlockingReason:
+      type: object
+      required: [code, message]
+      properties:
+        code:
+          type: string
+          enum:
+            - quote_submission_not_available_for_portal
+            - missing_or_inactive_portal_account
+            - workspace_not_linked_to_opportunity
+        message:
+          type: string
+    InboxItemEnvelope:
+      type: object
+      required: [data]
+      properties:
+        data:
+          $ref: "#/components/schemas/InboxItem"
+    InboxItem:
+      type: object
+      required: [id, matchableId, matchableType, state, origins]
+      properties:
+        id:
+          type: string
+        matchableId:
+          type: string
+        matchableType:
+          type: string
+          enum: [Opp, Award, "ProcurementSignal::Cluster"]
+        state:
+          type: string
+          enum: [unread, seen, actioned, dismissed]
+        feedback:
+          type: string
+          enum: [followed, dismissed, bad_fit]
+        feedbackReason:
+          type: string
+          enum: [bad_fit, irrelevant, cannot_bid, bad_timing, other]
+        title:
+          type: string
+        description:
+          type: string
+        fitReason:
+          type: string
+        fitScore:
+          type: number
+        sourceType:
+          type: string
+          enum: [govly_ai, saved_search]
+          description: How the item first reached the inbox.
+        identifier:
+          type: string
+        recordType:
+          type: string
+        deadlineAt:
+          type: string
+          format: date-time
+        postedOrAwardedDate:
+          type: string
+          format: date
+        publicEntityNames:
+          type: array
+          items:
+            type: string
+        isoCode:
+          type: string
+        naicsCodes:
+          type: array
+          items:
+            type: string
+        createdAt:
+          type: string
+          format: date-time
+        highlight:
+          type: object
+          description: Per-field search highlights. Only present on search results.
+          additionalProperties:
+            type: string
+        origins:
+          type: array
+          description: Every source that surfaced this (deduped) item.
+          items:
+            $ref: "#/components/schemas/InboxItemOrigin"
+    InboxItemOrigin:
+      type: object
+      required: [sourceType]
+      properties:
+        sourceType:
+          type: string
+          enum: [govly_ai, saved_search]
+        savedSearchId:
+          type: string
+        savedSearchName:
+          type: string
+    InboxSearchMeta:
+      type: object
+      required: [total, nextCursor]
+      properties:
+        total:
+          type: integer
+          description: Total matching items (capped at 10000 by the search index).
+        nextCursor:
+          type:
+            - string
+            - "null"
+    InboxAggregations:
+      type: object
+      required: [matchableType]
+      properties:
+        matchableType:
+          type: object
+          description: Count of matching items per matchable type.
+          additionalProperties:
+            type: integer
+    InboxAcceptMeta:
+      type: object
+      required: [state, feedback, matchableType, matchableId, final]
+      properties:
+        state:
+          type: string
+        feedback:
+          type: string
+        matchableType:
+          type: string
+        matchableId:
+          type: string
+        workspaceId:
+          type:
+            - string
+            - "null"
+          description: Default workspace the accept followed, when one exists.
+        final:
+          type: boolean
+          description: Always true — accept is irreversible.
+    OppSearch:
+      type: object
+      required: [id, name, active, criteria]
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        active:
+          type: boolean
+        criteria:
+          type: object
+          description: Stored search criteria for this saved search.
+        matchCount:
+          type: integer
+        lastMatchedAt:
+          type: string
+          format: date-time
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    OppSearchMatch:
+      type: object
+      required: [id, matchedAt, savedSearchId, opportunity]
+      properties:
+        id:
+          type: string
+        matchedAt:
+          type: string
+          format: date-time
+        savedSearchId:
+          type: string
+        opportunity:
+          $ref: "#/components/schemas/Opportunity"
+    Opportunity:
+      type: object
+      required: [id]
+      properties:
+        id:
+          type: string
+          description: Govly opportunity ID. Use this ID for show requests, workspace associations, and links.
+        title:
+          type: string
+        displayName:
+          type: string
+          description: Human-readable opportunity reference, usually source name plus identifier.
+        identifier:
+          type: string
+          description: Public opportunity identifier, such as a solicitation or request number. This may differ from raw source-system IDs when Govly merges related notices.
+        externalUrl:
+          type: string
+          format: uri
+        recordType:
+          type: string
+        status:
+          type: string
+          enum: [open, expired, cancelled, awarded, forecasted, unknown]
+        postedAt:
+          type: string
+          format: date-time
+        modifiedAt:
+          type: string
+          format: date-time
+        respondBy:
+          type: string
+          format: date-time
+        cancelledAt:
+          type: string
+          format: date-time
+        awardedAt:
+          type: string
+          format: date-time
+        aiTitle:
+          type: string
+        aiSummary:
+          type: string
+        jurisdiction:
+          type: object
+          properties:
+            id:
+              type: string
+            name:
+              type: string
+            isoCode:
+              type: string
+        contractVehicle:
+          type: object
+          properties:
+            id:
+              type: string
+            name:
+              type: string
+        followerCount:
+          type: integer
+          description: Count of active follow rows across visible workspaces for this opportunity.
+        followedByCurrentUser:
+          type: boolean
+          description: Whether the authenticated user actively follows any visible workspace for this opportunity.
+        followedByCurrentOrganization:
+          type: boolean
+          description: Whether the authenticated user's organization actively follows any visible workspace for this opportunity.
+        workspaces:
+          type: array
+          description: Visible workspaces associated with this opportunity, including active follow context.
+          items:
+            $ref: "#/components/schemas/OpportunityWorkspace"
+        aggregateAttachments:
+          type: array
+          items:
+            $ref: "#/components/schemas/OpportunityAttachment"
+        opportunitySources:
+          type: array
+          items:
+            $ref: "#/components/schemas/OpportunitySource"
+    OpportunityWorkspace:
+      type: object
+      required: [id, name, status, followerCount, follows]
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        organizationDefault:
+          type: boolean
+        organization:
+          type: object
+          properties:
+            id:
+              type: string
+            name:
+              type: string
+        status:
+          type: object
+          required: [category, label]
+          properties:
+            category:
+              type: string
+            label:
+              type: string
+        followerCount:
+          type: integer
+          description: Count of active follow rows on this workspace.
+        followedByCurrentUser:
+          type: boolean
+        followedByCurrentOrganization:
+          type: boolean
+        follows:
+          type: array
+          description: Active workspace follows. Inactive/unfollowed/disinterested rows are omitted.
+          items:
+            $ref: "#/components/schemas/WorkspaceMember"
+    OpportunitySource:
+      type: object
+      required: [id, attachments]
+      properties:
+        id:
+          type: string
+        postedAt:
+          type: string
+          format: date-time
+        externalUrl:
+          type: string
+          format: uri
+        noticeType:
+          type: string
+        recordType:
+          type: string
+        attachments:
+          type: array
+          items:
+            $ref: "#/components/schemas/OpportunityAttachment"
+    OpportunityAttachment:
+      type: object
+      required: [id, documentType, filename, redacted]
+      properties:
+        id:
+          type: string
+          description: Canonical OppAttachment.id. Pass this value to document_read and document_download.
+        documentType:
+          type: string
+          const: opportunity_attachment
+        filename:
+          type: string
+        contentType:
+          type: string
+        byteSize:
+          type: integer
+        redacted:
+          type: boolean
+        tags:
+          type: array
+          items:
+            type: string
+        file:
+          $ref: "#/components/schemas/AttachmentFile"
+    DocumentType:
+      type: string
+      enum: [opportunity_attachment, workspace_attachment, session_attachment, document]
+    DocumentRepresentation:
+      type: string
+      enum: [text, positioned_text]
+      default: text
+    DocumentReadEnvelope:
+      type: object
+      required: [data, meta]
+      properties:
+        data:
+          $ref: "#/components/schemas/DocumentRead"
+        meta:
+          $ref: "#/components/schemas/DocumentReadMeta"
+    DocumentRead:
+      type: object
+      required: [id, documentType, filename, status, representation]
+      properties:
+        id:
+          type: string
+        documentType:
+          $ref: "#/components/schemas/DocumentType"
+        filename:
+          type: string
+        contentType:
+          type: string
+        byteSize:
+          type: integer
+        status:
+          type: string
+          enum: [ready, processing, representation_unavailable]
+        representation:
+          $ref: "#/components/schemas/DocumentRepresentation"
+        content:
+          type: string
+          description: Bounded content for a ready representation.
+        references:
+          type: object
+          additionalProperties: true
+          description: Reference metadata emitted by positioned_text content.
+        summary:
+          type: string
+          description: Optional orientation summary on the initial read. Read source content for precise or exhaustive work.
+        availableRepresentations:
+          type: array
+          description: Representations available for this document, returned on the initial read.
+          items:
+            $ref: "#/components/schemas/DocumentRepresentation"
+        usageHint:
+          type: string
+          description: MCP-oriented guidance based on summary, continuation, and representation availability.
+        message:
+          type: string
+          description: Guidance when extraction is processing or a requested representation is unavailable.
+    DocumentReadMeta:
+      allOf:
+        - $ref: "#/components/schemas/ActionMeta"
+        - type: object
+          required: [hasMore, nextCursor]
+          properties:
+            totalLength:
+              type: integer
+            returnedLength:
+              type: integer
+            pageCount:
+              type: integer
+            contentRange:
+              $ref: "#/components/schemas/DocumentContentRange"
+            hasMore:
+              type: boolean
+            nextCursor:
+              type:
+                - string
+                - "null"
+              description: Opaque continuation token. Present only in meta and non-null when hasMore is true.
+    DocumentContentRange:
+      type: object
+      required: [pageStart, pageEnd]
+      properties:
+        pageStart:
+          type: integer
+          minimum: 1
+        pageEnd:
+          type: integer
+          minimum: 1
+    DocumentDownloadEnvelope:
+      type: object
+      required: [data]
+      properties:
+        data:
+          $ref: "#/components/schemas/DocumentDownload"
+    DocumentDownload:
+      type: object
+      required: [id, documentType, filename, url, expiresAt]
+      properties:
+        id:
+          type: string
+        documentType:
+          $ref: "#/components/schemas/DocumentType"
+        filename:
+          type: string
+        contentType:
+          type: string
+        byteSize:
+          type: integer
+        url:
+          type: string
+          format: uri
+          description: Temporary presigned URL for the original file.
+        expiresAt:
+          type: string
+          format: date-time
+    Award:
+      type: object
+      required: [id]
+      description: >
+        Stable external award shape. Empty members are omitted rather than
+        rendered blank, and money fields are JSON numbers. Detail responses
+        (show_award) add bounded collections; search responses return the
+        summary shape.
+      properties:
+        id:
+          type: string
+        uniqueKey:
+          type: string
+          description: Stable award business key, such as CONT_AWD_... or CONT_IDV_....
+        displayName:
+          type: string
+        title:
+          type: string
+        identifier:
+          type: string
+        description:
+          type: string
+        aiSummary:
+          type: string
+        externalUrl:
+          type: string
+        awardUrl:
+          type: string
+        acquisitionType:
+          type: string
+        acquisitionCategory:
+          type: string
+        searchType:
+          type: string
+          enum: [fed, sled, international]
+        treasuryAccountIds:
+          type: array
+          items:
+            type: string
+        dates:
+          type: object
+          properties:
+            awardedDate: { type: string }
+            lastModifiedDate: { type: string }
+            periodOfPerformanceStartDate: { type: string }
+            periodOfPerformanceEndDate: { type: string }
+            periodOfPerformancePotentialEndDate: { type: string }
+        amounts:
+          type: object
+          properties:
+            awardAmount: { type: number }
+            obligatedAmount: { type: number }
+            paidAmount: { type: number }
+            ceilingAmount: { type: number }
+        recipient:
+          type: object
+          properties:
+            name: { type: string }
+            uniqueKey: { type: string }
+            uei: { type: string }
+            cageCode: { type: string }
+            parentUniqueKey: { type: string }
+            parentName: { type: string }
+        buyer:
+          $ref: "#/components/schemas/AwardGovernmentEntity"
+        buyingOffice:
+          $ref: "#/components/schemas/AwardGovernmentEntity"
+        funder:
+          $ref: "#/components/schemas/AwardGovernmentEntity"
+        fundingOffice:
+          $ref: "#/components/schemas/AwardGovernmentEntity"
+        classification:
+          type: object
+          properties:
+            psc: { type: string }
+            naics: { type: string }
+            setAside:
+              type: object
+              properties:
+                id: { type: string }
+                code: { type: string }
+                name: { type: string }
+        contractVehicle:
+          type: object
+          properties:
+            id: { type: string }
+            slug: { type: string }
+            name: { type: string }
+        parentAward:
+          type: object
+          properties:
+            uniqueKey: { type: string }
+            identifier: { type: string }
+        jurisdiction:
+          type: object
+          properties:
+            id: { type: string }
+            name: { type: string }
+            isoCode: { type: string }
+        transactions:
+          type: array
+          description: Detail only. Up to 100, newest action first.
+          items:
+            type: object
+        subAwards:
+          type: array
+          description: Detail only. Up to 100 award summaries.
+          items:
+            type: object
+        subAwardsCount:
+          type: integer
+          description: Detail only.
+        relatedOpportunities:
+          type: array
+          description: Detail only. Up to 25, newest posting first.
+          items:
+            type: object
+        programLinks:
+          type: array
+          description: Detail only. Up to 100.
+          items:
+            type: object
+        awardLineItems:
+          type: array
+          description: Detail only. Up to 100.
+          items:
+            type: object
+        places:
+          type: array
+          description: Detail only. AI-extracted places, most specific category first.
+          items:
+            type: object
+        classificationCodes:
+          type: array
+          description: Detail only. Up to 100 resolved classification codes with codeset.
+          items:
+            type: object
+        contacts:
+          type: array
+          description: Detail only. Up to 100 associated contacts (id, name, email).
+          items:
+            type: object
+    AwardGovernmentEntity:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        code:
+          type: string
+    ActionMeta:
+      type: object
+      properties:
+        availableActions:
+          type: array
+          description: Structured hints for useful follow-up actions. These are advisory; clients should still rely on tool schemas and authorization.
+          items:
+            $ref: "#/components/schemas/AvailableAction"
+    AvailableAction:
+      type: object
+      required: [name, description, arguments, idPaths]
+      properties:
+        name:
+          type: string
+          description: MCP/tool operation name.
+        description:
+          type: string
+        arguments:
+          type: object
+          description: Static arguments to pass to the action.
+        idPaths:
+          type: array
+          description: JSON paths where IDs for this action can be found in the current response.
+          items:
+            type: string
+    AttachmentFile:
+      type: object
+      description: Presigned download metadata. Omitted when the attachment is redacted or URLs are excluded.
+      required: [url, expiresAt]
+      properties:
+        url:
+          type: string
+          format: uri
+        expiresAt:
+          type: string
+          format: date-time
+    CountMeta:
+      type: object
+      required: [count]
+      properties:
+        count:
+          type: integer
+    CursorMeta:
+      type: object
+      required: [count]
+      properties:
+        count:
+          type: integer
+          description: Number of records in this page.
+        totalCount:
+          type: integer
+          description: >
+            Total matching records (award search only), capped at 10,000 by
+            the search engine. Pagination via nextCursor is not limited by
+            this cap.
+        perPage:
+          type: integer
+        nextCursor:
+          type:
+            - string
+            - "null"
+    ErrorEnvelope:
+      type: object
+      required: [errors]
+      properties:
+        errors:
+          type: array
+          items:
+            type: object
+            required: [status, code, title, detail]
+            properties:
+              status:
+                type: string
+              code:
+                type: string
+              title:
+                type: string
+              detail:
+                type: string
+              source:
+                type: object
+                properties:
+                  pointer:
+                    type: string

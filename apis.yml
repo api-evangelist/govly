@@ -1,8 +1,17 @@
 aid: govly
 name: Govly
-description: 'Govly is a company surfaced as a portfolio company of insight-partners and added to the
-  API Evangelist network as a stub for enrichment. Sector: government. This profile is a lead awaiting
-  the enrichment pipeline.'
+description: >-
+  Govly is an AI-powered market network for government contractors — primes, OEMs,
+  VARs, and distributors — that ingests, parses, and analyzes federal and SLED
+  (state, local, education) procurement data to surface RFQ/RFI opportunities and
+  contract awards across 40+ federal contract vehicles and state/local procurement
+  portals. The platform provides pipeline building, award tracking, competitor
+  intelligence, AI matching agents, shared opportunity workspaces, and quote
+  submission automation. Govly exposes an enterprise Tools API (agent- and
+  automation-oriented, REST/JSON over HTTPS with API-key auth), a hosted MCP
+  server for AI clients, webhooks for real-time opportunity and workspace events,
+  and CRM integrations (Salesforce, HubSpot). Govly is SOC 2 Type I and CMMC
+  compliant, hosted on AWS in the USA, and backed by Insight Partners.
 url: https://raw.githubusercontent.com/api-evangelist/govly/refs/heads/main/apis.yml
 x-type: company
 x-source: vc-portfolio
@@ -10,18 +19,250 @@ x-backed-by:
 - insight-partners
 x-tier: stub
 x-tier-reason: portfolio-lead
+accessModel:
+  pricing: unknown
+  onboarding: self-serve
+  trial: false
+  try_now: false
+  public: false
+  label: Self-serve signup
+  confidence: medium
+  source:
+  - authentication
+  generated: '2026-07-22'
+  method: derived
 specificationVersion: '0.20'
 created: '2026-07-17'
-modified: '2026-07-17'
+modified: '2026-07-19'
+image: https://cdn.prod.website-files.com/65f9f755792648d187d6d0dd/69e7b31d3d986500bd367ba0_webclip-256.png
 tags:
 - Company
 - Government
-apis: []
+- Public Sector
+- Procurement
+- Government Contracting
+- GovTech
+- Market Intelligence
+- Awards
+- Opportunities
+- Agents
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
 - FN: APIs.json
   email: info@apis.io
+apis:
+- aid: govly:govly-awards-api
+  name: Govly Awards API
+  description: Search and inspect awarded government contracts.
+  humanURL: https://docs.govly.com/getting-started/introduction
+  baseURL: https://app.govly.com
+  tags:
+  - Awards
+  properties:
+  - type: OpenAPI
+    url: openapi/govly-awards-api-openapi.yml
+  - type: Documentation
+    url: https://docs.govly.com/getting-started/introduction
+  - type: APIReference
+    url: https://docs.govly.com/api-reference/tools-v1/opportunities/search-opportunities
+- aid: govly:govly-documents-api
+  name: Govly Documents API
+  description: Read document representations and request temporary original-file downloads.
+  humanURL: https://docs.govly.com/getting-started/introduction
+  baseURL: https://app.govly.com
+  tags:
+  - Documents
+  properties:
+  - type: OpenAPI
+    url: openapi/govly-documents-api-openapi.yml
+  - type: Documentation
+    url: https://docs.govly.com/getting-started/introduction
+  - type: APIReference
+    url: https://docs.govly.com/api-reference/tools-v1/opportunities/search-opportunities
+- aid: govly:govly-follows-api
+  name: Govly Follows API
+  description: Follow opportunities and related workspace activity.
+  humanURL: https://docs.govly.com/getting-started/introduction
+  baseURL: https://app.govly.com
+  tags:
+  - Follows
+  properties:
+  - type: OpenAPI
+    url: openapi/govly-follows-api-openapi.yml
+  - type: Documentation
+    url: https://docs.govly.com/getting-started/introduction
+  - type: APIReference
+    url: https://docs.govly.com/api-reference/tools-v1/opportunities/search-opportunities
+- aid: govly:govly-inbox-api
+  name: Govly Inbox API
+  description: Read and triage the authenticated user's matched inbox items.
+  humanURL: https://docs.govly.com/getting-started/introduction
+  baseURL: https://app.govly.com
+  tags:
+  - Inbox
+  properties:
+  - type: OpenAPI
+    url: openapi/govly-inbox-api-openapi.yml
+  - type: Documentation
+    url: https://docs.govly.com/getting-started/introduction
+  - type: APIReference
+    url: https://docs.govly.com/api-reference/tools-v1/opportunities/search-opportunities
+- aid: govly:govly-opportunities-api
+  name: Govly Opportunities API
+  description: Search, fetch, and inspect Govly opportunity records.
+  humanURL: https://docs.govly.com/getting-started/introduction
+  baseURL: https://app.govly.com
+  tags:
+  - Opportunities
+  properties:
+  - type: OpenAPI
+    url: openapi/govly-opportunities-api-openapi.yml
+  - type: Documentation
+    url: https://docs.govly.com/getting-started/introduction
+  - type: APIReference
+    url: https://docs.govly.com/api-reference/tools-v1/opportunities/search-opportunities
+- aid: govly:govly-quote-submissions-api
+  name: Govly Quote Submissions API
+  description: Inspect quote submission requirements, submit quotes, and poll submission status.
+  humanURL: https://docs.govly.com/getting-started/introduction
+  baseURL: https://app.govly.com
+  tags:
+  - Quote Submissions
+  properties:
+  - type: OpenAPI
+    url: openapi/govly-quote-submissions-api-openapi.yml
+  - type: Documentation
+    url: https://docs.govly.com/getting-started/introduction
+  - type: APIReference
+    url: https://docs.govly.com/api-reference/tools-v1/opportunities/search-opportunities
+- aid: govly:govly-saved-searches-api
+  name: Govly Saved Searches API
+  description: List saved opportunity searches and cached matches.
+  humanURL: https://docs.govly.com/getting-started/introduction
+  baseURL: https://app.govly.com
+  tags:
+  - Saved Searches
+  properties:
+  - type: OpenAPI
+    url: openapi/govly-saved-searches-api-openapi.yml
+  - type: Documentation
+    url: https://docs.govly.com/getting-started/introduction
+  - type: APIReference
+    url: https://docs.govly.com/api-reference/tools-v1/opportunities/search-opportunities
+- aid: govly:govly-workspace-attachments-api
+  name: Govly Workspace Attachments API
+  description: List and upload workspace attachments.
+  humanURL: https://docs.govly.com/getting-started/introduction
+  baseURL: https://app.govly.com
+  tags:
+  - Workspace Attachments
+  properties:
+  - type: OpenAPI
+    url: openapi/govly-workspace-attachments-api-openapi.yml
+  - type: Documentation
+    url: https://docs.govly.com/getting-started/introduction
+  - type: APIReference
+    url: https://docs.govly.com/api-reference/tools-v1/opportunities/search-opportunities
+- aid: govly:govly-workspace-comments-api
+  name: Govly Workspace Comments API
+  description: Post comments to workspaces.
+  humanURL: https://docs.govly.com/getting-started/introduction
+  baseURL: https://app.govly.com
+  tags:
+  - Workspace Comments
+  properties:
+  - type: OpenAPI
+    url: openapi/govly-workspace-comments-api-openapi.yml
+  - type: Documentation
+    url: https://docs.govly.com/getting-started/introduction
+  - type: APIReference
+    url: https://docs.govly.com/api-reference/tools-v1/opportunities/search-opportunities
+- aid: govly:govly-workspace-members-api
+  name: Govly Workspace Members API
+  description: Add users and teams to workspaces.
+  humanURL: https://docs.govly.com/getting-started/introduction
+  baseURL: https://app.govly.com
+  tags:
+  - Workspace Members
+  properties:
+  - type: OpenAPI
+    url: openapi/govly-workspace-members-api-openapi.yml
+  - type: Documentation
+    url: https://docs.govly.com/getting-started/introduction
+  - type: APIReference
+    url: https://docs.govly.com/api-reference/tools-v1/opportunities/search-opportunities
+- aid: govly:govly-workspaces-api
+  name: Govly Workspaces API
+  description: Create, update, and inspect opportunity workspaces.
+  humanURL: https://docs.govly.com/getting-started/introduction
+  baseURL: https://app.govly.com
+  tags:
+  - Workspaces
+  properties:
+  - type: OpenAPI
+    url: openapi/govly-workspaces-api-openapi.yml
+  - type: Documentation
+    url: https://docs.govly.com/getting-started/introduction
+  - type: APIReference
+    url: https://docs.govly.com/api-reference/tools-v1/opportunities/search-opportunities
 common:
+- type: AgenticAccess
+  url: agentic-access/govly-agentic-access.yml
+- type: DomainSecurity
+  url: security/govly-domain-security.yml
+- type: Authentication
+  url: authentication/govly-authentication.yml
 - type: Website
   url: https://www.govly.com/
+- type: DeveloperPortal
+  url: https://docs.govly.com/
+- type: Documentation
+  url: https://docs.govly.com/getting-started/introduction
+- type: APIReference
+  url: https://docs.govly.com/api-reference/tools-v1/opportunities/search-opportunities
+- type: GettingStarted
+  url: https://docs.govly.com/getting-started/introduction
+- type: Blog
+  url: https://www.govly.com/blog
+- type: Support
+  url: https://intercom.help/govly/en
+- type: Pricing
+  url: https://www.govly.com/pricing
+- type: TermsOfService
+  url: https://www.govly.com/terms
+- type: PrivacyPolicy
+  url: https://www.govly.com/privacy
+- type: StatusPage
+  url: https://status.govly.com
+- type: TrustCenter
+  url: https://security.govly.com
+- type: Compliance
+  url: https://docs.govly.com/enterprise/security
+- type: MCPServer
+  url: mcp/govly-mcp.yml
+- type: LLMsTxt
+  url: llms/govly-llms.txt
+- type: OpenAPI
+  url: openapi/govly-tools-v1-openapi-original.yml
+- type: Webhooks
+  url: asyncapi/govly-webhooks.yml
+- type: Conventions
+  url: conventions/govly-conventions.yml
+- type: ErrorCatalog
+  url: errors/govly-problem-types.yml
+- type: Lifecycle
+  url: lifecycle/govly-lifecycle.yml
+- type: Conformance
+  url: conformance/govly-conformance.yml
+- type: DataModel
+  url: data-model/govly-data-model.yml
+- type: Overlay
+  url: overlays/govly-tools-v1-overlay.yaml
+- type: AgentSkill
+  url: skills/_index.yml
+x-enrichment:
+  date: '2026-07-19'
+  status: backfilled
+  pass: local-v1
+  note: backfilled from .gitignore signal + verified work evidence

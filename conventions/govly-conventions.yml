@@ -1,0 +1,48 @@
+generated: '2026-07-19'
+method: searched
+source: openapi/govly-tools-v1-openapi-original.yml
+docs: https://docs.govly.com/getting-started/introduction
+authentication:
+  style: api-key
+  transport: [bearer, header]
+  header: X-API-KEY
+  bearer_prefix: 'gk_'
+  transport_security: HTTPS only
+  see: authentication/govly-authentication.yml
+pagination:
+  style: cursor
+  response_fields: [nextCursor, hasMore]
+  meta_schemas: [CursorMeta, CountMeta]
+  params: [perPage, cursor]
+  notes: >-
+    List and search endpoints return a cursor-based envelope. Continue by passing
+    the opaque meta.nextCursor; cursors are opaque and re-authorized on each call.
+    Document reads expose meta.hasMore + meta.nextCursor for bounded continuation.
+idempotency:
+  supported: false
+  notes: >-
+    No Idempotency-Key header or idempotent-replay contract is documented in the
+    Tools API (alpha). Retries are not guaranteed safe for POST operations.
+versioning:
+  style: uri-path
+  surfaces: [tools-v1, v3]
+  stability: >-
+    The Tools API is explicitly ALPHA / UNSTABLE — endpoint behavior, fields,
+    error codes, and operation names may change before it is declared stable.
+  see: lifecycle/govly-lifecycle.yml
+error_envelope:
+  format: json-api
+  see: errors/govly-problem-types.yml
+webhooks:
+  signature_header: Govly-Webhook-Signature
+  checksum_header: Govly-Webhook-Event-Checksum
+  algorithm: >-
+    SHA2 hex digest of (secret key + "." + webhook event checksum). Custom
+    headers may be configured as an alternative verification scheme.
+  user_agent: govly-webhooks/1.0
+  retries: 10 attempts with exponential backoff; auto-disable after 100 consecutive failures
+  see: asyncapi/govly-webhooks.yml
+rate_limiting:
+  notes: >-
+    Some MCP/tool operations enforce daily limits without Enterprise API access.
+    No RateLimit response headers are declared in the OpenAPI.

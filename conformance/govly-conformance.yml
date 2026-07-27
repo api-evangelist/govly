@@ -1,0 +1,44 @@
+generated: '2026-07-19'
+method: searched
+source: https://docs.govly.com/enterprise/security
+standards:
+  - id: soc2-type-1
+    conforms: true
+    evidence: SOC 2 Type I maintained; Trust Center at security.govly.com (Vanta).
+  - id: soc2-type-2
+    conforms: false
+    evidence: In progress per security overview.
+  - id: cmmc-level-1
+    conforms: true
+    evidence: All Govly services stated SOC II and CMMC Level 1 compliant.
+  - id: cmmc-level-2
+    conforms: true
+    evidence: CMMC Level 2 available via the Secure Enclave pipeline architecture.
+  - id: oauth2
+    conforms: true
+    evidence: Hosted MCP server supports an OAuth sign-in flow for AI clients.
+  - id: api-key-auth
+    conforms: true
+    evidence: openapi securitySchemes bearerApiKey (http bearer) + headerApiKey (X-API-KEY).
+  - id: json-api-errors
+    conforms: true
+    evidence: ErrorEnvelope uses JSON:API errors[] with status/code/title/detail/source.pointer.
+  - id: rfc9457-problem-details
+    conforms: false
+    evidence: Error envelope is JSON:API-style, not application/problem+json.
+  - id: cursor-pagination
+    conforms: true
+    evidence: CursorMeta / nextCursor cursor-based pagination across list endpoints.
+  - id: idempotency
+    conforms: false
+    evidence: No Idempotency-Key contract documented.
+compliance_programs:
+  - SOC 2 Type I
+  - CMMC Level 1
+  - CMMC Level 2 (Secure Enclave)
+infrastructure_inherited:
+  - ISO 27001
+  - ISO 27017
+  - SSAE-18 SOC 1
+  - SOC 2
+  - FedRAMP Moderate (AWS)

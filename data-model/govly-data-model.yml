@@ -1,0 +1,74 @@
+generated: '2026-07-19'
+method: derived
+source: openapi/govly-tools-v1-openapi-original.yml
+notes: >-
+  Entity graph derived from the Tools API OpenAPI component schemas and their
+  id-reference fields (e.g. QuoteSubmission.workspaceId / opportunityId,
+  InboxItem.matchableId+matchableType, Workspace embeds comments/attachments).
+entities:
+  - name: Opportunity
+    schema: Opportunity
+    description: A federal or SLED procurement opportunity (RFQ/RFI).
+  - name: Award
+    schema: Award
+    description: An awarded government contract with transactions and sub-awards.
+  - name: Workspace
+    schema: Workspace
+    description: A collaborative opportunity workspace (OpportunityWorkspace).
+  - name: WorkspaceMember
+    schema: WorkspaceMember
+    description: A user or team member attached to a workspace.
+  - name: WorkspaceAttachment
+    schema: WorkspaceAttachment
+  - name: Comment
+    schema: Comment
+    description: A markdown comment on a workspace.
+  - name: QuoteSubmission
+    schema: QuoteSubmission
+    description: A quote submitted to a procurement portal for a workspace.
+  - name: InboxItem
+    schema: InboxItem
+    description: A polymorphic AI-match or saved-search match (opportunity/award/signal).
+  - name: SavedSearch
+    schema: OppSearch
+    description: A saved opportunity/award search for an organization.
+  - name: Document
+    schema: DocumentRead
+    description: A readable/downloadable document representation.
+relationships:
+  - from: Workspace
+    to: Opportunity
+    type: belongs_to
+    via: opportunity (OpportunityWorkspace association)
+  - from: Workspace
+    to: Comment
+    type: has_many
+    via: comments
+  - from: Workspace
+    to: WorkspaceAttachment
+    type: has_many
+    via: attachments
+  - from: Workspace
+    to: WorkspaceMember
+    type: has_many
+    via: members
+  - from: QuoteSubmission
+    to: Workspace
+    type: belongs_to
+    via: workspaceId
+  - from: QuoteSubmission
+    to: Opportunity
+    type: belongs_to
+    via: opportunityId
+  - from: InboxItem
+    to: Opportunity
+    type: belongs_to
+    via: matchableId (matchableType=opportunity)
+  - from: InboxItem
+    to: Award
+    type: belongs_to
+    via: matchableId (matchableType=award)
+  - from: SavedSearch
+    to: Opportunity
+    type: has_many
+    via: saved_search_matches

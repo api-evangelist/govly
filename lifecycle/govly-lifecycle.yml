@@ -1,0 +1,31 @@
+generated: '2026-07-19'
+method: searched
+source: https://docs.govly.com/getting-started/introduction
+versioning:
+  scheme: uri-path
+  surfaces:
+    - name: tools-v1
+      stability: alpha
+      base: https://app.govly.com/api/tools/v1
+    - name: v3
+      stability: current
+      note: Enterprise API (opportunities, workspaces, contract vehicles).
+  current: tools-v1 (alpha)
+  stability_notice: >-
+    The Tools API is declared ALPHA / UNSTABLE in its OpenAPI: endpoint behavior,
+    request/response fields, error codes, and operation names may change before
+    the API is declared stable.
+deprecation:
+  policy_url: null
+  sunset_header: false
+  notes: No formal deprecation/sunset (RFC 8594) policy is published.
+sla:
+  url: null
+  uptime_target: null
+status_page: https://status.govly.com
+status_platform: AppSignal
+monitored_components:
+  - Enterprise API
+  - Govly Dashboard
+  - Marketing Site
+deprecated_operations: []

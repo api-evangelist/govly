@@ -1,0 +1,20 @@
+generated: '2026-07-19'
+method: generated
+source: openapi/govly-tools-v1-openapi-original.yml
+skills:
+  - file: govly-find-and-track-opportunity.md
+    name: Find and track a government opportunity
+    api: openapi/govly-tools-v1-openapi-original.yml
+    operations: [search_opportunities, show_opportunity, follow_entity, create_workspace]
+  - file: govly-submit-a-quote.md
+    name: Submit a quote to a procurement portal
+    api: openapi/govly-tools-v1-openapi-original.yml
+    operations: [get_quote_submission_requirements, upload_workspace_attachments, create_quote_submission, show_quote_submission]
+  - file: govly-triage-inbox.md
+    name: Triage the Govly AI-match inbox
+    api: openapi/govly-tools-v1-openapi-original.yml
+    operations: [list_inbox_items, show_inbox_item, accept_inbox_item, decline_inbox_item, dismiss_inbox_item, restore_inbox_item]
+  - file: govly-research-awards.md
+    name: Research government contract awards
+    api: openapi/govly-tools-v1-openapi-original.yml
+    operations: [search_awards, show_award]

@@ -1,0 +1,29 @@
+generated: '2026-07-19'
+method: searched
+source: https://docs.govly.com/webhooks/events
+spec_type: Webhooks
+transport: HTTP POST to a subscriber-configured endpoint (JSON body)
+naming_convention: 'RESOURCE_TYPE.EVENT (e.g. OPP_WORKSPACE.STATUS_CHANGED)'
+delivery:
+  content_type: application/json
+  user_agent: govly-webhooks/1.0
+  retries: 10 attempts with exponential backoff; auto-disable after 100 consecutive failures
+security:
+  signature_header: Govly-Webhook-Signature
+  checksum_header: Govly-Webhook-Event-Checksum
+  algorithm: SHA2 hex digest of (secret key + "." + webhook event checksum)
+  custom_headers: subscriber may configure custom auth headers as an alternative
+  docs: https://docs.govly.com/webhooks/security
+events:
+  - name: OPP_WORKSPACE.INTEND_TO_BID
+    description: An opportunity workspace is marked "Intend to Bid".
+  - name: OPP_WORKSPACE.FOLLOWED
+    description: A user follows an opportunity workspace.
+  - name: OPP_WORKSPACE.STATUS_CHANGED
+    description: >-
+      A workspace status transitions between any states (default or custom).
+      Payload includes current and previous status, statusCategory, displayStatus.
+  - name: FOLLOWED_OPP.MODIFIED
+    description: Modifications to a followed opportunity hit Govly.
+  - name: FOLLOWED_OPP.ENRICHED
+    description: Govly finishes LLM summarization/enrichment of a followed opportunity.

@@ -1,0 +1,34 @@
+{
+  "provider": "govly",
+  "sources": [
+    "govly-awards-api-openapi.yml",
+    "govly-documents-api-openapi.yml",
+    "govly-follows-api-openapi.yml",
+    "govly-inbox-api-openapi.yml",
+    "govly-opportunities-api-openapi.yml",
+    "govly-quote-submissions-api-openapi.yml",
+    "govly-saved-searches-api-openapi.yml",
+    "govly-workspace-attachments-api-openapi.yml",
+    "govly-workspace-comments-api-openapi.yml",
+    "govly-workspace-members-api-openapi.yml",
+    "govly-workspaces-api-openapi.yml"
+  ],
+  "outputs": [
+    "govly-awards-api-openapi.yml",
+    "govly-documents-api-openapi.yml",
+    "govly-follows-api-openapi.yml",
+    "govly-inbox-api-openapi.yml",
+    "govly-opportunities-api-openapi.yml",
+    "govly-quote-submissions-api-openapi.yml",
+    "govly-saved-searches-api-openapi.yml",
+    "govly-workspace-attachments-api-openapi.yml",
+    "govly-workspace-comments-api-openapi.yml",
+    "govly-workspace-members-api-openapi.yml",
+    "govly-workspaces-api-openapi.yml"
+  ],
+  "archived": [],
+  "errors": [],
+  "warnings": [],
+  "notes": [],
+  "skipped": []
+}

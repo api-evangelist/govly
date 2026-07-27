@@ -1,0 +1,24 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enhancements for Govly Tools API
+  version: 1.0.0
+extends: openapi/govly-tools-v1-openapi-original.yml
+actions:
+  - target: $.info
+    update:
+      x-apievangelist-enriched: '2026-07-19'
+      x-apievangelist-provider: govly
+      x-apievangelist-stability: alpha
+      x-apievangelist-auth: api-key (bearer gk_ / X-API-KEY)
+      x-apievangelist-pagination: cursor
+      x-apievangelist-error-format: json-api
+      x-apievangelist-idempotency: false
+      x-apievangelist-mcp-server: https://app.govly.com/api/mcp
+      x-apievangelist-webhooks: https://docs.govly.com/webhooks/events
+  - target: $.info
+    update:
+      x-apievangelist-links:
+        docs: https://docs.govly.com/getting-started/introduction
+        status: https://status.govly.com
+        trust_center: https://security.govly.com
+        compliance: [SOC 2 Type I, CMMC Level 1, CMMC Level 2]

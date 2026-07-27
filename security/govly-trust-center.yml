@@ -1,0 +1,25 @@
+generated: '2026-07-19'
+method: searched
+source: https://security.govly.com
+url: https://security.govly.com
+platform: Vanta
+title: Govly Trust Center
+certifications:
+  - SOC 2 Type I
+  - CMMC Level 1
+  - CMMC Level 2
+data_protection:
+  encryption_in_transit: 256-bit TLS
+  encryption_at_rest: AES-256
+  hosting: AWS (USA), multi-region replication across Availability Zones
+  access_controls: VPC segregation, security groups, ACLs, MFA for backend access
+  monitoring: vulnerability scanning, penetration testing, continuous threat detection
+evidence:
+  - source: https://security.govly.com
+    keywords: [trust center, soc 2, cmmc, vanta]
+  - source: https://docs.govly.com/enterprise/security
+    keywords: [soc 2 type 1, cmmc, encryption, fedramp moderate]
+notes: >-
+  Trust center is a Vanta-hosted trust report served at security.govly.com
+  (content-location assets.vanta.com trust report). Verified page title
+  "Govly Trust Center".

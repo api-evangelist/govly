@@ -1,0 +1,48 @@
+generated: '2026-07-19'
+method: derived
+source: openapi/govly-tools-v1-openapi-original.yml
+format: json-api
+envelope:
+  shape: >-
+    Errors are returned as a JSON:API-style envelope: a top-level "errors" array,
+    each member with status, code, title, detail, and an optional source.pointer
+    (JSON Pointer to the offending request member). Not RFC 9457
+    application/problem+json.
+  schema: ErrorEnvelope
+  example: |
+    {
+      "errors": [
+        {
+          "status": "422",
+          "code": "unprocessable_entity",
+          "title": "Validation failed",
+          "detail": "dateRange.start must be before dateRange.end",
+          "source": { "pointer": "/dateRange/start" }
+        }
+      ]
+    }
+problems:
+  - status: 400
+    title: Bad Request
+    detail: The request was malformed or contained invalid parameters.
+    response_ref: '#/components/responses/Error'
+  - status: 401
+    title: Unauthorized
+    detail: Missing or invalid API key (Authorization bearer or X-API-KEY header).
+    response_ref: '#/components/responses/Error'
+  - status: 403
+    title: Forbidden
+    detail: >-
+      The authenticated actor lacks access to the resource or the required
+      subscription (e.g. sled/international search requires the matching org
+      subscription).
+    response_ref: '#/components/responses/Error'
+  - status: 404
+    title: Not Found
+    detail: The requested resource does not exist or is not visible to the actor.
+    response_ref: '#/components/responses/Error'
+  - status: 422
+    title: Unprocessable Entity
+    detail: Validation failed; see errors[].source.pointer for the offending field.
+    response_ref: '#/components/responses/Error'
+observed_status_codes: [200, 201, 400, 401, 403, 404, 422]
