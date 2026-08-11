@@ -244,7 +244,7 @@ common:
 - type: LLMsTxt
   url: llms/govly-llms.txt
 - type: OpenAPI
-  url: openapi/govly-tools-v1-openapi-original.yml
+  url: openapi/_original/govly-tools-v1-openapi-original.yml
 - type: Webhooks
   url: asyncapi/govly-webhooks.yml
 - type: Conventions
