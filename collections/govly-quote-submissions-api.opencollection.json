@@ -1,0 +1,93 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Govly Tools API (Alpha) Awards Quote Submissions API",
+    "version": "1.0.0-alpha"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Quote Submissions",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Check quote submission requirements",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://app.govly.com/api/tools/v1/quote/submissions/requirements",
+            "params": [
+              {
+                "name": "workspaceId",
+                "value": "",
+                "type": "query"
+              }
+            ]
+          },
+          "docs": "Returns portal-specific quote submission requirements and blocking reasons for the authenticated actor and workspace.\n"
+        },
+        {
+          "info": {
+            "name": "List quote submissions for a workspace",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://app.govly.com/api/tools/v1/quote/submissions",
+            "params": [
+              {
+                "name": "workspaceId",
+                "value": "",
+                "type": "query"
+              }
+            ]
+          },
+          "docs": "List quote submissions for a workspace"
+        },
+        {
+          "info": {
+            "name": "Submit a quote",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://app.govly.com/api/tools/v1/quote/submissions",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Submit a quote to the portal for an opportunity workspace. Upload the quote file to the workspace attachments endpoint first, then pass the returned workspaceAttachmentId here. The response returns a submission ID that can be polled with show_quote_submission.\n"
+        },
+        {
+          "info": {
+            "name": "Show quote submission status",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://app.govly.com/api/tools/v1/quote/submissions/:id",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Poll this endpoint after create_quote_submission until meta.terminal is true. Completed submissions include confirmation details when the portal returns them; failed submissions include failureReason when available.\n"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

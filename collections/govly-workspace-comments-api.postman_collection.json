@@ -1,0 +1,419 @@
+{
+  "item": [
+    {
+      "id": "fb062650-a37b-4095-a5ab-3d13a0f7d9f1",
+      "name": "Workspace Comments",
+      "description": {
+        "content": "Post comments to workspaces.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "2f2ce226-8417-4729-a187-53f2edaf5647",
+          "name": "Post a Markdown comment to a workspace",
+          "request": {
+            "name": "Post a Markdown comment to a workspace",
+            "description": {},
+            "url": {
+              "path": [
+                "api",
+                "tools",
+                "v1",
+                "workspaces",
+                ":workspaceId",
+                "comments"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "workspaceId",
+                  "description": "(Required) "
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"body\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "b67dfce2-78d2-4c58-906d-83463aa0ccf6",
+              "name": "Created workspace comment",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "tools",
+                    "v1",
+                    "workspaces",
+                    ":workspaceId",
+                    "comments"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "workspaceId",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"body\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": {\n    \"id\": \"string\",\n    \"body\": \"string\",\n    \"createdAt\": \"1979-07-23T10:21:03.707Z\",\n    \"attachments\": [\n      {\n        \"id\": \"string\",\n        \"workspaceId\": \"string\",\n        \"filename\": \"string\",\n        \"commentId\": \"string\",\n        \"contentType\": \"string\",\n        \"byteSize\": 193,\n        \"createdAt\": \"1985-05-14T15:44:14.149Z\",\n        \"file\": {\n          \"url\": \"http://UfjbyWfrkcXS.reqzsXLZEPFagONu79OTNwzK5T,FGsDj8Ada.EtmRML-+W1a\",\n          \"expiresAt\": \"1961-11-09T22:14:06.346Z\"\n        }\n      },\n      {\n        \"id\": \"string\",\n        \"workspaceId\": \"string\",\n        \"filename\": \"string\",\n        \"commentId\": \"string\",\n        \"contentType\": \"string\",\n        \"byteSize\": 3174,\n        \"createdAt\": \"1996-08-08T12:40:56.058Z\",\n        \"file\": {\n          \"url\": \"https://crvZrNTfvyqxoDISfffF.ioOXOGe\",\n          \"expiresAt\": \"2020-04-02T22:07:40.356Z\"\n        }\n      }\n    ],\n    \"updatedAt\": \"1958-11-15T22:16:23.401Z\"\n  },\n  \"meta\": {\n    \"workspaceId\": \"string\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "ffb635d9-f1e1-4850-8b72-48f559bf45cf",
+              "name": "Error response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "tools",
+                    "v1",
+                    "workspaces",
+                    ":workspaceId",
+                    "comments"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "workspaceId",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"body\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      }\n    },\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      }\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "65ca2425-7cf7-425d-821b-e062b2b01ca9",
+              "name": "Error response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "tools",
+                    "v1",
+                    "workspaces",
+                    ":workspaceId",
+                    "comments"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "workspaceId",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"body\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      }\n    },\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      }\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "c63af879-ad66-46de-a112-a5faf8e00512",
+              "name": "Error response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "tools",
+                    "v1",
+                    "workspaces",
+                    ":workspaceId",
+                    "comments"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "workspaceId",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"body\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      }\n    },\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      }\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "c76c0405-d369-4d3e-a16e-c04263806067",
+              "name": "Error response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "tools",
+                    "v1",
+                    "workspaces",
+                    ":workspaceId",
+                    "comments"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "workspaceId",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"body\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+              "code": 422,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      }\n    },\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      }\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://app.govly.com",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearerToken}}"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "ca2a9400-4542-4b18-a02e-a1ba4496df4b",
+    "name": "Govly Tools API (Alpha) Awards Workspace Comments API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "ALPHA / UNSTABLE: This API is still in active development. Endpoint behavior, request fields, response fields, error codes, and operation names may change before the Tools API is declared stable.\nREST-callable tool surface for agent and automation workflows. Agents are the primary consumer, but integrations can be built on this API. Responses are JSON for typed clients; MCP tools may render action results into text-oriented formats separately.\n",
+      "type": "text/plain"
+    }
+  }
+}

@@ -8,45 +8,42 @@ server:
   protocol: json-rpc
   url: https://app.govly.com/api/mcp
 authentication:
-  - type: oauth
-    note: >-
-      Recommended. Add the server URL to the AI client; it redirects through
-      Govly sign-in. Manage under Settings -> API -> Connected Apps.
-  - type: bearer
-    note: >-
-      Personal API key from Settings -> API -> API Keys, sent as
-      "Authorization: Bearer gk_<personal_api_key>". Token shown only once.
-requirements: >-
-  Requires a paid Govly seat. Some tools enforce daily limits without Enterprise
-  API access. Shared service accounts require contacting support@govly.com.
-client_config_example: |
-  {
-    "mcpServers": {
-      "govly": {
-        "url": "https://app.govly.com/api/mcp",
-        "headers": { "Authorization": "Bearer gk_<your_personal_api_key>" }
-      }
-    }
-  }
+- type: oauth
+  note: Recommended. Add the server URL to the AI client; it redirects through Govly sign-in. Manage under
+    Settings -> API -> Connected Apps.
+- type: bearer
+  note: 'Personal API key from Settings -> API -> API Keys, sent as "Authorization: Bearer gk_<personal_api_key>".
+    Token shown only once.'
+requirements: Requires a paid Govly seat. Some tools enforce daily limits without Enterprise API access.
+  Shared service accounts require contacting support@govly.com.
+client_config_example: "{\n  \"mcpServers\": {\n    \"govly\": {\n      \"url\": \"https://app.govly.com/api/mcp\"\
+  ,\n      \"headers\": { \"Authorization\": \"Bearer gk_<your_personal_api_key>\" }\n    }\n  }\n}\n"
 tools:
-  - name: search_opportunities
-    description: Search Govly opportunity records with the public parameter set.
-    source_operation: openapi/govly-tools-v1-openapi-original.yml#search_opportunities
-  - name: search_awards
-    description: Search awarded government contracts.
-    source_operation: openapi/govly-tools-v1-openapi-original.yml#search_awards
-  - name: show_opportunity
-    description: Show a single opportunity.
-    source_operation: openapi/govly-tools-v1-openapi-original.yml#show_opportunity
-  - name: show_workspace
-    description: Show an opportunity workspace.
-    source_operation: openapi/govly-tools-v1-openapi-original.yml#show_workspace
-  - name: list_workspaces
-    description: List workspaces associated with an entity.
-    source_operation: openapi/govly-tools-v1-openapi-original.yml#list_workspaces
-  - name: document_read
-    description: Read bounded document content for an authorized document.
-    source_operation: openapi/govly-tools-v1-openapi-original.yml#document_read
-  - name: document_download
-    description: Get a temporary presigned original-file download URL.
-    source_operation: openapi/govly-tools-v1-openapi-original.yml#document_download
+- name: search_opportunities
+  description: Search Govly opportunity records with the public parameter set.
+  source_operation: openapi/govly-tools-v1-openapi-original.yml#search_opportunities
+- name: search_awards
+  description: Search awarded government contracts.
+  source_operation: openapi/govly-tools-v1-openapi-original.yml#search_awards
+- name: show_opportunity
+  description: Show a single opportunity.
+  source_operation: openapi/govly-tools-v1-openapi-original.yml#show_opportunity
+- name: show_workspace
+  description: Show an opportunity workspace.
+  source_operation: openapi/govly-tools-v1-openapi-original.yml#show_workspace
+- name: list_workspaces
+  description: List workspaces associated with an entity.
+  source_operation: openapi/govly-tools-v1-openapi-original.yml#list_workspaces
+- name: document_read
+  description: Read bounded document content for an authorized document.
+  source_operation: openapi/govly-tools-v1-openapi-original.yml#document_read
+- name: document_download
+  description: Get a temporary presigned original-file download URL.
+  source_operation: openapi/govly-tools-v1-openapi-original.yml#document_download
+deployment:
+  mode: remote
+  endpoint: https://app.govly.com/api/mcp
+  verified: probed
+  probe: gated
+  checked: '2026-08-12'
+  source: catalog MCP census

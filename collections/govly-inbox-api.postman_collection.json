@@ -1,0 +1,2151 @@
+{
+  "item": [
+    {
+      "id": "b3355200-6d7b-4a7d-bd03-1a715d6657e4",
+      "name": "Inbox",
+      "description": {
+        "content": "Read and triage the authenticated user's matched inbox items.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "8c39563f-3e0d-41ea-9074-83d65681b026",
+          "name": "List inbox items",
+          "request": {
+            "name": "List inbox items",
+            "description": {
+              "content": "List the authenticated user's active inbox items (Govly AI matches and saved-search matches), newest first.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "tools",
+                "v1",
+                "inbox_items"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "cursor",
+                  "value": "<string>"
+                },
+                {
+                  "disabled": false,
+                  "key": "perPage",
+                  "value": "25"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "5b590bb2-fadf-401f-8e5d-aac2d537d47d",
+              "name": "Inbox items",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "tools",
+                    "v1",
+                    "inbox_items"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "cursor",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "perPage",
+                      "value": "25"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": [\n    {\n      \"id\": \"string\",\n      \"matchableId\": \"string\",\n      \"matchableType\": \"ProcurementSignal::Cluster\",\n      \"state\": \"dismissed\",\n      \"origins\": [\n        {\n          \"sourceType\": \"saved_search\",\n          \"savedSearchId\": \"string\",\n          \"savedSearchName\": \"string\"\n        },\n        {\n          \"sourceType\": \"saved_search\",\n          \"savedSearchId\": \"string\",\n          \"savedSearchName\": \"string\"\n        }\n      ],\n      \"feedback\": \"bad_fit\",\n      \"feedbackReason\": \"cannot_bid\",\n      \"title\": \"string\",\n      \"description\": \"string\",\n      \"fitReason\": \"string\",\n      \"fitScore\": 3526.1774611241194,\n      \"sourceType\": \"govly_ai\",\n      \"identifier\": \"string\",\n      \"recordType\": \"string\",\n      \"deadlineAt\": \"2001-12-11T15:45:31.252Z\",\n      \"postedOrAwardedDate\": \"1991-06-27\",\n      \"publicEntityNames\": [\n        \"string\",\n        \"string\"\n      ],\n      \"isoCode\": \"string\",\n      \"naicsCodes\": [\n        \"string\",\n        \"string\"\n      ],\n      \"createdAt\": \"1968-05-30T12:20:34.936Z\",\n      \"highlight\": {\n        \"key_0\": \"string\"\n      }\n    },\n    {\n      \"id\": \"string\",\n      \"matchableId\": \"string\",\n      \"matchableType\": \"ProcurementSignal::Cluster\",\n      \"state\": \"seen\",\n      \"origins\": [\n        {\n          \"sourceType\": \"saved_search\",\n          \"savedSearchId\": \"string\",\n          \"savedSearchName\": \"string\"\n        },\n        {\n          \"sourceType\": \"saved_search\",\n          \"savedSearchId\": \"string\",\n          \"savedSearchName\": \"string\"\n        }\n      ],\n      \"feedback\": \"dismissed\",\n      \"feedbackReason\": \"other\",\n      \"title\": \"string\",\n      \"description\": \"string\",\n      \"fitReason\": \"string\",\n      \"fitScore\": 5209.818261713359,\n      \"sourceType\": \"saved_search\",\n      \"identifier\": \"string\",\n      \"recordType\": \"string\",\n      \"deadlineAt\": \"2000-07-18T05:24:10.785Z\",\n      \"postedOrAwardedDate\": \"2009-11-30\",\n      \"publicEntityNames\": [\n        \"string\",\n        \"string\"\n      ],\n      \"isoCode\": \"string\",\n      \"naicsCodes\": [\n        \"string\",\n        \"string\"\n      ],\n      \"createdAt\": \"2001-05-30T20:09:34.745Z\",\n      \"highlight\": {\n        \"key_0\": \"string\",\n        \"key_1\": \"string\"\n      }\n    }\n  ],\n  \"meta\": {\n    \"count\": 411,\n    \"totalCount\": 4488,\n    \"perPage\": 1317,\n    \"nextCursor\": \"string\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "b7201d49-99e0-43a5-a550-d5813ca58ffb",
+              "name": "Error response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "tools",
+                    "v1",
+                    "inbox_items"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "cursor",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "perPage",
+                      "value": "25"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      }\n    },\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      }\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "3b4e705a-dc37-48e5-9da8-be34b0f18b07",
+              "name": "Error response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "tools",
+                    "v1",
+                    "inbox_items"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "cursor",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "perPage",
+                      "value": "25"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      }\n    },\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      }\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "f4bfe8b1-3ae4-4835-b2a3-a54d52fe4081",
+              "name": "Error response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "tools",
+                    "v1",
+                    "inbox_items"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "cursor",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "perPage",
+                      "value": "25"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+              "code": 422,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      }\n    },\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      }\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "9f73d4fd-db75-47f0-a319-0b51f499180d",
+          "name": "Search inbox items",
+          "request": {
+            "name": "Search inbox items",
+            "description": {
+              "content": "Full-text search and filter the authenticated user's inbox items. Returns matchable-type aggregation counts.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "tools",
+                "v1",
+                "inbox_items",
+                "search"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"<string>\",\n  \"cursor\": \"<string>\",\n  \"perPage\": 25,\n  \"sort\": \"<string>\",\n  \"sortDirection\": \"<string>\",\n  \"state\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"matchableType\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"recordType\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"sourceType\": \"<string>\",\n  \"naicsCodes\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"createdAfter\": \"<string>\",\n  \"createdBefore\": \"<string>\",\n  \"deadlineAtFrom\": \"<string>\",\n  \"deadlineAtTo\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "755efaee-dde8-4b4e-b03e-6b945dcd5756",
+              "name": "Matching inbox items",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "tools",
+                    "v1",
+                    "inbox_items",
+                    "search"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"query\": \"<string>\",\n  \"cursor\": \"<string>\",\n  \"perPage\": 25,\n  \"sort\": \"<string>\",\n  \"sortDirection\": \"<string>\",\n  \"state\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"matchableType\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"recordType\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"sourceType\": \"<string>\",\n  \"naicsCodes\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"createdAfter\": \"<string>\",\n  \"createdBefore\": \"<string>\",\n  \"deadlineAtFrom\": \"<string>\",\n  \"deadlineAtTo\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": [\n    {\n      \"id\": \"string\",\n      \"matchableId\": \"string\",\n      \"matchableType\": \"Opp\",\n      \"state\": \"dismissed\",\n      \"origins\": [\n        {\n          \"sourceType\": \"govly_ai\",\n          \"savedSearchId\": \"string\",\n          \"savedSearchName\": \"string\"\n        },\n        {\n          \"sourceType\": \"govly_ai\",\n          \"savedSearchId\": \"string\",\n          \"savedSearchName\": \"string\"\n        }\n      ],\n      \"feedback\": \"dismissed\",\n      \"feedbackReason\": \"bad_timing\",\n      \"title\": \"string\",\n      \"description\": \"string\",\n      \"fitReason\": \"string\",\n      \"fitScore\": 3324.804123270194,\n      \"sourceType\": \"saved_search\",\n      \"identifier\": \"string\",\n      \"recordType\": \"string\",\n      \"deadlineAt\": \"1995-12-07T01:54:11.814Z\",\n      \"postedOrAwardedDate\": \"2000-01-14\",\n      \"publicEntityNames\": [\n        \"string\",\n        \"string\"\n      ],\n      \"isoCode\": \"string\",\n      \"naicsCodes\": [\n        \"string\",\n        \"string\"\n      ],\n      \"createdAt\": \"1984-04-28T17:19:27.486Z\",\n      \"highlight\": {\n        \"key_0\": \"string\",\n        \"key_1\": \"string\"\n      }\n    },\n    {\n      \"id\": \"string\",\n      \"matchableId\": \"string\",\n      \"matchableType\": \"Opp\",\n      \"state\": \"actioned\",\n      \"origins\": [\n        {\n          \"sourceType\": \"saved_search\",\n          \"savedSearchId\": \"string\",\n          \"savedSearchName\": \"string\"\n        },\n        {\n          \"sourceType\": \"saved_search\",\n          \"savedSearchId\": \"string\",\n          \"savedSearchName\": \"string\"\n        }\n      ],\n      \"feedback\": \"bad_fit\",\n      \"feedbackReason\": \"bad_fit\",\n      \"title\": \"string\",\n      \"description\": \"string\",\n      \"fitReason\": \"string\",\n      \"fitScore\": 3117.1805655682115,\n      \"sourceType\": \"saved_search\",\n      \"identifier\": \"string\",\n      \"recordType\": \"string\",\n      \"deadlineAt\": \"2026-03-07T13:37:21.055Z\",\n      \"postedOrAwardedDate\": \"1968-04-05\",\n      \"publicEntityNames\": [\n        \"string\",\n        \"string\"\n      ],\n      \"isoCode\": \"string\",\n      \"naicsCodes\": [\n        \"string\",\n        \"string\"\n      ],\n      \"createdAt\": \"1947-02-19T11:50:26.780Z\",\n      \"highlight\": {\n        \"key_0\": \"string\",\n        \"key_1\": \"string\"\n      }\n    }\n  ],\n  \"meta\": {\n    \"total\": 9002,\n    \"nextCursor\": \"string\"\n  },\n  \"aggregations\": {\n    \"matchableType\": {\n      \"key_0\": 8996,\n      \"key_1\": 587\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "d234604d-2cde-47bf-a600-54c812ec75b8",
+              "name": "Error response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "tools",
+                    "v1",
+                    "inbox_items",
+                    "search"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"query\": \"<string>\",\n  \"cursor\": \"<string>\",\n  \"perPage\": 25,\n  \"sort\": \"<string>\",\n  \"sortDirection\": \"<string>\",\n  \"state\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"matchableType\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"recordType\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"sourceType\": \"<string>\",\n  \"naicsCodes\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"createdAfter\": \"<string>\",\n  \"createdBefore\": \"<string>\",\n  \"deadlineAtFrom\": \"<string>\",\n  \"deadlineAtTo\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      }\n    },\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      }\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "8c5eb448-94a5-4104-a4f1-bb078ee09376",
+              "name": "Error response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "tools",
+                    "v1",
+                    "inbox_items",
+                    "search"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"query\": \"<string>\",\n  \"cursor\": \"<string>\",\n  \"perPage\": 25,\n  \"sort\": \"<string>\",\n  \"sortDirection\": \"<string>\",\n  \"state\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"matchableType\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"recordType\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"sourceType\": \"<string>\",\n  \"naicsCodes\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"createdAfter\": \"<string>\",\n  \"createdBefore\": \"<string>\",\n  \"deadlineAtFrom\": \"<string>\",\n  \"deadlineAtTo\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      }\n    },\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      }\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "e4271938-bc50-406d-836f-3b8206e0fe37",
+              "name": "Error response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "tools",
+                    "v1",
+                    "inbox_items",
+                    "search"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"query\": \"<string>\",\n  \"cursor\": \"<string>\",\n  \"perPage\": 25,\n  \"sort\": \"<string>\",\n  \"sortDirection\": \"<string>\",\n  \"state\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"matchableType\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"recordType\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"sourceType\": \"<string>\",\n  \"naicsCodes\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"createdAfter\": \"<string>\",\n  \"createdBefore\": \"<string>\",\n  \"deadlineAtFrom\": \"<string>\",\n  \"deadlineAtTo\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      }\n    },\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      }\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "e9b5a32d-04cb-4a3a-a589-1007ef2bc065",
+              "name": "Error response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "tools",
+                    "v1",
+                    "inbox_items",
+                    "search"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"query\": \"<string>\",\n  \"cursor\": \"<string>\",\n  \"perPage\": 25,\n  \"sort\": \"<string>\",\n  \"sortDirection\": \"<string>\",\n  \"state\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"matchableType\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"recordType\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"sourceType\": \"<string>\",\n  \"naicsCodes\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"createdAfter\": \"<string>\",\n  \"createdBefore\": \"<string>\",\n  \"deadlineAtFrom\": \"<string>\",\n  \"deadlineAtTo\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+              "code": 422,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      }\n    },\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      }\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "771fa44f-f6e6-48df-a653-1faf31b7d441",
+          "name": "Show an inbox item",
+          "request": {
+            "name": "Show an inbox item",
+            "description": {},
+            "url": {
+              "path": [
+                "api",
+                "tools",
+                "v1",
+                "inbox_items",
+                ":id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "id",
+                  "description": "(Required) "
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "d1b9658f-2b41-430b-9312-9b5d8b8103ea",
+              "name": "Inbox item",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "tools",
+                    "v1",
+                    "inbox_items",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": {\n    \"id\": \"string\",\n    \"matchableId\": \"string\",\n    \"matchableType\": \"Award\",\n    \"state\": \"unread\",\n    \"origins\": [\n      {\n        \"sourceType\": \"govly_ai\",\n        \"savedSearchId\": \"string\",\n        \"savedSearchName\": \"string\"\n      },\n      {\n        \"sourceType\": \"saved_search\",\n        \"savedSearchId\": \"string\",\n        \"savedSearchName\": \"string\"\n      }\n    ],\n    \"feedback\": \"bad_fit\",\n    \"feedbackReason\": \"irrelevant\",\n    \"title\": \"string\",\n    \"description\": \"string\",\n    \"fitReason\": \"string\",\n    \"fitScore\": 5661.212160513407,\n    \"sourceType\": \"govly_ai\",\n    \"identifier\": \"string\",\n    \"recordType\": \"string\",\n    \"deadlineAt\": \"1996-03-12T15:00:27.602Z\",\n    \"postedOrAwardedDate\": \"2012-08-30\",\n    \"publicEntityNames\": [\n      \"string\",\n      \"string\"\n    ],\n    \"isoCode\": \"string\",\n    \"naicsCodes\": [\n      \"string\",\n      \"string\"\n    ],\n    \"createdAt\": \"1952-10-13T16:51:32.051Z\",\n    \"highlight\": {\n      \"key_0\": \"string\",\n      \"key_1\": \"string\"\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "bf72713e-84a4-44ad-84e2-e7cf43ad6b53",
+              "name": "Error response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "tools",
+                    "v1",
+                    "inbox_items",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      }\n    },\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      }\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "b04db92e-da7d-4672-bdf3-14fc6314fcf5",
+              "name": "Error response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "tools",
+                    "v1",
+                    "inbox_items",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      }\n    },\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      }\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "c5443a1a-8c71-4625-b300-5d39b5550952",
+              "name": "Error response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "tools",
+                    "v1",
+                    "inbox_items",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      }\n    },\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      }\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "c34130c8-8ac3-4436-a112-e6d45b943bac",
+          "name": "Accept (follow) an inbox item",
+          "request": {
+            "name": "Accept (follow) an inbox item",
+            "description": {
+              "content": "Follow the underlying opportunity, award, or signal and create or reuse its default workspace. Accept is FINAL and cannot be reversed with restore. The response meta includes the resulting workspaceId.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "tools",
+                "v1",
+                "inbox_items",
+                ":id",
+                "accept"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "id",
+                  "description": "(Required) "
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "39fd9a8b-02ab-40dd-a0f8-fc9894417c7e",
+              "name": "Accepted inbox item",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "tools",
+                    "v1",
+                    "inbox_items",
+                    ":id",
+                    "accept"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": {\n    \"id\": \"string\",\n    \"matchableId\": \"string\",\n    \"matchableType\": \"ProcurementSignal::Cluster\",\n    \"state\": \"unread\",\n    \"origins\": [\n      {\n        \"sourceType\": \"saved_search\",\n        \"savedSearchId\": \"string\",\n        \"savedSearchName\": \"string\"\n      },\n      {\n        \"sourceType\": \"govly_ai\",\n        \"savedSearchId\": \"string\",\n        \"savedSearchName\": \"string\"\n      }\n    ],\n    \"feedback\": \"bad_fit\",\n    \"feedbackReason\": \"irrelevant\",\n    \"title\": \"string\",\n    \"description\": \"string\",\n    \"fitReason\": \"string\",\n    \"fitScore\": 6930.193914005786,\n    \"sourceType\": \"govly_ai\",\n    \"identifier\": \"string\",\n    \"recordType\": \"string\",\n    \"deadlineAt\": \"2021-11-26T05:48:33.429Z\",\n    \"postedOrAwardedDate\": \"1956-05-11\",\n    \"publicEntityNames\": [\n      \"string\",\n      \"string\"\n    ],\n    \"isoCode\": \"string\",\n    \"naicsCodes\": [\n      \"string\",\n      \"string\"\n    ],\n    \"createdAt\": \"2015-10-30T03:19:17.170Z\",\n    \"highlight\": {\n      \"key_0\": \"string\",\n      \"key_1\": \"string\",\n      \"key_2\": \"string\"\n    }\n  },\n  \"meta\": {\n    \"state\": \"string\",\n    \"feedback\": \"string\",\n    \"matchableType\": \"string\",\n    \"matchableId\": \"string\",\n    \"final\": true,\n    \"workspaceId\": \"string\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "9b8b1c0e-4222-4acc-9bb7-9e9115434abe",
+              "name": "Error response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "tools",
+                    "v1",
+                    "inbox_items",
+                    ":id",
+                    "accept"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      }\n    },\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      }\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "784fb77e-cfed-41bd-9f02-84f29918a8d3",
+              "name": "Error response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "tools",
+                    "v1",
+                    "inbox_items",
+                    ":id",
+                    "accept"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      }\n    },\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      }\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "bdcc0731-9fd1-4dd5-9800-daedcf5fe7de",
+              "name": "Error response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "tools",
+                    "v1",
+                    "inbox_items",
+                    ":id",
+                    "accept"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      }\n    },\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      }\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "681c37a9-7548-4833-ad0b-27b60eaf2f88",
+          "name": "Dismiss an inbox item",
+          "request": {
+            "name": "Dismiss an inbox item",
+            "description": {},
+            "url": {
+              "path": [
+                "api",
+                "tools",
+                "v1",
+                "inbox_items",
+                ":id",
+                "dismiss"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "id",
+                  "description": "(Required) "
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "d2a5832c-2b5f-41e0-91ed-29b6b99acf01",
+              "name": "Dismissed inbox item",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "tools",
+                    "v1",
+                    "inbox_items",
+                    ":id",
+                    "dismiss"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": {\n    \"id\": \"string\",\n    \"matchableId\": \"string\",\n    \"matchableType\": \"Award\",\n    \"state\": \"unread\",\n    \"origins\": [\n      {\n        \"sourceType\": \"govly_ai\",\n        \"savedSearchId\": \"string\",\n        \"savedSearchName\": \"string\"\n      },\n      {\n        \"sourceType\": \"saved_search\",\n        \"savedSearchId\": \"string\",\n        \"savedSearchName\": \"string\"\n      }\n    ],\n    \"feedback\": \"bad_fit\",\n    \"feedbackReason\": \"irrelevant\",\n    \"title\": \"string\",\n    \"description\": \"string\",\n    \"fitReason\": \"string\",\n    \"fitScore\": 5661.212160513407,\n    \"sourceType\": \"govly_ai\",\n    \"identifier\": \"string\",\n    \"recordType\": \"string\",\n    \"deadlineAt\": \"1996-03-12T15:00:27.602Z\",\n    \"postedOrAwardedDate\": \"2012-08-30\",\n    \"publicEntityNames\": [\n      \"string\",\n      \"string\"\n    ],\n    \"isoCode\": \"string\",\n    \"naicsCodes\": [\n      \"string\",\n      \"string\"\n    ],\n    \"createdAt\": \"1952-10-13T16:51:32.051Z\",\n    \"highlight\": {\n      \"key_0\": \"string\",\n      \"key_1\": \"string\"\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "274f477f-53d2-4190-9d6b-0156da19b0b3",
+              "name": "Error response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "tools",
+                    "v1",
+                    "inbox_items",
+                    ":id",
+                    "dismiss"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      }\n    },\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      }\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "28fa496f-bc2c-4ced-9281-9ec84887378a",
+              "name": "Error response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "tools",
+                    "v1",
+                    "inbox_items",
+                    ":id",
+                    "dismiss"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      }\n    },\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      }\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "ffb99cb6-720d-4fe0-952a-e42526b78c5c",
+              "name": "Error response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "tools",
+                    "v1",
+                    "inbox_items",
+                    ":id",
+                    "dismiss"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      }\n    },\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      }\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "c19ff665-d0de-4a9a-8a33-487e24f71418",
+          "name": "Decline (reject) an inbox item as a bad fit",
+          "request": {
+            "name": "Decline (reject) an inbox item as a bad fit",
+            "description": {
+              "content": "Mark the item a bad fit, optionally with a reason that feeds the organization's matching-exclusions memory. Reversible with restore.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "tools",
+                "v1",
+                "inbox_items",
+                ":id",
+                "decline"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "id",
+                  "description": "(Required) "
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"reason\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "7a4a0860-a0fd-466e-a234-a81aae52fc5f",
+              "name": "Declined inbox item",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "tools",
+                    "v1",
+                    "inbox_items",
+                    ":id",
+                    "decline"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"reason\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": {\n    \"id\": \"string\",\n    \"matchableId\": \"string\",\n    \"matchableType\": \"Award\",\n    \"state\": \"unread\",\n    \"origins\": [\n      {\n        \"sourceType\": \"govly_ai\",\n        \"savedSearchId\": \"string\",\n        \"savedSearchName\": \"string\"\n      },\n      {\n        \"sourceType\": \"saved_search\",\n        \"savedSearchId\": \"string\",\n        \"savedSearchName\": \"string\"\n      }\n    ],\n    \"feedback\": \"bad_fit\",\n    \"feedbackReason\": \"irrelevant\",\n    \"title\": \"string\",\n    \"description\": \"string\",\n    \"fitReason\": \"string\",\n    \"fitScore\": 5661.212160513407,\n    \"sourceType\": \"govly_ai\",\n    \"identifier\": \"string\",\n    \"recordType\": \"string\",\n    \"deadlineAt\": \"1996-03-12T15:00:27.602Z\",\n    \"postedOrAwardedDate\": \"2012-08-30\",\n    \"publicEntityNames\": [\n      \"string\",\n      \"string\"\n    ],\n    \"isoCode\": \"string\",\n    \"naicsCodes\": [\n      \"string\",\n      \"string\"\n    ],\n    \"createdAt\": \"1952-10-13T16:51:32.051Z\",\n    \"highlight\": {\n      \"key_0\": \"string\",\n      \"key_1\": \"string\"\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "acf91263-9d31-4f14-86c2-2f46aae46712",
+              "name": "Error response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "tools",
+                    "v1",
+                    "inbox_items",
+                    ":id",
+                    "decline"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"reason\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      }\n    },\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      }\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "9e876f2e-240f-422b-985b-87a5e4e5b969",
+              "name": "Error response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "tools",
+                    "v1",
+                    "inbox_items",
+                    ":id",
+                    "decline"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"reason\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      }\n    },\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      }\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "cf6dbf7e-b491-42e9-83e5-653521c0ae4a",
+              "name": "Error response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "tools",
+                    "v1",
+                    "inbox_items",
+                    ":id",
+                    "decline"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"reason\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      }\n    },\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      }\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "dc48d18e-2c4a-460d-913c-9dd9e6460a98",
+              "name": "Error response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "tools",
+                    "v1",
+                    "inbox_items",
+                    ":id",
+                    "decline"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"reason\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+              "code": 422,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      }\n    },\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      }\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "c8c9c618-bd4d-49b7-a2f7-cecf702fa2c3",
+          "name": "Restore a dismissed or declined inbox item",
+          "request": {
+            "name": "Restore a dismissed or declined inbox item",
+            "description": {
+              "content": "Return a dismissed or bad-fit item to the active inbox. Only dismissed or bad-fit items can be restored — an accepted item cannot.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "tools",
+                "v1",
+                "inbox_items",
+                ":id",
+                "restore"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "id",
+                  "description": "(Required) "
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "345267d1-c225-4013-96ee-a5a22c0d78e5",
+              "name": "Restored inbox item",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "tools",
+                    "v1",
+                    "inbox_items",
+                    ":id",
+                    "restore"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": {\n    \"id\": \"string\",\n    \"matchableId\": \"string\",\n    \"matchableType\": \"Award\",\n    \"state\": \"unread\",\n    \"origins\": [\n      {\n        \"sourceType\": \"govly_ai\",\n        \"savedSearchId\": \"string\",\n        \"savedSearchName\": \"string\"\n      },\n      {\n        \"sourceType\": \"saved_search\",\n        \"savedSearchId\": \"string\",\n        \"savedSearchName\": \"string\"\n      }\n    ],\n    \"feedback\": \"bad_fit\",\n    \"feedbackReason\": \"irrelevant\",\n    \"title\": \"string\",\n    \"description\": \"string\",\n    \"fitReason\": \"string\",\n    \"fitScore\": 5661.212160513407,\n    \"sourceType\": \"govly_ai\",\n    \"identifier\": \"string\",\n    \"recordType\": \"string\",\n    \"deadlineAt\": \"1996-03-12T15:00:27.602Z\",\n    \"postedOrAwardedDate\": \"2012-08-30\",\n    \"publicEntityNames\": [\n      \"string\",\n      \"string\"\n    ],\n    \"isoCode\": \"string\",\n    \"naicsCodes\": [\n      \"string\",\n      \"string\"\n    ],\n    \"createdAt\": \"1952-10-13T16:51:32.051Z\",\n    \"highlight\": {\n      \"key_0\": \"string\",\n      \"key_1\": \"string\"\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "24ed6363-7b75-412e-b344-beb12383d981",
+              "name": "Error response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "tools",
+                    "v1",
+                    "inbox_items",
+                    ":id",
+                    "restore"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      }\n    },\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      }\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "16e43329-c1de-412a-b08f-32380febe655",
+              "name": "Error response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "tools",
+                    "v1",
+                    "inbox_items",
+                    ":id",
+                    "restore"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      }\n    },\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      }\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "34fb4e14-63ec-4a5d-b114-90f796b6afa5",
+              "name": "Error response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "tools",
+                    "v1",
+                    "inbox_items",
+                    ":id",
+                    "restore"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      }\n    },\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      }\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "5b5d50b2-dcfd-496c-878d-8511b7799c50",
+              "name": "Error response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "tools",
+                    "v1",
+                    "inbox_items",
+                    ":id",
+                    "restore"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+              "code": 422,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      }\n    },\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      }\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://app.govly.com",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearerToken}}"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "6b4a636f-bc5d-485b-8ff3-2116270e87f9",
+    "name": "Govly Tools API (Alpha) Awards Inbox API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "ALPHA / UNSTABLE: This API is still in active development. Endpoint behavior, request fields, response fields, error codes, and operation names may change before the Tools API is declared stable.\nREST-callable tool surface for agent and automation workflows. Agents are the primary consumer, but integrations can be built on this API. Responses are JSON for typed clients; MCP tools may render action results into text-oriented formats separately.\n",
+      "type": "text/plain"
+    }
+  }
+}

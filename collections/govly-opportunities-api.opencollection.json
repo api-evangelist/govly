@@ -1,0 +1,113 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Govly Tools API (Alpha) Awards Opportunities API",
+    "version": "1.0.0-alpha"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Opportunities",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Fetch opportunities by ID",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://app.govly.com/api/tools/v1/opportunities",
+            "params": [
+              {
+                "name": "ids",
+                "value": "",
+                "type": "query"
+              }
+            ]
+          },
+          "docs": "Fetch opportunities by ID"
+        },
+        {
+          "info": {
+            "name": "Show an opportunity",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://app.govly.com/api/tools/v1/opportunities/:id",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Show an opportunity"
+        },
+        {
+          "info": {
+            "name": "Search opportunities",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://app.govly.com/api/tools/v1/opportunities/search",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Search opportunities with the constrained public parameter set shared by MCP search_opportunities. Defaults to open opportunities and excludes prediction records from search results.\n"
+        },
+        {
+          "info": {
+            "name": "Mark an opportunity not interested",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://app.govly.com/api/tools/v1/opportunities/:opportunityId/not_interested",
+            "params": [
+              {
+                "name": "opportunityId",
+                "value": "",
+                "type": "path",
+                "description": "Govly opportunity ID."
+              }
+            ]
+          },
+          "docs": "Marks the opportunity not interested / dismissed for the authenticated user. Sets a team-visible disinterested status on the user's workspace follow, unfollows the user, and dismisses the user's matching inbox items.\n"
+        },
+        {
+          "info": {
+            "name": "Undo a not-interested mark",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://app.govly.com/api/tools/v1/opportunities/:opportunityId/not_interested",
+            "params": [
+              {
+                "name": "opportunityId",
+                "value": "",
+                "type": "path",
+                "description": "Govly opportunity ID."
+              }
+            ]
+          },
+          "docs": "Removes a previous not-interested mark for the authenticated user and restores matching dismissed inbox items. The user returns to a neutral (not following) state.\n"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

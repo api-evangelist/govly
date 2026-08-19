@@ -1,0 +1,64 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Govly Tools API (Alpha) Awards Workspace Attachments API",
+    "version": "1.0.0-alpha"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Workspace Attachments",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List workspace attachments",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://app.govly.com/api/tools/v1/workspaces/:workspaceId/attachments",
+            "params": [
+              {
+                "name": "workspaceId",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "List workspace attachments"
+        },
+        {
+          "info": {
+            "name": "Upload workspace attachments",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://app.govly.com/api/tools/v1/workspaces/:workspaceId/attachments",
+            "params": [
+              {
+                "name": "workspaceId",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Upload workspace attachments"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

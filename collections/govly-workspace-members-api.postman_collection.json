@@ -1,0 +1,355 @@
+{
+  "item": [
+    {
+      "id": "fcd5e647-212e-4a63-a8a5-7e35a6db2977",
+      "name": "Workspace Members",
+      "description": {
+        "content": "Add users and teams to workspaces.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "6969d656-6af0-49b5-9af5-62d751880d1b",
+          "name": "Add a user or team member to a workspace",
+          "request": {
+            "name": "Add a user or team member to a workspace",
+            "description": {},
+            "url": {
+              "path": [
+                "api",
+                "tools",
+                "v1",
+                "workspaces",
+                ":workspaceId",
+                "members"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "workspaceId",
+                  "description": "(Required) "
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": \"<string>\",\n  \"teamId\": \"<string>\",\n  \"notifications\": \"<string>\",\n  \"state\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "9cda3b8b-1a1b-4881-ae28-9291af1ae2a3",
+              "name": "Created workspace membership",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "tools",
+                    "v1",
+                    "workspaces",
+                    ":workspaceId",
+                    "members"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "workspaceId",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"userId\": \"<string>\",\n  \"teamId\": \"<string>\",\n  \"notifications\": \"<string>\",\n  \"state\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": {\n    \"id\": \"string\",\n    \"member\": {\n      \"type\": \"user\",\n      \"id\": \"string\",\n      \"name\": \"string\",\n      \"email\": \"kxiIMc9RoYmSgNq@VQsA.twj\",\n      \"organization\": {\n        \"id\": \"string\",\n        \"name\": \"string\"\n      }\n    },\n    \"state\": \"string\",\n    \"notifications\": \"string\",\n    \"createdAt\": \"1979-06-23T12:08:37.442Z\",\n    \"updatedAt\": \"2011-01-25T07:57:10.734Z\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "2bb0c8e9-065e-4b38-95a3-744836f8a113",
+              "name": "Error response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "tools",
+                    "v1",
+                    "workspaces",
+                    ":workspaceId",
+                    "members"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "workspaceId",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"userId\": \"<string>\",\n  \"teamId\": \"<string>\",\n  \"notifications\": \"<string>\",\n  \"state\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      }\n    },\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      }\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "fe3b8762-c5f6-48c3-a4b1-81aab996b97a",
+              "name": "Error response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "tools",
+                    "v1",
+                    "workspaces",
+                    ":workspaceId",
+                    "members"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "workspaceId",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"userId\": \"<string>\",\n  \"teamId\": \"<string>\",\n  \"notifications\": \"<string>\",\n  \"state\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      }\n    },\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      }\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "09b99748-8159-4f4b-aee7-3984517b5512",
+              "name": "Error response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "tools",
+                    "v1",
+                    "workspaces",
+                    ":workspaceId",
+                    "members"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "workspaceId",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"userId\": \"<string>\",\n  \"teamId\": \"<string>\",\n  \"notifications\": \"<string>\",\n  \"state\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+              "code": 422,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      }\n    },\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      }\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://app.govly.com",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearerToken}}"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "4f40bfa9-2eeb-4341-bf74-a5bc2d619095",
+    "name": "Govly Tools API (Alpha) Awards Workspace Members API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "ALPHA / UNSTABLE: This API is still in active development. Endpoint behavior, request fields, response fields, error codes, and operation names may change before the Tools API is declared stable.\nREST-callable tool surface for agent and automation workflows. Agents are the primary consumer, but integrations can be built on this API. Responses are JSON for typed clients; MCP tools may render action results into text-oriented formats separately.\n",
+      "type": "text/plain"
+    }
+  }
+}

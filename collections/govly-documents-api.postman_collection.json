@@ -1,0 +1,835 @@
+{
+  "item": [
+    {
+      "id": "29f728fd-c370-4eea-b5ec-1b2e62bc8c85",
+      "name": "Documents",
+      "description": {
+        "content": "Read document representations and request temporary original-file downloads.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "c3ff83c5-a437-4648-97e2-0e9e0923e4bf",
+          "name": "Read bounded document content",
+          "request": {
+            "name": "Read bounded document content",
+            "description": {
+              "content": "Reads a bounded portion of an authorized document without creating an analysis or enqueueing extraction work. Start a read with documentType and id. Continue when meta.hasMore is true by sending only meta.nextCursor and, optionally, maxChars. Cursors are opaque, source-bound, and re-authorized on every request. Opportunity document IDs are OppAttachment.id values returned as opportunity attachment id; access is derived from any associated opportunity/source path visible to the caller rather than from a client-supplied opportunity ID. Use positioned_text only when data.availableRepresentations advertises it. PDF page ranges are supported with pageStart and pageEnd. Processing and representation_unavailable are successful structured states. Failed or unavailable extraction returns the standard 422 error envelope, inaccessible records return the standard 404 error envelope, and invalid parameters return the standard 422 error envelope.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "tools",
+                "v1",
+                "documents",
+                "read"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "documentType",
+                  "value": "<string>",
+                  "description": "Required with id for an initial read. Omit when continuing with cursor."
+                },
+                {
+                  "disabled": false,
+                  "key": "id",
+                  "value": "<string>",
+                  "description": "Required with documentType for an initial read. Omit when continuing with cursor."
+                },
+                {
+                  "disabled": false,
+                  "key": "representation",
+                  "value": "text",
+                  "description": "Initial-read representation. Omit when continuing with cursor."
+                },
+                {
+                  "disabled": false,
+                  "key": "maxChars",
+                  "value": "100000",
+                  "description": "Maximum characters returned in this response."
+                },
+                {
+                  "disabled": false,
+                  "key": "cursor",
+                  "value": "<string>",
+                  "description": "Opaque continuation token from meta.nextCursor. May be combined only with maxChars."
+                },
+                {
+                  "disabled": false,
+                  "key": "pageStart",
+                  "value": "<integer>",
+                  "description": "First PDF page to read, inclusive. Omit when continuing with cursor."
+                },
+                {
+                  "disabled": false,
+                  "key": "pageEnd",
+                  "value": "<integer>",
+                  "description": "Last PDF page to read, inclusive. Omit when continuing with cursor."
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "1bb7feb4-d279-4159-9d12-4f5029728081",
+              "name": "Document content, processing state, or representation availability state.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "tools",
+                    "v1",
+                    "documents",
+                    "read"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "documentType",
+                      "value": "opportunity_attachment"
+                    },
+                    {
+                      "key": "id",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "representation",
+                      "value": "text"
+                    },
+                    {
+                      "key": "maxChars",
+                      "value": "100000"
+                    },
+                    {
+                      "key": "cursor",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "pageStart",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "pageEnd",
+                      "value": "<integer>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": {\n    \"id\": \"string\",\n    \"documentType\": \"opportunity_attachment\",\n    \"filename\": \"string\",\n    \"status\": \"representation_unavailable\",\n    \"representation\": \"text\",\n    \"contentType\": \"string\",\n    \"byteSize\": 1872,\n    \"content\": \"string\",\n    \"references\": {\n      \"key_0\": 7865.191966391213,\n      \"key_1\": \"string\"\n    },\n    \"summary\": \"string\",\n    \"availableRepresentations\": [\n      \"text\",\n      \"text\"\n    ],\n    \"usageHint\": \"string\",\n    \"message\": \"string\"\n  },\n  \"meta\": {\n    \"hasMore\": true,\n    \"nextCursor\": \"string\",\n    \"availableActions\": [\n      {\n        \"name\": \"string\",\n        \"description\": \"string\",\n        \"arguments\": {},\n        \"idPaths\": [\n          \"string\",\n          \"string\"\n        ]\n      },\n      {\n        \"name\": \"string\",\n        \"description\": \"string\",\n        \"arguments\": {},\n        \"idPaths\": [\n          \"string\",\n          \"string\"\n        ]\n      }\n    ],\n    \"totalLength\": 6270,\n    \"returnedLength\": 1324,\n    \"pageCount\": 330,\n    \"contentRange\": {\n      \"pageStart\": 9481,\n      \"pageEnd\": 82\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "57b0dcb8-fbf8-4043-a06f-73a8fc82e310",
+              "name": "Error response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "tools",
+                    "v1",
+                    "documents",
+                    "read"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "documentType",
+                      "value": "opportunity_attachment"
+                    },
+                    {
+                      "key": "id",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "representation",
+                      "value": "text"
+                    },
+                    {
+                      "key": "maxChars",
+                      "value": "100000"
+                    },
+                    {
+                      "key": "cursor",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "pageStart",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "pageEnd",
+                      "value": "<integer>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      }\n    },\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      }\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "994cb71d-05e3-4b3b-a005-2970dca5cc68",
+              "name": "Error response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "tools",
+                    "v1",
+                    "documents",
+                    "read"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "documentType",
+                      "value": "opportunity_attachment"
+                    },
+                    {
+                      "key": "id",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "representation",
+                      "value": "text"
+                    },
+                    {
+                      "key": "maxChars",
+                      "value": "100000"
+                    },
+                    {
+                      "key": "cursor",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "pageStart",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "pageEnd",
+                      "value": "<integer>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      }\n    },\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      }\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "34f29838-ee18-4ab2-9c8d-4015079a4c4c",
+              "name": "Error response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "tools",
+                    "v1",
+                    "documents",
+                    "read"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "documentType",
+                      "value": "opportunity_attachment"
+                    },
+                    {
+                      "key": "id",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "representation",
+                      "value": "text"
+                    },
+                    {
+                      "key": "maxChars",
+                      "value": "100000"
+                    },
+                    {
+                      "key": "cursor",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "pageStart",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "pageEnd",
+                      "value": "<integer>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      }\n    },\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      }\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "8e01cbf9-6f7f-44c7-9ec0-174dc2c268d2",
+              "name": "Error response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "tools",
+                    "v1",
+                    "documents",
+                    "read"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "documentType",
+                      "value": "opportunity_attachment"
+                    },
+                    {
+                      "key": "id",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "representation",
+                      "value": "text"
+                    },
+                    {
+                      "key": "maxChars",
+                      "value": "100000"
+                    },
+                    {
+                      "key": "cursor",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "pageStart",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "pageEnd",
+                      "value": "<integer>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+              "code": 422,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      }\n    },\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      }\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "8914fee7-c2aa-42cb-a88b-4f29f3c6eba1",
+          "name": "Get a temporary original-file download",
+          "request": {
+            "name": "Get a temporary original-file download",
+            "description": {
+              "content": "Returns a fresh presigned URL for the authorized original file. The URL expires at data.expiresAt. This operation is separate from document_read so reading representations never downloads the full file implicitly.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "tools",
+                "v1",
+                "documents",
+                "download"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "documentType",
+                  "value": "<string>",
+                  "description": "(Required) "
+                },
+                {
+                  "disabled": false,
+                  "key": "id",
+                  "value": "<string>",
+                  "description": "(Required) "
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "d05f3dbb-bd44-4c1e-bc00-61cb47f41843",
+              "name": "Temporary original-file download descriptor.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "tools",
+                    "v1",
+                    "documents",
+                    "download"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "documentType",
+                      "value": "opportunity_attachment"
+                    },
+                    {
+                      "key": "id",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": {\n    \"id\": \"string\",\n    \"documentType\": \"session_attachment\",\n    \"filename\": \"string\",\n    \"url\": \"https://WlcYmYIKeSREVujyksbP.nguswscTvxQn9J\",\n    \"expiresAt\": \"2017-11-26T22:43:56.330Z\",\n    \"contentType\": \"string\",\n    \"byteSize\": 5945\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "db87419d-da98-48cf-977c-48f1bb95ee56",
+              "name": "Error response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "tools",
+                    "v1",
+                    "documents",
+                    "download"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "documentType",
+                      "value": "opportunity_attachment"
+                    },
+                    {
+                      "key": "id",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      }\n    },\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      }\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "1a302b2a-3d5a-406d-b21a-4d109b366df8",
+              "name": "Error response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "tools",
+                    "v1",
+                    "documents",
+                    "download"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "documentType",
+                      "value": "opportunity_attachment"
+                    },
+                    {
+                      "key": "id",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      }\n    },\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      }\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "533dec0d-b36b-4b5e-97af-d294889ac728",
+              "name": "Error response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "tools",
+                    "v1",
+                    "documents",
+                    "download"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "documentType",
+                      "value": "opportunity_attachment"
+                    },
+                    {
+                      "key": "id",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      }\n    },\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      }\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "f65bcd15-f892-48d9-84dd-603652de5d7f",
+              "name": "Error response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "tools",
+                    "v1",
+                    "documents",
+                    "download"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "documentType",
+                      "value": "opportunity_attachment"
+                    },
+                    {
+                      "key": "id",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+              "code": 422,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      }\n    },\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      }\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://app.govly.com",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearerToken}}"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "bd9056f1-8b3c-4d46-bf00-8fe2ae323453",
+    "name": "Govly Tools API (Alpha) Awards Documents API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "ALPHA / UNSTABLE: This API is still in active development. Endpoint behavior, request fields, response fields, error codes, and operation names may change before the Tools API is declared stable.\nREST-callable tool surface for agent and automation workflows. Agents are the primary consumer, but integrations can be built on this API. Responses are JSON for typed clients; MCP tools may render action results into text-oriented formats separately.\n",
+      "type": "text/plain"
+    }
+  }
+}

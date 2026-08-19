@@ -1,0 +1,46 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Govly Tools API (Alpha) Awards Workspace Members API",
+    "version": "1.0.0-alpha"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Workspace Members",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Add a user or team member to a workspace",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://app.govly.com/api/tools/v1/workspaces/:workspaceId/members",
+            "params": [
+              {
+                "name": "workspaceId",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Add a user or team member to a workspace"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

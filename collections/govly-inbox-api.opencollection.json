@@ -1,0 +1,156 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Govly Tools API (Alpha) Awards Inbox API",
+    "version": "1.0.0-alpha"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Inbox",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List inbox items",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://app.govly.com/api/tools/v1/inbox_items",
+            "params": [
+              {
+                "name": "cursor",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "perPage",
+                "value": "",
+                "type": "query"
+              }
+            ]
+          },
+          "docs": "List the authenticated user's active inbox items (Govly AI matches and saved-search matches), newest first.\n"
+        },
+        {
+          "info": {
+            "name": "Search inbox items",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://app.govly.com/api/tools/v1/inbox_items/search",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Full-text search and filter the authenticated user's inbox items. Returns matchable-type aggregation counts.\n"
+        },
+        {
+          "info": {
+            "name": "Show an inbox item",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://app.govly.com/api/tools/v1/inbox_items/:id",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Show an inbox item"
+        },
+        {
+          "info": {
+            "name": "Accept (follow) an inbox item",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://app.govly.com/api/tools/v1/inbox_items/:id/accept",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Follow the underlying opportunity, award, or signal and create or reuse its default workspace. Accept is FINAL and cannot be reversed with restore. The response meta includes the resulting workspaceId.\n"
+        },
+        {
+          "info": {
+            "name": "Dismiss an inbox item",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://app.govly.com/api/tools/v1/inbox_items/:id/dismiss",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Dismiss an inbox item"
+        },
+        {
+          "info": {
+            "name": "Decline (reject) an inbox item as a bad fit",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://app.govly.com/api/tools/v1/inbox_items/:id/decline",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Mark the item a bad fit, optionally with a reason that feeds the organization's matching-exclusions memory. Reversible with restore.\n"
+        },
+        {
+          "info": {
+            "name": "Restore a dismissed or declined inbox item",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://app.govly.com/api/tools/v1/inbox_items/:id/restore",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Return a dismissed or bad-fit item to the active inbox. Only dismissed or bad-fit items can be restored — an accepted item cannot.\n"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

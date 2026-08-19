@@ -1,0 +1,1556 @@
+{
+  "item": [
+    {
+      "id": "15048f61-2d70-4796-b5ea-754c77195e76",
+      "name": "Opportunities",
+      "description": {
+        "content": "Search, fetch, and inspect Govly opportunity records.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "d2e0a7cc-abeb-499c-a9d0-483c720d61fd",
+          "name": "Fetch opportunities by ID",
+          "request": {
+            "name": "Fetch opportunities by ID",
+            "description": {},
+            "url": {
+              "path": [
+                "api",
+                "tools",
+                "v1",
+                "opportunities"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "ids",
+                  "value": "<string>",
+                  "description": "(Required) "
+                },
+                {
+                  "disabled": false,
+                  "key": "ids",
+                  "value": "<string>",
+                  "description": "(Required) "
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "30e484b0-be4e-4ec5-8354-f11a40c5e37a",
+              "name": "Opportunities",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "tools",
+                    "v1",
+                    "opportunities"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "ids",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "ids",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": [\n    {\n      \"id\": \"string\",\n      \"title\": \"string\",\n      \"displayName\": \"string\",\n      \"identifier\": \"string\",\n      \"externalUrl\": \"http://BhsjvO.msofV6vVSwyJ2TFHP.nbEwMajjVX+4hgICsUMLy\",\n      \"recordType\": \"string\",\n      \"status\": \"cancelled\",\n      \"postedAt\": \"1972-09-06T08:40:13.975Z\",\n      \"modifiedAt\": \"1970-11-01T11:38:19.528Z\",\n      \"respondBy\": \"1987-04-18T15:18:37.665Z\",\n      \"cancelledAt\": \"2000-01-13T23:53:21.596Z\",\n      \"awardedAt\": \"2017-05-31T12:42:16.106Z\",\n      \"aiTitle\": \"string\",\n      \"aiSummary\": \"string\",\n      \"jurisdiction\": {\n        \"id\": \"string\",\n        \"name\": \"string\",\n        \"isoCode\": \"string\"\n      },\n      \"contractVehicle\": {\n        \"id\": \"string\",\n        \"name\": \"string\"\n      },\n      \"followerCount\": 2520,\n      \"followedByCurrentUser\": true,\n      \"followedByCurrentOrganization\": true,\n      \"workspaces\": [\n        {\n          \"id\": \"string\",\n          \"name\": \"string\",\n          \"status\": {\n            \"category\": \"string\",\n            \"label\": \"string\"\n          },\n          \"followerCount\": 2939,\n          \"follows\": [\n            {\n              \"id\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"member\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"state\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"notifications\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"createdAt\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"updatedAt\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            },\n            {\n              \"id\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"member\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"state\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"notifications\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"createdAt\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"updatedAt\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            }\n          ],\n          \"organizationDefault\": false,\n          \"organization\": {\n            \"id\": \"string\",\n            \"name\": \"string\"\n          },\n          \"followedByCurrentUser\": true,\n          \"followedByCurrentOrganization\": true\n        },\n        {\n          \"id\": \"string\",\n          \"name\": \"string\",\n          \"status\": {\n            \"category\": \"string\",\n            \"label\": \"string\"\n          },\n          \"followerCount\": 415,\n          \"follows\": [\n            {\n              \"id\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"member\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"state\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"notifications\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"createdAt\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"updatedAt\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            },\n            {\n              \"id\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"member\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"state\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"notifications\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"createdAt\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"updatedAt\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            }\n          ],\n          \"organizationDefault\": true,\n          \"organization\": {\n            \"id\": \"string\",\n            \"name\": \"string\"\n          },\n          \"followedByCurrentUser\": false,\n          \"followedByCurrentOrganization\": false\n        }\n      ],\n      \"aggregateAttachments\": [\n        {\n          \"id\": \"string\",\n          \"documentType\": \"string\",\n          \"filename\": \"string\",\n          \"redacted\": true,\n          \"contentType\": \"string\",\n          \"byteSize\": 6824,\n          \"tags\": [\n            \"string\",\n            \"string\"\n          ],\n          \"file\": {\n            \"url\": \"http://qKdZnRX.bsKsc8gV.qqk+0G+9tg4C3TKQguz7xZkwGESdBqFiS-I5oLJg7f\",\n            \"expiresAt\": \"1987-02-16T18:50:28.943Z\"\n          }\n        },\n        {\n          \"id\": \"string\",\n          \"documentType\": \"string\",\n          \"filename\": \"string\",\n          \"redacted\": true,\n          \"contentType\": \"string\",\n          \"byteSize\": 2729,\n          \"tags\": [\n            \"string\",\n            \"string\"\n          ],\n          \"file\": {\n            \"url\": \"http://RD.uxvtYfbCtGAIFzdi5xWjx-vQO5mynLkf\",\n            \"expiresAt\": \"2017-05-22T13:13:27.362Z\"\n          }\n        }\n      ],\n      \"opportunitySources\": [\n        {\n          \"id\": \"string\",\n          \"attachments\": [\n            {\n              \"id\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"documentType\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"filename\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"redacted\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"contentType\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"byteSize\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"tags\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"file\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            },\n            {\n              \"id\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"documentType\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"filename\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"redacted\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"contentType\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"byteSize\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"tags\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"file\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            }\n          ],\n          \"postedAt\": \"1985-08-12T05:35:05.157Z\",\n          \"externalUrl\": \"http://fWKKJUVtsqinRLRAEvatjJ.xpgtp3Vc\",\n          \"noticeType\": \"string\",\n          \"recordType\": \"string\"\n        },\n        {\n          \"id\": \"string\",\n          \"attachments\": [\n            {\n              \"id\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"documentType\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"filename\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"redacted\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"contentType\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"byteSize\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"tags\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"file\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            },\n            {\n              \"id\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"documentType\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"filename\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"redacted\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"contentType\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"byteSize\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"tags\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"file\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            }\n          ],\n          \"postedAt\": \"1974-07-04T22:08:22.681Z\",\n          \"externalUrl\": \"https://oQMSvtTPeym.ryfbjB3aW.-YxzI,aJKcRKimTRXXYt9KQ6NsUf\",\n          \"noticeType\": \"string\",\n          \"recordType\": \"string\"\n        }\n      ]\n    },\n    {\n      \"id\": \"string\",\n      \"title\": \"string\",\n      \"displayName\": \"string\",\n      \"identifier\": \"string\",\n      \"externalUrl\": \"http://vhoPTeexFTomdoKQpAFWB.pgxbEsJ6BSijhJYi0GlDHavzmIGp7Vtp8xs0lXhOvgK,M.ctxoc-qKw\",\n      \"recordType\": \"string\",\n      \"status\": \"cancelled\",\n      \"postedAt\": \"1995-05-20T20:03:55.421Z\",\n      \"modifiedAt\": \"1978-10-16T09:29:15.192Z\",\n      \"respondBy\": \"1970-06-28T16:51:15.967Z\",\n      \"cancelledAt\": \"1980-11-04T19:47:26.030Z\",\n      \"awardedAt\": \"1984-02-27T02:26:06.855Z\",\n      \"aiTitle\": \"string\",\n      \"aiSummary\": \"string\",\n      \"jurisdiction\": {\n        \"id\": \"string\",\n        \"name\": \"string\",\n        \"isoCode\": \"string\"\n      },\n      \"contractVehicle\": {\n        \"id\": \"string\",\n        \"name\": \"string\"\n      },\n      \"followerCount\": 9364,\n      \"followedByCurrentUser\": false,\n      \"followedByCurrentOrganization\": false,\n      \"workspaces\": [\n        {\n          \"id\": \"string\",\n          \"name\": \"string\",\n          \"status\": {\n            \"category\": \"string\",\n            \"label\": \"string\"\n          },\n          \"followerCount\": 5972,\n          \"follows\": [\n            {\n              \"id\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"member\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"state\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"notifications\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"createdAt\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"updatedAt\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            },\n            {\n              \"id\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"member\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"state\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"notifications\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"createdAt\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"updatedAt\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            }\n          ],\n          \"organizationDefault\": false,\n          \"organization\": {\n            \"id\": \"string\",\n            \"name\": \"string\"\n          },\n          \"followedByCurrentUser\": true,\n          \"followedByCurrentOrganization\": true\n        },\n        {\n          \"id\": \"string\",\n          \"name\": \"string\",\n          \"status\": {\n            \"category\": \"string\",\n            \"label\": \"string\"\n          },\n          \"followerCount\": 4655,\n          \"follows\": [\n            {\n              \"id\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"member\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"state\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"notifications\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"createdAt\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"updatedAt\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            },\n            {\n              \"id\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"member\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"state\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"notifications\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"createdAt\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"updatedAt\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            }\n          ],\n          \"organizationDefault\": true,\n          \"organization\": {\n            \"id\": \"string\",\n            \"name\": \"string\"\n          },\n          \"followedByCurrentUser\": false,\n          \"followedByCurrentOrganization\": false\n        }\n      ],\n      \"aggregateAttachments\": [\n        {\n          \"id\": \"string\",\n          \"documentType\": \"string\",\n          \"filename\": \"string\",\n          \"redacted\": false,\n          \"contentType\": \"string\",\n          \"byteSize\": 6600,\n          \"tags\": [\n            \"string\",\n            \"string\"\n          ],\n          \"file\": {\n            \"url\": \"http://JzQgCzCcEuXPgVxREEqZbHtYEBDGvelxt.gsXMYZ33HToLVV8KcAo4cnrRV90NAt0wn\",\n            \"expiresAt\": \"2021-09-02T15:00:22.820Z\"\n          }\n        },\n        {\n          \"id\": \"string\",\n          \"documentType\": \"string\",\n          \"filename\": \"string\",\n          \"redacted\": false,\n          \"contentType\": \"string\",\n          \"byteSize\": 4107,\n          \"tags\": [\n            \"string\",\n            \"string\"\n          ],\n          \"file\": {\n            \"url\": \"https://vwWtbVkomNaZvBbdn.bcUhVwp0phMHwOyQqyxWKL-m4DmzJY+\",\n            \"expiresAt\": \"2017-05-08T02:43:13.318Z\"\n          }\n        }\n      ],\n      \"opportunitySources\": [\n        {\n          \"id\": \"string\",\n          \"attachments\": [\n            {\n              \"id\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"documentType\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"filename\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"redacted\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"contentType\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"byteSize\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"tags\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"file\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            },\n            {\n              \"id\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"documentType\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"filename\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"redacted\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"contentType\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"byteSize\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"tags\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"file\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            }\n          ],\n          \"postedAt\": \"1997-07-08T08:55:46.390Z\",\n          \"externalUrl\": \"https://pQfcxWLRkZxChEXGImuF.lgdm3plinTKYZ3pQP9s-rO9rQCQkn1B2n-qi8l6e7Tl\",\n          \"noticeType\": \"string\",\n          \"recordType\": \"string\"\n        },\n        {\n          \"id\": \"string\",\n          \"attachments\": [\n            {\n              \"id\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"documentType\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"filename\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"redacted\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"contentType\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"byteSize\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"tags\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"file\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            },\n            {\n              \"id\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"documentType\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"filename\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"redacted\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"contentType\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"byteSize\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"tags\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"file\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            }\n          ],\n          \"postedAt\": \"2004-03-08T17:03:19.995Z\",\n          \"externalUrl\": \"https://EMGoDyWKeVJmgVAWaDvjj.wlykGBXRWCQETyfmEFM\",\n          \"noticeType\": \"string\",\n          \"recordType\": \"string\"\n        }\n      ]\n    }\n  ],\n  \"meta\": {\n    \"count\": 839\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "60c9fa7d-61af-4413-ac0e-8ca18ba7c4ef",
+              "name": "Error response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "tools",
+                    "v1",
+                    "opportunities"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "ids",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "ids",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      }\n    },\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      }\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "d0a35de9-0a33-457e-80c9-64cfe640646c",
+              "name": "Error response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "tools",
+                    "v1",
+                    "opportunities"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "ids",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "ids",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      }\n    },\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      }\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "6f6618c5-bae6-4600-b7ff-d996190cb285",
+              "name": "Error response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "tools",
+                    "v1",
+                    "opportunities"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "ids",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "ids",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+              "code": 422,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      }\n    },\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      }\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "3f1f534c-5334-4803-9bf6-74fc5e05cd7c",
+          "name": "Show an opportunity",
+          "request": {
+            "name": "Show an opportunity",
+            "description": {},
+            "url": {
+              "path": [
+                "api",
+                "tools",
+                "v1",
+                "opportunities",
+                ":id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "id",
+                  "description": "(Required) "
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "ea144052-a2f8-4e61-b609-4e8c15e9e058",
+              "name": "Opportunity",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "tools",
+                    "v1",
+                    "opportunities",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": {\n    \"id\": \"string\",\n    \"title\": \"string\",\n    \"displayName\": \"string\",\n    \"identifier\": \"string\",\n    \"externalUrl\": \"https://JPXsLnikPoHJu.heyl4MOhDNd.GTdyIIfE5wSvzwuuU.RBdCRVXURkCTSdoNJZumuqvcYExAh,7vJyPsjDNc3cQxI\",\n    \"recordType\": \"string\",\n    \"status\": \"open\",\n    \"postedAt\": \"1958-06-26T03:30:29.807Z\",\n    \"modifiedAt\": \"1961-03-03T17:53:16.184Z\",\n    \"respondBy\": \"1966-09-06T06:43:09.244Z\",\n    \"cancelledAt\": \"2004-09-03T05:56:12.621Z\",\n    \"awardedAt\": \"1954-11-06T11:37:52.453Z\",\n    \"aiTitle\": \"string\",\n    \"aiSummary\": \"string\",\n    \"jurisdiction\": {\n      \"id\": \"string\",\n      \"name\": \"string\",\n      \"isoCode\": \"string\"\n    },\n    \"contractVehicle\": {\n      \"id\": \"string\",\n      \"name\": \"string\"\n    },\n    \"followerCount\": 9720,\n    \"followedByCurrentUser\": false,\n    \"followedByCurrentOrganization\": false,\n    \"workspaces\": [\n      {\n        \"id\": \"string\",\n        \"name\": \"string\",\n        \"status\": {\n          \"category\": \"string\",\n          \"label\": \"string\"\n        },\n        \"followerCount\": 767,\n        \"follows\": [\n          {\n            \"id\": \"string\",\n            \"member\": {\n              \"type\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"id\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"name\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"email\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"organization\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            },\n            \"state\": \"string\",\n            \"notifications\": \"string\",\n            \"createdAt\": \"2010-11-06T21:31:34.001Z\",\n            \"updatedAt\": \"1984-02-17T13:39:05.431Z\"\n          },\n          {\n            \"id\": \"string\",\n            \"member\": {\n              \"type\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"id\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"name\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"email\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"organization\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            },\n            \"state\": \"string\",\n            \"notifications\": \"string\",\n            \"createdAt\": \"2020-01-05T11:54:52.182Z\",\n            \"updatedAt\": \"2006-11-12T07:33:56.457Z\"\n          }\n        ],\n        \"organizationDefault\": false,\n        \"organization\": {\n          \"id\": \"string\",\n          \"name\": \"string\"\n        },\n        \"followedByCurrentUser\": true,\n        \"followedByCurrentOrganization\": false\n      },\n      {\n        \"id\": \"string\",\n        \"name\": \"string\",\n        \"status\": {\n          \"category\": \"string\",\n          \"label\": \"string\"\n        },\n        \"followerCount\": 517,\n        \"follows\": [\n          {\n            \"id\": \"string\",\n            \"member\": {\n              \"type\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"id\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"name\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"email\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"organization\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            },\n            \"state\": \"string\",\n            \"notifications\": \"string\",\n            \"createdAt\": \"1963-09-22T05:27:51.283Z\",\n            \"updatedAt\": \"2007-08-04T05:10:38.822Z\"\n          },\n          {\n            \"id\": \"string\",\n            \"member\": {\n              \"type\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"id\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"name\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"email\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"organization\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            },\n            \"state\": \"string\",\n            \"notifications\": \"string\",\n            \"createdAt\": \"2003-12-23T14:35:29.187Z\",\n            \"updatedAt\": \"1956-09-20T17:26:54.262Z\"\n          }\n        ],\n        \"organizationDefault\": true,\n        \"organization\": {\n          \"id\": \"string\",\n          \"name\": \"string\"\n        },\n        \"followedByCurrentUser\": false,\n        \"followedByCurrentOrganization\": true\n      }\n    ],\n    \"aggregateAttachments\": [\n      {\n        \"id\": \"string\",\n        \"documentType\": \"string\",\n        \"filename\": \"string\",\n        \"redacted\": false,\n        \"contentType\": \"string\",\n        \"byteSize\": 5555,\n        \"tags\": [\n          \"string\",\n          \"string\"\n        ],\n        \"file\": {\n          \"url\": \"http://assPynVIMeRzVqzfwBdRUFqYGJKnUlocU.ofwhXjO+GmnST6nSEgCtkQdQRIFlRhe5agojm61vR-cln.G\",\n          \"expiresAt\": \"1989-02-27T18:47:38.190Z\"\n        }\n      },\n      {\n        \"id\": \"string\",\n        \"documentType\": \"string\",\n        \"filename\": \"string\",\n        \"redacted\": false,\n        \"contentType\": \"string\",\n        \"byteSize\": 386,\n        \"tags\": [\n          \"string\",\n          \"string\"\n        ],\n        \"file\": {\n          \"url\": \"http://rnmhOZwkGdFOIagwCrTuXGNbBcDqb.ufpeAagL1wf6UY95TBWlCkGiQe1f1BbItYvT0Z1yl\",\n          \"expiresAt\": \"1951-05-20T05:07:12.973Z\"\n        }\n      }\n    ],\n    \"opportunitySources\": [\n      {\n        \"id\": \"string\",\n        \"attachments\": [\n          {\n            \"id\": \"string\",\n            \"documentType\": \"string\",\n            \"filename\": \"string\",\n            \"redacted\": true,\n            \"contentType\": \"string\",\n            \"byteSize\": 5656,\n            \"tags\": [\n              {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            ],\n            \"file\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          },\n          {\n            \"id\": \"string\",\n            \"documentType\": \"string\",\n            \"filename\": \"string\",\n            \"redacted\": true,\n            \"contentType\": \"string\",\n            \"byteSize\": 8323,\n            \"tags\": [\n              {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            ],\n            \"file\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          }\n        ],\n        \"postedAt\": \"2009-06-26T22:57:15.694Z\",\n        \"externalUrl\": \"http://rpKduOzCOTCBxRASwcVtRpResBcmEh.mtQjPvpZKlP2kFBWCYzwqP\",\n        \"noticeType\": \"string\",\n        \"recordType\": \"string\"\n      },\n      {\n        \"id\": \"string\",\n        \"attachments\": [\n          {\n            \"id\": \"string\",\n            \"documentType\": \"string\",\n            \"filename\": \"string\",\n            \"redacted\": false,\n            \"contentType\": \"string\",\n            \"byteSize\": 4334,\n            \"tags\": [\n              {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            ],\n            \"file\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          },\n          {\n            \"id\": \"string\",\n            \"documentType\": \"string\",\n            \"filename\": \"string\",\n            \"redacted\": false,\n            \"contentType\": \"string\",\n            \"byteSize\": 7649,\n            \"tags\": [\n              {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            ],\n            \"file\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          }\n        ],\n        \"postedAt\": \"1991-01-04T11:51:11.836Z\",\n        \"externalUrl\": \"https://eYYMy.bilQDkaf2nEU,cZrTQ1hdktg-qbsNdBp82.tpoJ3Em4D\",\n        \"noticeType\": \"string\",\n        \"recordType\": \"string\"\n      }\n    ]\n  },\n  \"meta\": {\n    \"availableActions\": [\n      {\n        \"name\": \"string\",\n        \"description\": \"string\",\n        \"arguments\": {},\n        \"idPaths\": [\n          \"string\",\n          \"string\"\n        ]\n      },\n      {\n        \"name\": \"string\",\n        \"description\": \"string\",\n        \"arguments\": {},\n        \"idPaths\": [\n          \"string\",\n          \"string\"\n        ]\n      }\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "6a55fef6-e0cf-46a8-a197-86c269523232",
+              "name": "Error response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "tools",
+                    "v1",
+                    "opportunities",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      }\n    },\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      }\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "13291257-5fbc-497d-ba3c-aec913aa29f9",
+              "name": "Error response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "tools",
+                    "v1",
+                    "opportunities",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      }\n    },\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      }\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "2224d1c6-2206-4f89-87db-429a8ba0c8dc",
+              "name": "Error response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "tools",
+                    "v1",
+                    "opportunities",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      }\n    },\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      }\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "c59cb1a7-16e4-4dcf-8b33-1dc207d35f36",
+          "name": "Search opportunities",
+          "request": {
+            "name": "Search opportunities",
+            "description": {
+              "content": "Search opportunities with the constrained public parameter set shared by MCP search_opportunities. Defaults to open opportunities and excludes prediction records from search results.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "tools",
+                "v1",
+                "opportunities",
+                "search"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"<string>\",\n  \"cursor\": \"<string>\",\n  \"perPage\": 25,\n  \"status\": \"open\",\n  \"naics\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"postedAfter\": \"<string>\",\n  \"postedBefore\": \"<string>\",\n  \"modifiedAfter\": \"<string>\",\n  \"modifiedBefore\": \"<string>\",\n  \"respondByAfter\": \"<string>\",\n  \"respondByBefore\": \"<string>\",\n  \"awardedAfter\": \"<string>\",\n  \"awardedBefore\": \"<string>\",\n  \"sort\": \"<string>\",\n  \"sortDirection\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "1c9a363d-d3f9-4179-9fb8-da0a5f83baaf",
+              "name": "Matching opportunities",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "tools",
+                    "v1",
+                    "opportunities",
+                    "search"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"query\": \"<string>\",\n  \"cursor\": \"<string>\",\n  \"perPage\": 25,\n  \"status\": \"open\",\n  \"naics\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"postedAfter\": \"<string>\",\n  \"postedBefore\": \"<string>\",\n  \"modifiedAfter\": \"<string>\",\n  \"modifiedBefore\": \"<string>\",\n  \"respondByAfter\": \"<string>\",\n  \"respondByBefore\": \"<string>\",\n  \"awardedAfter\": \"<string>\",\n  \"awardedBefore\": \"<string>\",\n  \"sort\": \"<string>\",\n  \"sortDirection\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": [\n    {\n      \"id\": \"string\",\n      \"title\": \"string\",\n      \"displayName\": \"string\",\n      \"identifier\": \"string\",\n      \"externalUrl\": \"https://fCMdwdghYdwvtlRyFJSuqzqtw.hqrzso.VL4ejO7Spi4srpkRInwV6dLwvJwQRK4zhkwAg0RRMwjXqlQHoa3aBIfxh3P\",\n      \"recordType\": \"string\",\n      \"status\": \"expired\",\n      \"postedAt\": \"2024-02-13T22:47:16.068Z\",\n      \"modifiedAt\": \"1998-05-28T21:37:34.152Z\",\n      \"respondBy\": \"2015-10-16T16:49:57.607Z\",\n      \"cancelledAt\": \"2014-08-15T05:36:34.603Z\",\n      \"awardedAt\": \"2012-09-28T20:55:02.271Z\",\n      \"aiTitle\": \"string\",\n      \"aiSummary\": \"string\",\n      \"jurisdiction\": {\n        \"id\": \"string\",\n        \"name\": \"string\",\n        \"isoCode\": \"string\"\n      },\n      \"contractVehicle\": {\n        \"id\": \"string\",\n        \"name\": \"string\"\n      },\n      \"followerCount\": 1398,\n      \"followedByCurrentUser\": true,\n      \"followedByCurrentOrganization\": false,\n      \"workspaces\": [\n        {\n          \"id\": \"string\",\n          \"name\": \"string\",\n          \"status\": {\n            \"category\": \"string\",\n            \"label\": \"string\"\n          },\n          \"followerCount\": 3118,\n          \"follows\": [\n            {\n              \"id\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"member\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"state\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"notifications\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"createdAt\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"updatedAt\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            },\n            {\n              \"id\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"member\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"state\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"notifications\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"createdAt\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"updatedAt\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            }\n          ],\n          \"organizationDefault\": false,\n          \"organization\": {\n            \"id\": \"string\",\n            \"name\": \"string\"\n          },\n          \"followedByCurrentUser\": true,\n          \"followedByCurrentOrganization\": false\n        },\n        {\n          \"id\": \"string\",\n          \"name\": \"string\",\n          \"status\": {\n            \"category\": \"string\",\n            \"label\": \"string\"\n          },\n          \"followerCount\": 6650,\n          \"follows\": [\n            {\n              \"id\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"member\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"state\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"notifications\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"createdAt\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"updatedAt\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            },\n            {\n              \"id\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"member\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"state\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"notifications\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"createdAt\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"updatedAt\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            }\n          ],\n          \"organizationDefault\": true,\n          \"organization\": {\n            \"id\": \"string\",\n            \"name\": \"string\"\n          },\n          \"followedByCurrentUser\": false,\n          \"followedByCurrentOrganization\": false\n        }\n      ],\n      \"aggregateAttachments\": [\n        {\n          \"id\": \"string\",\n          \"documentType\": \"string\",\n          \"filename\": \"string\",\n          \"redacted\": false,\n          \"contentType\": \"string\",\n          \"byteSize\": 8736,\n          \"tags\": [\n            \"string\",\n            \"string\"\n          ],\n          \"file\": {\n            \"url\": \"https://lGhBKJBXXgahFsp.vmeugwk6z2eXTJ6MFHJT4GOtqxDD\",\n            \"expiresAt\": \"1965-02-17T12:06:57.382Z\"\n          }\n        },\n        {\n          \"id\": \"string\",\n          \"documentType\": \"string\",\n          \"filename\": \"string\",\n          \"redacted\": false,\n          \"contentType\": \"string\",\n          \"byteSize\": 1670,\n          \"tags\": [\n            \"string\",\n            \"string\"\n          ],\n          \"file\": {\n            \"url\": \"http://unON.izobU-c,fu-rpfxRBe5.KrvRvQuLQ57G5SXXhYxVl-1KEW1nfnOMghZnyx2biiRzxMy0BFPZn+\",\n            \"expiresAt\": \"1955-04-08T07:50:44.447Z\"\n          }\n        }\n      ],\n      \"opportunitySources\": [\n        {\n          \"id\": \"string\",\n          \"attachments\": [\n            {\n              \"id\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"documentType\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"filename\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"redacted\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"contentType\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"byteSize\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"tags\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"file\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            },\n            {\n              \"id\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"documentType\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"filename\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"redacted\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"contentType\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"byteSize\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"tags\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"file\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            }\n          ],\n          \"postedAt\": \"1975-02-11T01:46:11.870Z\",\n          \"externalUrl\": \"https://MLNZBmGAnsMzAvZxZxYbsetYVk.xnludPAjAVS9LTm1WE\",\n          \"noticeType\": \"string\",\n          \"recordType\": \"string\"\n        },\n        {\n          \"id\": \"string\",\n          \"attachments\": [\n            {\n              \"id\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"documentType\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"filename\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"redacted\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"contentType\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"byteSize\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"tags\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"file\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            },\n            {\n              \"id\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"documentType\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"filename\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"redacted\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"contentType\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"byteSize\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"tags\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"file\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            }\n          ],\n          \"postedAt\": \"1960-05-20T05:00:47.898Z\",\n          \"externalUrl\": \"https://xqwJGyBZyZjHhZzgXxtarGllgNvxH.fasqxjPCOHcd\",\n          \"noticeType\": \"string\",\n          \"recordType\": \"string\"\n        }\n      ]\n    },\n    {\n      \"id\": \"string\",\n      \"title\": \"string\",\n      \"displayName\": \"string\",\n      \"identifier\": \"string\",\n      \"externalUrl\": \"https://GvyDvJLiUdBovEP.bcfxsj10.hDicMqHh.94KS7+bi,Tm6oPV0oBOSR\",\n      \"recordType\": \"string\",\n      \"status\": \"forecasted\",\n      \"postedAt\": \"1947-03-25T12:12:37.345Z\",\n      \"modifiedAt\": \"1970-07-22T03:39:23.235Z\",\n      \"respondBy\": \"2026-06-15T16:08:35.895Z\",\n      \"cancelledAt\": \"1978-12-11T13:15:52.810Z\",\n      \"awardedAt\": \"2014-01-27T20:26:47.862Z\",\n      \"aiTitle\": \"string\",\n      \"aiSummary\": \"string\",\n      \"jurisdiction\": {\n        \"id\": \"string\",\n        \"name\": \"string\",\n        \"isoCode\": \"string\"\n      },\n      \"contractVehicle\": {\n        \"id\": \"string\",\n        \"name\": \"string\"\n      },\n      \"followerCount\": 1580,\n      \"followedByCurrentUser\": true,\n      \"followedByCurrentOrganization\": false,\n      \"workspaces\": [\n        {\n          \"id\": \"string\",\n          \"name\": \"string\",\n          \"status\": {\n            \"category\": \"string\",\n            \"label\": \"string\"\n          },\n          \"followerCount\": 499,\n          \"follows\": [\n            {\n              \"id\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"member\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"state\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"notifications\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"createdAt\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"updatedAt\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            },\n            {\n              \"id\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"member\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"state\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"notifications\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"createdAt\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"updatedAt\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            }\n          ],\n          \"organizationDefault\": true,\n          \"organization\": {\n            \"id\": \"string\",\n            \"name\": \"string\"\n          },\n          \"followedByCurrentUser\": true,\n          \"followedByCurrentOrganization\": false\n        },\n        {\n          \"id\": \"string\",\n          \"name\": \"string\",\n          \"status\": {\n            \"category\": \"string\",\n            \"label\": \"string\"\n          },\n          \"followerCount\": 7598,\n          \"follows\": [\n            {\n              \"id\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"member\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"state\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"notifications\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"createdAt\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"updatedAt\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            },\n            {\n              \"id\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"member\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"state\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"notifications\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"createdAt\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"updatedAt\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            }\n          ],\n          \"organizationDefault\": false,\n          \"organization\": {\n            \"id\": \"string\",\n            \"name\": \"string\"\n          },\n          \"followedByCurrentUser\": false,\n          \"followedByCurrentOrganization\": true\n        }\n      ],\n      \"aggregateAttachments\": [\n        {\n          \"id\": \"string\",\n          \"documentType\": \"string\",\n          \"filename\": \"string\",\n          \"redacted\": false,\n          \"contentType\": \"string\",\n          \"byteSize\": 4286,\n          \"tags\": [\n            \"string\",\n            \"string\"\n          ],\n          \"file\": {\n            \"url\": \"https://ODlHnmvRciiwnnJvLJDG.klcjXgmZ3ojlNy1C2LBLEezQvLRx-sv0Pdn\",\n            \"expiresAt\": \"1950-05-06T22:56:55.589Z\"\n          }\n        },\n        {\n          \"id\": \"string\",\n          \"documentType\": \"string\",\n          \"filename\": \"string\",\n          \"redacted\": true,\n          \"contentType\": \"string\",\n          \"byteSize\": 7665,\n          \"tags\": [\n            \"string\",\n            \"string\"\n          ],\n          \"file\": {\n            \"url\": \"https://LvVAr.kttjFn4SKAQfjwIX5ok6TDW,hwW4B\",\n            \"expiresAt\": \"2006-10-15T20:14:30.902Z\"\n          }\n        }\n      ],\n      \"opportunitySources\": [\n        {\n          \"id\": \"string\",\n          \"attachments\": [\n            {\n              \"id\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"documentType\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"filename\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"redacted\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"contentType\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"byteSize\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"tags\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"file\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            },\n            {\n              \"id\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"documentType\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"filename\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"redacted\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"contentType\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"byteSize\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"tags\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"file\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            }\n          ],\n          \"postedAt\": \"1977-01-24T00:44:11.983Z\",\n          \"externalUrl\": \"https://DxFHvZdofrg.xglrvUkn.tFNTPjcVaPYcf7gfeDdcqzofB4,ttm.+Cbil+KMkv9QB5Y4XzfSw8g2gV2oYmS,N80p-u\",\n          \"noticeType\": \"string\",\n          \"recordType\": \"string\"\n        },\n        {\n          \"id\": \"string\",\n          \"attachments\": [\n            {\n              \"id\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"documentType\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"filename\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"redacted\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"contentType\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"byteSize\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"tags\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"file\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            },\n            {\n              \"id\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"documentType\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"filename\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"redacted\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"contentType\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"byteSize\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"tags\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"file\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            }\n          ],\n          \"postedAt\": \"2016-09-07T02:19:07.152Z\",\n          \"externalUrl\": \"https://WYrNzJYWliUS.erK4R3n8Xy.tLXOXvZZQW-RnaMatWu-m1Eic.pyQb\",\n          \"noticeType\": \"string\",\n          \"recordType\": \"string\"\n        }\n      ]\n    }\n  ],\n  \"meta\": {\n    \"count\": 5083,\n    \"totalCount\": 6982,\n    \"perPage\": 265,\n    \"nextCursor\": \"string\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "fd71ef0f-3e66-4765-b665-0fbafcaccea4",
+              "name": "Error response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "tools",
+                    "v1",
+                    "opportunities",
+                    "search"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"query\": \"<string>\",\n  \"cursor\": \"<string>\",\n  \"perPage\": 25,\n  \"status\": \"open\",\n  \"naics\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"postedAfter\": \"<string>\",\n  \"postedBefore\": \"<string>\",\n  \"modifiedAfter\": \"<string>\",\n  \"modifiedBefore\": \"<string>\",\n  \"respondByAfter\": \"<string>\",\n  \"respondByBefore\": \"<string>\",\n  \"awardedAfter\": \"<string>\",\n  \"awardedBefore\": \"<string>\",\n  \"sort\": \"<string>\",\n  \"sortDirection\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      }\n    },\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      }\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "d7f1e9ec-43b9-41d3-b3ad-1c3ca4838c1f",
+              "name": "Error response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "tools",
+                    "v1",
+                    "opportunities",
+                    "search"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"query\": \"<string>\",\n  \"cursor\": \"<string>\",\n  \"perPage\": 25,\n  \"status\": \"open\",\n  \"naics\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"postedAfter\": \"<string>\",\n  \"postedBefore\": \"<string>\",\n  \"modifiedAfter\": \"<string>\",\n  \"modifiedBefore\": \"<string>\",\n  \"respondByAfter\": \"<string>\",\n  \"respondByBefore\": \"<string>\",\n  \"awardedAfter\": \"<string>\",\n  \"awardedBefore\": \"<string>\",\n  \"sort\": \"<string>\",\n  \"sortDirection\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      }\n    },\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      }\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "520672dc-352f-431c-9440-5bb4ebb6b205",
+              "name": "Error response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "tools",
+                    "v1",
+                    "opportunities",
+                    "search"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"query\": \"<string>\",\n  \"cursor\": \"<string>\",\n  \"perPage\": 25,\n  \"status\": \"open\",\n  \"naics\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"postedAfter\": \"<string>\",\n  \"postedBefore\": \"<string>\",\n  \"modifiedAfter\": \"<string>\",\n  \"modifiedBefore\": \"<string>\",\n  \"respondByAfter\": \"<string>\",\n  \"respondByBefore\": \"<string>\",\n  \"awardedAfter\": \"<string>\",\n  \"awardedBefore\": \"<string>\",\n  \"sort\": \"<string>\",\n  \"sortDirection\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      }\n    },\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      }\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "12989414-1553-4a07-acad-24cc83d95c3d",
+              "name": "Error response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "tools",
+                    "v1",
+                    "opportunities",
+                    "search"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"query\": \"<string>\",\n  \"cursor\": \"<string>\",\n  \"perPage\": 25,\n  \"status\": \"open\",\n  \"naics\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"postedAfter\": \"<string>\",\n  \"postedBefore\": \"<string>\",\n  \"modifiedAfter\": \"<string>\",\n  \"modifiedBefore\": \"<string>\",\n  \"respondByAfter\": \"<string>\",\n  \"respondByBefore\": \"<string>\",\n  \"awardedAfter\": \"<string>\",\n  \"awardedBefore\": \"<string>\",\n  \"sort\": \"<string>\",\n  \"sortDirection\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+              "code": 422,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      }\n    },\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      }\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "30b31b49-8879-4fb4-8515-094c11affb0c",
+          "name": "Mark an opportunity not interested",
+          "request": {
+            "name": "Mark an opportunity not interested",
+            "description": {
+              "content": "Marks the opportunity not interested / dismissed for the authenticated user. Sets a team-visible disinterested status on the user's workspace follow, unfollows the user, and dismisses the user's matching inbox items.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "tools",
+                "v1",
+                "opportunities",
+                ":opportunityId",
+                "not_interested"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "opportunityId",
+                  "description": "(Required) Govly opportunity ID."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "f1283606-b857-401f-8381-17f4b6a55dc0",
+              "name": "Opportunity marked not interested",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "tools",
+                    "v1",
+                    "opportunities",
+                    ":opportunityId",
+                    "not_interested"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "opportunityId",
+                      "description": "(Required) Govly opportunity ID."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Created",
+              "code": 201,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": {\n    \"id\": \"string\",\n    \"type\": \"opportunity\",\n    \"notInterested\": false\n  },\n  \"meta\": {\n    \"oppId\": \"string\",\n    \"undo\": true\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "4e29c401-d003-42ff-8665-0cfd0f8f4d3f",
+              "name": "Error response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "tools",
+                    "v1",
+                    "opportunities",
+                    ":opportunityId",
+                    "not_interested"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "opportunityId",
+                      "description": "(Required) Govly opportunity ID."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      }\n    },\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      }\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "b4af63f0-4d5b-4ec2-8e63-38d3fccb08af",
+              "name": "Error response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "tools",
+                    "v1",
+                    "opportunities",
+                    ":opportunityId",
+                    "not_interested"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "opportunityId",
+                      "description": "(Required) Govly opportunity ID."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      }\n    },\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      }\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "12e252a7-7bf7-4e6a-ae49-989c4c5c18e6",
+              "name": "Error response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "tools",
+                    "v1",
+                    "opportunities",
+                    ":opportunityId",
+                    "not_interested"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "opportunityId",
+                      "description": "(Required) Govly opportunity ID."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      }\n    },\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      }\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "63997d60-ba08-4f17-b9a1-9de10927109e",
+              "name": "Error response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "tools",
+                    "v1",
+                    "opportunities",
+                    ":opportunityId",
+                    "not_interested"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "opportunityId",
+                      "description": "(Required) Govly opportunity ID."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+              "code": 422,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      }\n    },\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      }\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "9d3e5460-feee-4ce1-80b7-c4074ad5dc1a",
+          "name": "Undo a not-interested mark",
+          "request": {
+            "name": "Undo a not-interested mark",
+            "description": {
+              "content": "Removes a previous not-interested mark for the authenticated user and restores matching dismissed inbox items. The user returns to a neutral (not following) state.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "tools",
+                "v1",
+                "opportunities",
+                ":opportunityId",
+                "not_interested"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "opportunityId",
+                  "description": "(Required) Govly opportunity ID."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "DELETE",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "6d374845-fb98-4ce8-94d4-3c8b8fd72be8",
+              "name": "Not-interested mark removed",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "tools",
+                    "v1",
+                    "opportunities",
+                    ":opportunityId",
+                    "not_interested"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "opportunityId",
+                      "description": "(Required) Govly opportunity ID."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": {\n    \"id\": \"string\",\n    \"type\": \"opportunity\",\n    \"notInterested\": false\n  },\n  \"meta\": {\n    \"oppId\": \"string\",\n    \"undo\": true\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "b9298830-8ef6-47b8-842e-cce8d17be2fb",
+              "name": "Error response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "tools",
+                    "v1",
+                    "opportunities",
+                    ":opportunityId",
+                    "not_interested"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "opportunityId",
+                      "description": "(Required) Govly opportunity ID."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      }\n    },\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      }\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "88c67391-8c9f-47a4-91a2-b44c0f9d59fe",
+              "name": "Error response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "tools",
+                    "v1",
+                    "opportunities",
+                    ":opportunityId",
+                    "not_interested"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "opportunityId",
+                      "description": "(Required) Govly opportunity ID."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      }\n    },\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      }\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "d96a5628-4824-4064-8176-df6f4567ead6",
+              "name": "Error response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "tools",
+                    "v1",
+                    "opportunities",
+                    ":opportunityId",
+                    "not_interested"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "opportunityId",
+                      "description": "(Required) Govly opportunity ID."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      }\n    },\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      }\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "01849e5f-d21e-4427-a953-199e7a5e4005",
+              "name": "Error response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "tools",
+                    "v1",
+                    "opportunities",
+                    ":opportunityId",
+                    "not_interested"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "opportunityId",
+                      "description": "(Required) Govly opportunity ID."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+              "code": 422,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      }\n    },\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      }\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://app.govly.com",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearerToken}}"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "ca57cf80-efb2-40e7-895e-babb4c596c63",
+    "name": "Govly Tools API (Alpha) Awards Opportunities API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "ALPHA / UNSTABLE: This API is still in active development. Endpoint behavior, request fields, response fields, error codes, and operation names may change before the Tools API is declared stable.\nREST-callable tool surface for agent and automation workflows. Agents are the primary consumer, but integrations can be built on this API. Responses are JSON for typed clients; MCP tools may render action results into text-oriented formats separately.\n",
+      "type": "text/plain"
+    }
+  }
+}

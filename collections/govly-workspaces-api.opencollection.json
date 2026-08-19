@@ -1,0 +1,102 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Govly Tools API (Alpha) Awards Workspaces API",
+    "version": "1.0.0-alpha"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Workspaces",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List workspaces associated with an entity",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://app.govly.com/api/tools/v1/workspaces",
+            "params": [
+              {
+                "name": "associatedType",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "associatedId",
+                "value": "",
+                "type": "query"
+              }
+            ]
+          },
+          "docs": "List workspaces associated with an entity"
+        },
+        {
+          "info": {
+            "name": "Create a workspace",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://app.govly.com/api/tools/v1/workspaces",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Create a workspace"
+        },
+        {
+          "info": {
+            "name": "Show a workspace",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://app.govly.com/api/tools/v1/workspaces/:id",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Show a workspace"
+        },
+        {
+          "info": {
+            "name": "Update a workspace",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "https://app.govly.com/api/tools/v1/workspaces/:id",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Update a workspace"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

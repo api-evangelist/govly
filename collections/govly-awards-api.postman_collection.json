@@ -1,0 +1,635 @@
+{
+  "item": [
+    {
+      "id": "1ad36116-9e57-43ae-99e9-8ebba3cc8633",
+      "name": "Awards",
+      "description": {
+        "content": "Search and inspect awarded government contracts.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "002de2d6-5ee8-484d-b150-e556d7d27495",
+          "name": "Show an award",
+          "request": {
+            "name": "Show an award",
+            "description": {
+              "content": "Show a single awarded contract with transactions, sub-awards, related opportunities, program links, line items, places, classification codes, and contacts. The path parameter accepts either identifier shape: an all-digit value is treated as the Govly award database id; anything else is treated as the award uniqueKey (such as CONT_AWD_... or CONT_IDV_...).\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "tools",
+                "v1",
+                "awards",
+                ":id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "id",
+                  "description": "(Required) "
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "ece59a04-e3b6-4fcc-b74f-f7791ef915c7",
+              "name": "Award",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "tools",
+                    "v1",
+                    "awards",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": {\n    \"id\": \"string\",\n    \"uniqueKey\": \"string\",\n    \"displayName\": \"string\",\n    \"title\": \"string\",\n    \"identifier\": \"string\",\n    \"description\": \"string\",\n    \"aiSummary\": \"string\",\n    \"externalUrl\": \"string\",\n    \"awardUrl\": \"string\",\n    \"acquisitionType\": \"string\",\n    \"acquisitionCategory\": \"string\",\n    \"searchType\": \"international\",\n    \"treasuryAccountIds\": [\n      \"string\",\n      \"string\"\n    ],\n    \"dates\": {\n      \"awardedDate\": \"string\",\n      \"lastModifiedDate\": \"string\",\n      \"periodOfPerformanceStartDate\": \"string\",\n      \"periodOfPerformanceEndDate\": \"string\",\n      \"periodOfPerformancePotentialEndDate\": \"string\"\n    },\n    \"amounts\": {\n      \"awardAmount\": 7102.474908457982,\n      \"obligatedAmount\": 5060.157625970813,\n      \"paidAmount\": 2471.176230167693,\n      \"ceilingAmount\": 6005.935505392355\n    },\n    \"recipient\": {\n      \"name\": \"string\",\n      \"uniqueKey\": \"string\",\n      \"uei\": \"string\",\n      \"cageCode\": \"string\",\n      \"parentUniqueKey\": \"string\",\n      \"parentName\": \"string\"\n    },\n    \"buyer\": {\n      \"id\": \"string\",\n      \"name\": \"string\",\n      \"code\": \"string\"\n    },\n    \"buyingOffice\": {\n      \"id\": \"string\",\n      \"name\": \"string\",\n      \"code\": \"string\"\n    },\n    \"funder\": {\n      \"id\": \"string\",\n      \"name\": \"string\",\n      \"code\": \"string\"\n    },\n    \"fundingOffice\": {\n      \"id\": \"string\",\n      \"name\": \"string\",\n      \"code\": \"string\"\n    },\n    \"classification\": {\n      \"psc\": \"string\",\n      \"naics\": \"string\",\n      \"setAside\": {\n        \"id\": \"string\",\n        \"code\": \"string\",\n        \"name\": \"string\"\n      }\n    },\n    \"contractVehicle\": {\n      \"id\": \"string\",\n      \"slug\": \"string\",\n      \"name\": \"string\"\n    },\n    \"parentAward\": {\n      \"uniqueKey\": \"string\",\n      \"identifier\": \"string\"\n    },\n    \"jurisdiction\": {\n      \"id\": \"string\",\n      \"name\": \"string\",\n      \"isoCode\": \"string\"\n    },\n    \"subAwardsCount\": 9692\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "a97a4025-90d9-4a2f-93ca-23ede3bae512",
+              "name": "Error response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "tools",
+                    "v1",
+                    "awards",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      }\n    },\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      }\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "29f7fdd2-258f-4298-bd22-72d78cfd56a2",
+              "name": "Error response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "tools",
+                    "v1",
+                    "awards",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      }\n    },\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      }\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "4b04f145-910a-4efb-aabe-7e822853bb8a",
+              "name": "Error response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "tools",
+                    "v1",
+                    "awards",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      }\n    },\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      }\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "223f8937-a8c5-4f40-823b-b732d39a7ed7",
+          "name": "Search awards",
+          "request": {
+            "name": "Search awards",
+            "description": {
+              "content": "Search awarded government contracts with the constrained public parameter set shared by MCP search_awards. Searches all time unless dateRange is given. searchType defaults to the authenticated user's market focus (fed or sled); sled and international require the matching organization subscription.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "tools",
+                "v1",
+                "awards",
+                "search"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"<string>\",\n  \"cursor\": \"<string>\",\n  \"perPage\": 25,\n  \"searchType\": \"<string>\",\n  \"dateRange\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"recipientNames\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"buyerNames\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"funderNames\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"naics\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"psc\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"amountRange\": [\n    \"<number>\",\n    \"<number>\"\n  ],\n  \"sort\": \"<string>\",\n  \"sortDirection\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "63f1f11a-b34c-4c45-b857-5ce9e48b46eb",
+              "name": "Matching awards",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "tools",
+                    "v1",
+                    "awards",
+                    "search"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"query\": \"<string>\",\n  \"cursor\": \"<string>\",\n  \"perPage\": 25,\n  \"searchType\": \"<string>\",\n  \"dateRange\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"recipientNames\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"buyerNames\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"funderNames\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"naics\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"psc\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"amountRange\": [\n    \"<number>\",\n    \"<number>\"\n  ],\n  \"sort\": \"<string>\",\n  \"sortDirection\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": [\n    {\n      \"id\": \"string\",\n      \"uniqueKey\": \"string\",\n      \"displayName\": \"string\",\n      \"title\": \"string\",\n      \"identifier\": \"string\",\n      \"description\": \"string\",\n      \"aiSummary\": \"string\",\n      \"externalUrl\": \"string\",\n      \"awardUrl\": \"string\",\n      \"acquisitionType\": \"string\",\n      \"acquisitionCategory\": \"string\",\n      \"searchType\": \"sled\",\n      \"treasuryAccountIds\": [\n        \"string\",\n        \"string\"\n      ],\n      \"dates\": {\n        \"awardedDate\": \"string\",\n        \"lastModifiedDate\": \"string\",\n        \"periodOfPerformanceStartDate\": \"string\",\n        \"periodOfPerformanceEndDate\": \"string\",\n        \"periodOfPerformancePotentialEndDate\": \"string\"\n      },\n      \"amounts\": {\n        \"awardAmount\": 6041.03281670917,\n        \"obligatedAmount\": 8989.877622134656,\n        \"paidAmount\": 2487.3086059979764,\n        \"ceilingAmount\": 4154.161108568029\n      },\n      \"recipient\": {\n        \"name\": \"string\",\n        \"uniqueKey\": \"string\",\n        \"uei\": \"string\",\n        \"cageCode\": \"string\",\n        \"parentUniqueKey\": \"string\",\n        \"parentName\": \"string\"\n      },\n      \"buyer\": {\n        \"id\": \"string\",\n        \"name\": \"string\",\n        \"code\": \"string\"\n      },\n      \"buyingOffice\": {\n        \"id\": \"string\",\n        \"name\": \"string\",\n        \"code\": \"string\"\n      },\n      \"funder\": {\n        \"id\": \"string\",\n        \"name\": \"string\",\n        \"code\": \"string\"\n      },\n      \"fundingOffice\": {\n        \"id\": \"string\",\n        \"name\": \"string\",\n        \"code\": \"string\"\n      },\n      \"classification\": {\n        \"psc\": \"string\",\n        \"naics\": \"string\",\n        \"setAside\": {\n          \"id\": \"string\",\n          \"code\": \"string\",\n          \"name\": \"string\"\n        }\n      },\n      \"contractVehicle\": {\n        \"id\": \"string\",\n        \"slug\": \"string\",\n        \"name\": \"string\"\n      },\n      \"parentAward\": {\n        \"uniqueKey\": \"string\",\n        \"identifier\": \"string\"\n      },\n      \"jurisdiction\": {\n        \"id\": \"string\",\n        \"name\": \"string\",\n        \"isoCode\": \"string\"\n      },\n      \"subAwardsCount\": 6303\n    },\n    {\n      \"id\": \"string\",\n      \"uniqueKey\": \"string\",\n      \"displayName\": \"string\",\n      \"title\": \"string\",\n      \"identifier\": \"string\",\n      \"description\": \"string\",\n      \"aiSummary\": \"string\",\n      \"externalUrl\": \"string\",\n      \"awardUrl\": \"string\",\n      \"acquisitionType\": \"string\",\n      \"acquisitionCategory\": \"string\",\n      \"searchType\": \"fed\",\n      \"treasuryAccountIds\": [\n        \"string\",\n        \"string\"\n      ],\n      \"dates\": {\n        \"awardedDate\": \"string\",\n        \"lastModifiedDate\": \"string\",\n        \"periodOfPerformanceStartDate\": \"string\",\n        \"periodOfPerformanceEndDate\": \"string\",\n        \"periodOfPerformancePotentialEndDate\": \"string\"\n      },\n      \"amounts\": {\n        \"awardAmount\": 8401.14160050493,\n        \"obligatedAmount\": 4815.925206506196,\n        \"paidAmount\": 6271.095158535275,\n        \"ceilingAmount\": 7828.721091974591\n      },\n      \"recipient\": {\n        \"name\": \"string\",\n        \"uniqueKey\": \"string\",\n        \"uei\": \"string\",\n        \"cageCode\": \"string\",\n        \"parentUniqueKey\": \"string\",\n        \"parentName\": \"string\"\n      },\n      \"buyer\": {\n        \"id\": \"string\",\n        \"name\": \"string\",\n        \"code\": \"string\"\n      },\n      \"buyingOffice\": {\n        \"id\": \"string\",\n        \"name\": \"string\",\n        \"code\": \"string\"\n      },\n      \"funder\": {\n        \"id\": \"string\",\n        \"name\": \"string\",\n        \"code\": \"string\"\n      },\n      \"fundingOffice\": {\n        \"id\": \"string\",\n        \"name\": \"string\",\n        \"code\": \"string\"\n      },\n      \"classification\": {\n        \"psc\": \"string\",\n        \"naics\": \"string\",\n        \"setAside\": {\n          \"id\": \"string\",\n          \"code\": \"string\",\n          \"name\": \"string\"\n        }\n      },\n      \"contractVehicle\": {\n        \"id\": \"string\",\n        \"slug\": \"string\",\n        \"name\": \"string\"\n      },\n      \"parentAward\": {\n        \"uniqueKey\": \"string\",\n        \"identifier\": \"string\"\n      },\n      \"jurisdiction\": {\n        \"id\": \"string\",\n        \"name\": \"string\",\n        \"isoCode\": \"string\"\n      },\n      \"subAwardsCount\": 8341\n    }\n  ],\n  \"meta\": {\n    \"count\": 5913,\n    \"totalCount\": 8621,\n    \"perPage\": 523,\n    \"nextCursor\": \"string\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "8db07faf-dc92-4cbd-a6dc-3aff4b96c652",
+              "name": "Error response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "tools",
+                    "v1",
+                    "awards",
+                    "search"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"query\": \"<string>\",\n  \"cursor\": \"<string>\",\n  \"perPage\": 25,\n  \"searchType\": \"<string>\",\n  \"dateRange\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"recipientNames\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"buyerNames\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"funderNames\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"naics\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"psc\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"amountRange\": [\n    \"<number>\",\n    \"<number>\"\n  ],\n  \"sort\": \"<string>\",\n  \"sortDirection\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      }\n    },\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      }\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "62392d5e-79c5-436c-82e2-33030163e6a6",
+              "name": "Error response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "tools",
+                    "v1",
+                    "awards",
+                    "search"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"query\": \"<string>\",\n  \"cursor\": \"<string>\",\n  \"perPage\": 25,\n  \"searchType\": \"<string>\",\n  \"dateRange\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"recipientNames\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"buyerNames\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"funderNames\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"naics\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"psc\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"amountRange\": [\n    \"<number>\",\n    \"<number>\"\n  ],\n  \"sort\": \"<string>\",\n  \"sortDirection\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      }\n    },\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      }\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "28b11340-63ce-4128-b3f3-ac56ae054421",
+              "name": "Error response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "tools",
+                    "v1",
+                    "awards",
+                    "search"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"query\": \"<string>\",\n  \"cursor\": \"<string>\",\n  \"perPage\": 25,\n  \"searchType\": \"<string>\",\n  \"dateRange\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"recipientNames\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"buyerNames\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"funderNames\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"naics\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"psc\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"amountRange\": [\n    \"<number>\",\n    \"<number>\"\n  ],\n  \"sort\": \"<string>\",\n  \"sortDirection\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      }\n    },\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      }\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "f70d6e1a-390e-4049-b5a1-9dce469acc33",
+              "name": "Error response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "tools",
+                    "v1",
+                    "awards",
+                    "search"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"query\": \"<string>\",\n  \"cursor\": \"<string>\",\n  \"perPage\": 25,\n  \"searchType\": \"<string>\",\n  \"dateRange\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"recipientNames\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"buyerNames\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"funderNames\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"naics\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"psc\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"amountRange\": [\n    \"<number>\",\n    \"<number>\"\n  ],\n  \"sort\": \"<string>\",\n  \"sortDirection\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+              "code": 422,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      }\n    },\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      }\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://app.govly.com",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearerToken}}"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "96cd748b-f3e9-456e-b23c-f046e5fc4372",
+    "name": "Govly Tools API (Alpha) Awards API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "ALPHA / UNSTABLE: This API is still in active development. Endpoint behavior, request fields, response fields, error codes, and operation names may change before the Tools API is declared stable.\nREST-callable tool surface for agent and automation workflows. Agents are the primary consumer, but integrations can be built on this API. Responses are JSON for typed clients; MCP tools may render action results into text-oriented formats separately.\n",
+      "type": "text/plain"
+    }
+  }
+}

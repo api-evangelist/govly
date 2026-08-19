@@ -1,0 +1,57 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Govly Tools API (Alpha) Awards API",
+    "version": "1.0.0-alpha"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Awards",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Show an award",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://app.govly.com/api/tools/v1/awards/:id",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Show a single awarded contract with transactions, sub-awards, related opportunities, program links, line items, places, classification codes, and contacts. The path parameter accepts either identifier shape: an all-digit value is treated as the Govly award database id; anything else is treated as the award uniqueKey (such as CONT_AWD_... or CONT_IDV_...).\n"
+        },
+        {
+          "info": {
+            "name": "Search awards",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://app.govly.com/api/tools/v1/awards/search",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Search awarded government contracts with the constrained public parameter set shared by MCP search_awards. Searches all time unless dateRange is given. searchType defaults to the authenticated user's market focus (fed or sled); sled and international require the matching organization subscription.\n"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

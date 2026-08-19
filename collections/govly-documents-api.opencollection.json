@@ -1,0 +1,102 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Govly Tools API (Alpha) Awards Documents API",
+    "version": "1.0.0-alpha"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Documents",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Read bounded document content",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://app.govly.com/api/tools/v1/documents/read",
+            "params": [
+              {
+                "name": "documentType",
+                "value": "",
+                "type": "query",
+                "description": "Required with id for an initial read. Omit when continuing with cursor."
+              },
+              {
+                "name": "id",
+                "value": "",
+                "type": "query",
+                "description": "Required with documentType for an initial read. Omit when continuing with cursor."
+              },
+              {
+                "name": "representation",
+                "value": "",
+                "type": "query",
+                "description": "Initial-read representation. Omit when continuing with cursor."
+              },
+              {
+                "name": "maxChars",
+                "value": "",
+                "type": "query",
+                "description": "Maximum characters returned in this response."
+              },
+              {
+                "name": "cursor",
+                "value": "",
+                "type": "query",
+                "description": "Opaque continuation token from meta.nextCursor. May be combined only with maxChars."
+              },
+              {
+                "name": "pageStart",
+                "value": "",
+                "type": "query",
+                "description": "First PDF page to read, inclusive. Omit when continuing with cursor."
+              },
+              {
+                "name": "pageEnd",
+                "value": "",
+                "type": "query",
+                "description": "Last PDF page to read, inclusive. Omit when continuing with cursor."
+              }
+            ]
+          },
+          "docs": "Reads a bounded portion of an authorized document without creating an analysis or enqueueing extraction work. Start a read with documentType and id. Continue when meta.hasMore is true by sending only meta.nextCursor and, optionally, maxChars. Cursors are opaque, source-bound, and re-authorized on every request. Opportunity document IDs are OppAttachment.id values returned as opportunity attachment id; access is derived from any associated opportunity/source path visible to the caller rather than"
+        },
+        {
+          "info": {
+            "name": "Get a temporary original-file download",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://app.govly.com/api/tools/v1/documents/download",
+            "params": [
+              {
+                "name": "documentType",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "id",
+                "value": "",
+                "type": "query"
+              }
+            ]
+          },
+          "docs": "Returns a fresh presigned URL for the authorized original file. The URL expires at data.expiresAt. This operation is separate from document_read so reading representations never downloads the full file implicitly.\n"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

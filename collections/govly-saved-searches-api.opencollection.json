@@ -1,0 +1,93 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Govly Tools API (Alpha) Awards Saved Searches API",
+    "version": "1.0.0-alpha"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Saved Searches",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List opportunity saved searches",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://app.govly.com/api/tools/v1/opportunities/saved_searches",
+            "params": [
+              {
+                "name": "cursor",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "perPage",
+                "value": "",
+                "type": "query"
+              }
+            ]
+          },
+          "docs": "Latest match previews exclude prediction records."
+        },
+        {
+          "info": {
+            "name": "Show an opportunity saved search",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://app.govly.com/api/tools/v1/opportunities/saved_searches/:id",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Show an opportunity saved search"
+        },
+        {
+          "info": {
+            "name": "List cached opportunity results for a saved search",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://app.govly.com/api/tools/v1/opportunities/saved_searches/:savedSearchId/results",
+            "params": [
+              {
+                "name": "savedSearchId",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "cursor",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "perPage",
+                "value": "",
+                "type": "query"
+              }
+            ]
+          },
+          "docs": "Returns cached saved-search matches, excluding prediction records."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

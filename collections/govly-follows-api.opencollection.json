@@ -1,0 +1,39 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Govly Tools API (Alpha) Awards Follows API",
+    "version": "1.0.0-alpha"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Follows",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Follow a Govly entity",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://app.govly.com/api/tools/v1/follows",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Follow, track, or subscribe to changes for a Govly entity. For opportunities, this creates or reuses the default opportunity workspace and follows that workspace for the authenticated user.\n"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

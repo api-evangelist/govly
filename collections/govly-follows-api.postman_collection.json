@@ -1,0 +1,362 @@
+{
+  "item": [
+    {
+      "id": "df7eba8c-7176-443c-b1f4-44fba050cf19",
+      "name": "Follows",
+      "description": {
+        "content": "Follow opportunities and related workspace activity.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "422200fc-4aac-4864-a028-083f333413a5",
+          "name": "Follow a Govly entity",
+          "request": {
+            "name": "Follow a Govly entity",
+            "description": {
+              "content": "Follow, track, or subscribe to changes for a Govly entity. For opportunities, this creates or reuses the default opportunity workspace and follows that workspace for the authenticated user.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "tools",
+                "v1",
+                "follows"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"type\": \"<string>\",\n  \"id\": \"<string>\",\n  \"notifications\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "b9eeabb7-f5ab-4a3b-9524-d75e04e30e1b",
+              "name": "Active follow on the entity's default workspace",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "tools",
+                    "v1",
+                    "follows"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"type\": \"<string>\",\n  \"id\": \"<string>\",\n  \"notifications\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": {\n    \"workspace\": {\n      \"id\": \"string\",\n      \"name\": \"string\",\n      \"status\": {\n        \"category\": \"string\",\n        \"label\": \"string\"\n      },\n      \"description\": \"string\",\n      \"createdAt\": \"1976-08-16T02:46:07.132Z\",\n      \"updatedAt\": \"2012-10-29T11:41:00.348Z\",\n      \"commentsCount\": 2462,\n      \"primaryFocus\": {\n        \"type\": \"opportunity\",\n        \"id\": \"string\"\n      },\n      \"comments\": [\n        {\n          \"id\": \"string\",\n          \"body\": \"string\",\n          \"createdAt\": \"1978-08-23T13:19:44.365Z\",\n          \"attachments\": [\n            {\n              \"id\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"workspaceId\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"filename\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"commentId\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"contentType\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"byteSize\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"createdAt\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"file\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            },\n            {\n              \"id\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"workspaceId\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"filename\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"commentId\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"contentType\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"byteSize\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"createdAt\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"file\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            }\n          ],\n          \"updatedAt\": \"1999-03-28T16:16:34.659Z\"\n        },\n        {\n          \"id\": \"string\",\n          \"body\": \"string\",\n          \"createdAt\": \"1956-10-23T11:00:14.403Z\",\n          \"attachments\": [\n            {\n              \"id\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"workspaceId\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"filename\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"commentId\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"contentType\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"byteSize\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"createdAt\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"file\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            },\n            {\n              \"id\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"workspaceId\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"filename\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"commentId\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"contentType\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"byteSize\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"createdAt\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"file\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            }\n          ],\n          \"updatedAt\": \"2002-03-30T04:01:47.266Z\"\n        }\n      ],\n      \"attachments\": [\n        {\n          \"id\": \"string\",\n          \"workspaceId\": \"string\",\n          \"filename\": \"string\",\n          \"commentId\": \"string\",\n          \"contentType\": \"string\",\n          \"byteSize\": 4816,\n          \"createdAt\": \"1976-12-19T16:51:52.976Z\",\n          \"file\": {\n            \"url\": \"http://glFHrEjcnjIDJpqosSmJ.goO+3HccuRY\",\n            \"expiresAt\": \"1979-06-21T21:49:12.491Z\"\n          }\n        },\n        {\n          \"id\": \"string\",\n          \"workspaceId\": \"string\",\n          \"filename\": \"string\",\n          \"commentId\": \"string\",\n          \"contentType\": \"string\",\n          \"byteSize\": 6316,\n          \"createdAt\": \"2002-07-10T09:27:19.033Z\",\n          \"file\": {\n            \"url\": \"http://GUweWiJKyCpZDoR.yldoesuadjp8VrG4YLGi6XH0u4TbmUl4tj,ily-4ItNNMEeMgog0ngkuL\",\n            \"expiresAt\": \"1981-11-03T03:57:30.545Z\"\n          }\n        }\n      ]\n    },\n    \"membership\": {\n      \"id\": \"string\",\n      \"member\": {\n        \"type\": \"user\",\n        \"id\": \"string\",\n        \"name\": \"string\",\n        \"email\": \"wei4JK@BpOFRkS.io\",\n        \"organization\": {\n          \"id\": \"string\",\n          \"name\": \"string\"\n        }\n      },\n      \"state\": \"string\",\n      \"notifications\": \"string\",\n      \"createdAt\": \"1992-02-08T06:23:50.800Z\",\n      \"updatedAt\": \"2006-01-24T03:55:54.360Z\"\n    }\n  },\n  \"meta\": {\n    \"entityType\": \"string\",\n    \"entityId\": \"string\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "070fad17-7b1e-4353-af77-8b63a8ed2796",
+              "name": "Error response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "tools",
+                    "v1",
+                    "follows"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"type\": \"<string>\",\n  \"id\": \"<string>\",\n  \"notifications\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      }\n    },\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      }\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "c76e5652-b0f0-4513-99a3-85d2b612daf4",
+              "name": "Error response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "tools",
+                    "v1",
+                    "follows"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"type\": \"<string>\",\n  \"id\": \"<string>\",\n  \"notifications\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      }\n    },\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      }\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "4f819eef-a4e7-46cf-bcb5-cd5d36fd6a97",
+              "name": "Error response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "tools",
+                    "v1",
+                    "follows"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"type\": \"<string>\",\n  \"id\": \"<string>\",\n  \"notifications\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      }\n    },\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      }\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "22053865-ed1d-440f-b60d-6e59254dbf12",
+              "name": "Error response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "tools",
+                    "v1",
+                    "follows"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"type\": \"<string>\",\n  \"id\": \"<string>\",\n  \"notifications\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+              "code": 422,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      }\n    },\n    {\n      \"status\": \"string\",\n      \"code\": \"string\",\n      \"title\": \"string\",\n      \"detail\": \"string\",\n      \"source\": {\n        \"pointer\": \"string\"\n      }\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://app.govly.com",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearerToken}}"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "88035ee6-c07e-4c08-95d1-8c780f8b2523",
+    "name": "Govly Tools API (Alpha) Awards Follows API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "ALPHA / UNSTABLE: This API is still in active development. Endpoint behavior, request fields, response fields, error codes, and operation names may change before the Tools API is declared stable.\nREST-callable tool surface for agent and automation workflows. Agents are the primary consumer, but integrations can be built on this API. Responses are JSON for typed clients; MCP tools may render action results into text-oriented formats separately.\n",
+      "type": "text/plain"
+    }
+  }
+}
