@@ -219,6 +219,9 @@ apis:
   - type: APIReference
     url: https://docs.govly.com/api-reference/tools-v1/opportunities/search-opportunities
 common:
+- type: CapabilityMap
+  url: capabilities/govly-capability-edges.yml
+  name: Govly Business Capability Map
 - type: AgenticAccess
   url: agentic-access/govly-agentic-access.yml
 - type: DomainSecurity
