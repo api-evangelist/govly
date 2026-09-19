@@ -211,6 +211,8 @@ apis:
   humanURL: https://docs.govly.com/getting-started/introduction
   baseURL: https://app.govly.com
   tags:
+  - Workspace
+  tags_raw:
   - Workspaces
   properties:
   - type: OpenAPI
