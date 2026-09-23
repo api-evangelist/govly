@@ -1,12 +1,10 @@
-openapi: 3.1.0
+openapi: 3.2.0
 info:
-  title: Govly Tools API (Alpha) Awards Inbox API
+  title: Govly Tools API (Alpha) Inbox API
   version: 1.0.0-alpha
   description: 'ALPHA / UNSTABLE: This API is still in active development. Endpoint behavior, request fields, response fields, error codes, and operation names may change before the Tools API is declared stable.
 
-    REST-callable tool surface for agent and automation workflows. Agents are the primary consumer, but integrations can be built on this API. Responses are JSON for typed clients; MCP tools may render action results into text-oriented formats separately.
-
-    '
+    REST-callable tool surface for agent and automation workflows. Agents are the primary consumer, but integrations can be built on this API. Responses are JSON for typed clients; MCP tools may render action results into text-oriented formats separately.'
 servers:
 - url: https://app.govly.com
 security:
@@ -22,9 +20,7 @@ paths:
       - Inbox
       operationId: list_inbox_items
       summary: List inbox items
-      description: 'List the authenticated user''s active inbox items (Govly AI matches and saved-search matches), newest first.
-
-        '
+      description: List the authenticated user's active inbox items (Govly AI matches and saved-search matches), newest first.
       parameters:
       - $ref: '#/components/parameters/cursor'
       - $ref: '#/components/parameters/perPage'
@@ -57,9 +53,7 @@ paths:
       - Inbox
       operationId: search_inbox_items
       summary: Search inbox items
-      description: 'Full-text search and filter the authenticated user''s inbox items. Returns matchable-type aggregation counts.
-
-        '
+      description: Full-text search and filter the authenticated user's inbox items. Returns matchable-type aggregation counts.
       requestBody:
         required: false
         content:
@@ -181,9 +175,7 @@ paths:
       - Inbox
       operationId: accept_inbox_item
       summary: Accept (follow) an inbox item
-      description: 'Follow the underlying opportunity, award, or signal and create or reuse its default workspace. Accept is FINAL and cannot be reversed with restore. The response meta includes the resulting workspaceId.
-
-        '
+      description: Follow the underlying opportunity, award, or signal and create or reuse its default workspace. Accept is FINAL and cannot be reversed with restore. The response meta includes the resulting workspaceId.
       parameters:
       - $ref: '#/components/parameters/id'
       responses:
@@ -234,9 +226,7 @@ paths:
       - Inbox
       operationId: decline_inbox_item
       summary: Decline (reject) an inbox item as a bad fit
-      description: 'Mark the item a bad fit, optionally with a reason that feeds the organization''s matching-exclusions memory. Reversible with restore.
-
-        '
+      description: Mark the item a bad fit, optionally with a reason that feeds the organization's matching-exclusions memory. Reversible with restore.
       parameters:
       - $ref: '#/components/parameters/id'
       requestBody:
@@ -276,9 +266,7 @@ paths:
       - Inbox
       operationId: restore_inbox_item
       summary: Restore a dismissed or declined inbox item
-      description: 'Return a dismissed or bad-fit item to the active inbox. Only dismissed or bad-fit items can be restored — an accepted item cannot.
-
-        '
+      description: Return a dismissed or bad-fit item to the active inbox. Only dismissed or bad-fit items can be restored — an accepted item cannot.
       parameters:
       - $ref: '#/components/parameters/id'
       responses:
@@ -319,20 +307,19 @@ components:
         default: 25
         maximum: 100
   schemas:
-    InboxItemOrigin:
+    InboxSearchMeta:
       type: object
       required:
-      - sourceType
+      - total
+      - nextCursor
       properties:
-        sourceType:
-          type: string
-          enum:
-          - govly_ai
-          - saved_search
-        savedSearchId:
-          type: string
-        savedSearchName:
-          type: string
+        total:
+          type: integer
+          description: Total matching items (capped at 10000 by the search index).
+        nextCursor:
+          type:
+          - string
+          - 'null'
     CursorMeta:
       type: object
       required:
@@ -352,16 +339,6 @@ components:
           type:
           - string
           - 'null'
-    InboxAggregations:
-      type: object
-      required:
-      - matchableType
-      properties:
-        matchableType:
-          type: object
-          description: Count of matching items per matchable type.
-          additionalProperties:
-            type: integer
     InboxAcceptMeta:
       type: object
       required:
@@ -387,19 +364,27 @@ components:
         final:
           type: boolean
           description: Always true — accept is irreversible.
-    InboxSearchMeta:
+    InboxItemEnvelope:
       type: object
       required:
-      - total
-      - nextCursor
+      - data
       properties:
-        total:
-          type: integer
-          description: Total matching items (capped at 10000 by the search index).
-        nextCursor:
-          type:
-          - string
-          - 'null'
+        data:
+          $ref: '#/components/schemas/InboxItem'
+    InboxItemOrigin:
+      type: object
+      required:
+      - sourceType
+      properties:
+        sourceType:
+          type: string
+          enum:
+          - govly_ai
+          - saved_search
+        savedSearchId:
+          type: string
+        savedSearchName:
+          type: string
     InboxItem:
       type: object
       required:
@@ -487,13 +472,16 @@ components:
           description: Every source that surfaced this (deduped) item.
           items:
             $ref: '#/components/schemas/InboxItemOrigin'
-    InboxItemEnvelope:
+    InboxAggregations:
       type: object
       required:
-      - data
+      - matchableType
       properties:
-        data:
-          $ref: '#/components/schemas/InboxItem'
+        matchableType:
+          type: object
+          description: Count of matching items per matchable type.
+          additionalProperties:
+            type: integer
     ErrorEnvelope:
       type: object
       required:

@@ -1,12 +1,10 @@
-openapi: 3.1.0
+openapi: 3.2.0
 info:
-  title: Govly Tools API (Alpha) Awards Documents API
+  title: Govly Tools API (Alpha) Documents API
   version: 1.0.0-alpha
   description: 'ALPHA / UNSTABLE: This API is still in active development. Endpoint behavior, request fields, response fields, error codes, and operation names may change before the Tools API is declared stable.
 
-    REST-callable tool surface for agent and automation workflows. Agents are the primary consumer, but integrations can be built on this API. Responses are JSON for typed clients; MCP tools may render action results into text-oriented formats separately.
-
-    '
+    REST-callable tool surface for agent and automation workflows. Agents are the primary consumer, but integrations can be built on this API. Responses are JSON for typed clients; MCP tools may render action results into text-oriented formats separately.'
 servers:
 - url: https://app.govly.com
 security:
@@ -22,9 +20,7 @@ paths:
       - Documents
       operationId: document_read
       summary: Read bounded document content
-      description: 'Reads a bounded portion of an authorized document without creating an analysis or enqueueing extraction work. Start a read with documentType and id. Continue when meta.hasMore is true by sending only meta.nextCursor and, optionally, maxChars. Cursors are opaque, source-bound, and re-authorized on every request. Opportunity document IDs are OppAttachment.id values returned as opportunity attachment id; access is derived from any associated opportunity/source path visible to the caller rather than from a client-supplied opportunity ID. Use positioned_text only when data.availableRepresentations advertises it. PDF page ranges are supported with pageStart and pageEnd. Processing and representation_unavailable are successful structured states. Failed or unavailable extraction returns the standard 422 error envelope, inaccessible records return the standard 404 error envelope, and invalid parameters return the standard 422 error envelope.
-
-        '
+      description: Reads a bounded portion of an authorized document without creating an analysis or enqueueing extraction work. Start a read with documentType and id. Continue when meta.hasMore is true by sending only meta.nextCursor and, optionally, maxChars. Cursors are opaque, source-bound, and re-authorized on every request. Opportunity document IDs are OppAttachment.id values returned as opportunity attachment id; access is derived from any associated opportunity/source path visible to the caller rather than from a client-supplied opportunity ID. Use positioned_text only when data.availableRepresentations advertises it. PDF page ranges are supported with pageStart and pageEnd. Processing and representation_unavailable are successful structured states. Failed or unavailable extraction returns the standard 422 error envelope, inaccessible records return the standard 404 error envelope, and invalid parameters return the standard 422 error envelope.
       parameters:
       - name: documentType
         in: query
@@ -94,9 +90,7 @@ paths:
       - Documents
       operationId: document_download
       summary: Get a temporary original-file download
-      description: 'Returns a fresh presigned URL for the authorized original file. The URL expires at data.expiresAt. This operation is separate from document_read so reading representations never downloads the full file implicitly.
-
-        '
+      description: Returns a fresh presigned URL for the authorized original file. The URL expires at data.expiresAt. This operation is separate from document_read so reading representations never downloads the full file implicitly.
       parameters:
       - name: documentType
         in: query
@@ -125,6 +119,13 @@ paths:
           $ref: '#/components/responses/Error'
 components:
   schemas:
+    DocumentType:
+      type: string
+      enum:
+      - opportunity_attachment
+      - workspace_attachment
+      - session_attachment
+      - document
     DocumentReadMeta:
       allOf:
       - $ref: '#/components/schemas/ActionMeta'
@@ -229,27 +230,6 @@ components:
         pageEnd:
           type: integer
           minimum: 1
-    DocumentDownloadEnvelope:
-      type: object
-      required:
-      - data
-      properties:
-        data:
-          $ref: '#/components/schemas/DocumentDownload'
-    ActionMeta:
-      type: object
-      properties:
-        availableActions:
-          type: array
-          description: Structured hints for useful follow-up actions. These are advisory; clients should still rely on tool schemas and authorization.
-          items:
-            $ref: '#/components/schemas/AvailableAction'
-    DocumentRepresentation:
-      type: string
-      enum:
-      - text
-      - positioned_text
-      default: text
     DocumentDownload:
       type: object
       required:
@@ -276,13 +256,6 @@ components:
         expiresAt:
           type: string
           format: date-time
-    DocumentType:
-      type: string
-      enum:
-      - opportunity_attachment
-      - workspace_attachment
-      - session_attachment
-      - document
     DocumentReadEnvelope:
       type: object
       required:
@@ -293,6 +266,27 @@ components:
           $ref: '#/components/schemas/DocumentRead'
         meta:
           $ref: '#/components/schemas/DocumentReadMeta'
+    DocumentRepresentation:
+      type: string
+      enum:
+      - text
+      - positioned_text
+      default: text
+    ActionMeta:
+      type: object
+      properties:
+        availableActions:
+          type: array
+          description: Structured hints for useful follow-up actions. These are advisory; clients should still rely on tool schemas and authorization.
+          items:
+            $ref: '#/components/schemas/AvailableAction'
+    DocumentDownloadEnvelope:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          $ref: '#/components/schemas/DocumentDownload'
     ErrorEnvelope:
       type: object
       required:

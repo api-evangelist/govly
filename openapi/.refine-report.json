@@ -1,17 +1,7 @@
 {
   "provider": "govly",
   "sources": [
-    "govly-awards-api-openapi.yml",
-    "govly-documents-api-openapi.yml",
-    "govly-follows-api-openapi.yml",
-    "govly-inbox-api-openapi.yml",
-    "govly-opportunities-api-openapi.yml",
-    "govly-quote-submissions-api-openapi.yml",
-    "govly-saved-searches-api-openapi.yml",
-    "govly-workspace-attachments-api-openapi.yml",
-    "govly-workspace-comments-api-openapi.yml",
-    "govly-workspace-members-api-openapi.yml",
-    "govly-workspaces-api-openapi.yml"
+    "_original/govly-tools-v1-openapi-original.yml"
   ],
   "outputs": [
     "govly-awards-api-openapi.yml",
@@ -29,6 +19,22 @@
   "archived": [],
   "errors": [],
   "warnings": [],
-  "notes": [],
-  "skipped": []
+  "notes": [
+    "sourced from openapi/_original/ (1 archived document(s)); previously refined output at the top level was skipped rather than re-split",
+    "govly-tools-v1-openapi-original.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "apis.yml register: already-registered"
+  ],
+  "skipped": [
+    "govly-awards-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "govly-documents-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "govly-follows-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "govly-inbox-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "govly-opportunities-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "govly-quote-submissions-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "govly-saved-searches-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "govly-workspace-attachments-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "govly-workspace-comments-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "govly-workspace-members-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "govly-workspaces-api-openapi.yml: previously refined output, superseded by openapi/_original/"
+  ]
 }

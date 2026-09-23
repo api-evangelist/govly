@@ -1,12 +1,10 @@
-openapi: 3.1.0
+openapi: 3.2.0
 info:
-  title: Govly Tools API (Alpha) Awards Saved Searches API
+  title: Govly Tools API (Alpha) Saved Searches API
   version: 1.0.0-alpha
   description: 'ALPHA / UNSTABLE: This API is still in active development. Endpoint behavior, request fields, response fields, error codes, and operation names may change before the Tools API is declared stable.
 
-    REST-callable tool surface for agent and automation workflows. Agents are the primary consumer, but integrations can be built on this API. Responses are JSON for typed clients; MCP tools may render action results into text-oriented formats separately.
-
-    '
+    REST-callable tool surface for agent and automation workflows. Agents are the primary consumer, but integrations can be built on this API. Responses are JSON for typed clients; MCP tools may render action results into text-oriented formats separately.'
 servers:
 - url: https://app.govly.com
 security:
@@ -113,6 +111,132 @@ paths:
           $ref: '#/components/responses/Error'
 components:
   schemas:
+    OpportunitySource:
+      type: object
+      required:
+      - id
+      - attachments
+      properties:
+        id:
+          type: string
+        postedAt:
+          type: string
+          format: date-time
+        externalUrl:
+          type: string
+          format: uri
+        noticeType:
+          type: string
+        recordType:
+          type: string
+        attachments:
+          type: array
+          items:
+            $ref: '#/components/schemas/OpportunityAttachment'
+    OpportunityAttachment:
+      type: object
+      required:
+      - id
+      - documentType
+      - filename
+      - redacted
+      properties:
+        id:
+          type: string
+          description: Canonical OppAttachment.id. Pass this value to document_read and document_download.
+        documentType:
+          type: string
+          const: opportunity_attachment
+        filename:
+          type: string
+        contentType:
+          type: string
+        byteSize:
+          type: integer
+        redacted:
+          type: boolean
+        tags:
+          type: array
+          items:
+            type: string
+        file:
+          $ref: '#/components/schemas/AttachmentFile'
+    CursorMeta:
+      type: object
+      required:
+      - count
+      properties:
+        count:
+          type: integer
+          description: Number of records in this page.
+        totalCount:
+          type: integer
+          description: 'Total matching records (award search only), capped at 10,000 by the search engine. Pagination via nextCursor is not limited by this cap.
+
+            '
+        perPage:
+          type: integer
+        nextCursor:
+          type:
+          - string
+          - 'null'
+    AttachmentFile:
+      type: object
+      description: Presigned download metadata. Omitted when the attachment is redacted or URLs are excluded.
+      required:
+      - url
+      - expiresAt
+      properties:
+        url:
+          type: string
+          format: uri
+        expiresAt:
+          type: string
+          format: date-time
+    OpportunityWorkspace:
+      type: object
+      required:
+      - id
+      - name
+      - status
+      - followerCount
+      - follows
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        organizationDefault:
+          type: boolean
+        organization:
+          type: object
+          properties:
+            id:
+              type: string
+            name:
+              type: string
+        status:
+          type: object
+          required:
+          - category
+          - label
+          properties:
+            category:
+              type: string
+            label:
+              type: string
+        followerCount:
+          type: integer
+          description: Count of active follow rows on this workspace.
+        followedByCurrentUser:
+          type: boolean
+        followedByCurrentOrganization:
+          type: boolean
+        follows:
+          type: array
+          description: Active workspace follows. Inactive/unfollowed/disinterested rows are omitted.
+          items:
+            $ref: '#/components/schemas/WorkspaceMember'
     WorkspaceMember:
       type: object
       required:
@@ -156,56 +280,51 @@ components:
                   type: string
                 name:
                   type: string
-    OpportunityAttachment:
+    OppSearch:
       type: object
       required:
       - id
-      - documentType
-      - filename
-      - redacted
+      - name
+      - active
+      - criteria
       properties:
         id:
           type: string
-          description: Canonical OppAttachment.id. Pass this value to document_read and document_download.
-        documentType:
+        name:
           type: string
-          const: opportunity_attachment
-        filename:
-          type: string
-        contentType:
-          type: string
-        byteSize:
-          type: integer
-        redacted:
+        active:
           type: boolean
-        tags:
-          type: array
-          items:
-            type: string
-        file:
-          $ref: '#/components/schemas/AttachmentFile'
-    OpportunitySource:
-      type: object
-      required:
-      - id
-      - attachments
-      properties:
-        id:
-          type: string
-        postedAt:
+        criteria:
+          type: object
+          description: Stored search criteria for this saved search.
+        matchCount:
+          type: integer
+        lastMatchedAt:
           type: string
           format: date-time
-        externalUrl:
+        createdAt:
           type: string
-          format: uri
-        noticeType:
+          format: date-time
+        updatedAt:
           type: string
-        recordType:
+          format: date-time
+    OppSearchMatch:
+      type: object
+      required:
+      - id
+      - matchedAt
+      - savedSearchId
+      - opportunity
+      properties:
+        id:
           type: string
-        attachments:
-          type: array
-          items:
-            $ref: '#/components/schemas/OpportunityAttachment'
+        matchedAt:
+          type: string
+          format: date-time
+        savedSearchId:
+          type: string
+        opportunity:
+          $ref: '#/components/schemas/Opportunity'
     Opportunity:
       type: object
       required:
@@ -293,97 +412,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/OpportunitySource'
-    OppSearch:
-      type: object
-      required:
-      - id
-      - name
-      - active
-      - criteria
-      properties:
-        id:
-          type: string
-        name:
-          type: string
-        active:
-          type: boolean
-        criteria:
-          type: object
-          description: Stored search criteria for this saved search.
-        matchCount:
-          type: integer
-        lastMatchedAt:
-          type: string
-          format: date-time
-        createdAt:
-          type: string
-          format: date-time
-        updatedAt:
-          type: string
-          format: date-time
-    CursorMeta:
-      type: object
-      required:
-      - count
-      properties:
-        count:
-          type: integer
-          description: Number of records in this page.
-        totalCount:
-          type: integer
-          description: 'Total matching records (award search only), capped at 10,000 by the search engine. Pagination via nextCursor is not limited by this cap.
-
-            '
-        perPage:
-          type: integer
-        nextCursor:
-          type:
-          - string
-          - 'null'
-    OpportunityWorkspace:
-      type: object
-      required:
-      - id
-      - name
-      - status
-      - followerCount
-      - follows
-      properties:
-        id:
-          type: string
-        name:
-          type: string
-        organizationDefault:
-          type: boolean
-        organization:
-          type: object
-          properties:
-            id:
-              type: string
-            name:
-              type: string
-        status:
-          type: object
-          required:
-          - category
-          - label
-          properties:
-            category:
-              type: string
-            label:
-              type: string
-        followerCount:
-          type: integer
-          description: Count of active follow rows on this workspace.
-        followedByCurrentUser:
-          type: boolean
-        followedByCurrentOrganization:
-          type: boolean
-        follows:
-          type: array
-          description: Active workspace follows. Inactive/unfollowed/disinterested rows are omitted.
-          items:
-            $ref: '#/components/schemas/WorkspaceMember'
     ErrorEnvelope:
       type: object
       required:
@@ -412,36 +440,13 @@ components:
                 properties:
                   pointer:
                     type: string
-    OppSearchMatch:
-      type: object
-      required:
-      - id
-      - matchedAt
-      - savedSearchId
-      - opportunity
-      properties:
-        id:
-          type: string
-        matchedAt:
-          type: string
-          format: date-time
-        savedSearchId:
-          type: string
-        opportunity:
-          $ref: '#/components/schemas/Opportunity'
-    AttachmentFile:
-      type: object
-      description: Presigned download metadata. Omitted when the attachment is redacted or URLs are excluded.
-      required:
-      - url
-      - expiresAt
-      properties:
-        url:
-          type: string
-          format: uri
-        expiresAt:
-          type: string
-          format: date-time
+  responses:
+    Error:
+      description: Error response
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorEnvelope'
   parameters:
     cursor:
       name: cursor
@@ -449,14 +454,14 @@ components:
       required: false
       schema:
         type: string
-    savedSearchId:
-      name: savedSearchId
+    id:
+      name: id
       in: path
       required: true
       schema:
         type: string
-    id:
-      name: id
+    savedSearchId:
+      name: savedSearchId
       in: path
       required: true
       schema:
@@ -469,13 +474,6 @@ components:
         type: integer
         default: 25
         maximum: 100
-  responses:
-    Error:
-      description: Error response
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorEnvelope'
   securitySchemes:
     bearerApiKey:
       type: http

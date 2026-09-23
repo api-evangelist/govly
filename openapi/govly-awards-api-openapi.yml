@@ -1,12 +1,10 @@
-openapi: 3.1.0
+openapi: 3.2.0
 info:
   title: Govly Tools API (Alpha) Awards API
   version: 1.0.0-alpha
   description: 'ALPHA / UNSTABLE: This API is still in active development. Endpoint behavior, request fields, response fields, error codes, and operation names may change before the Tools API is declared stable.
 
-    REST-callable tool surface for agent and automation workflows. Agents are the primary consumer, but integrations can be built on this API. Responses are JSON for typed clients; MCP tools may render action results into text-oriented formats separately.
-
-    '
+    REST-callable tool surface for agent and automation workflows. Agents are the primary consumer, but integrations can be built on this API. Responses are JSON for typed clients; MCP tools may render action results into text-oriented formats separately.'
 servers:
 - url: https://app.govly.com
 security:
@@ -22,9 +20,7 @@ paths:
       - Awards
       operationId: show_award
       summary: Show an award
-      description: 'Show a single awarded contract with transactions, sub-awards, related opportunities, program links, line items, places, classification codes, and contacts. The path parameter accepts either identifier shape: an all-digit value is treated as the Govly award database id; anything else is treated as the award uniqueKey (such as CONT_AWD_... or CONT_IDV_...).
-
-        '
+      description: 'Show a single awarded contract with transactions, sub-awards, related opportunities, program links, line items, places, classification codes, and contacts. The path parameter accepts either identifier shape: an all-digit value is treated as the Govly award database id; anything else is treated as the award uniqueKey (such as CONT_AWD_... or CONT_IDV_...).'
       parameters:
       - $ref: '#/components/parameters/id'
       responses:
@@ -51,9 +47,7 @@ paths:
       - Awards
       operationId: search_awards
       summary: Search awards
-      description: 'Search awarded government contracts with the constrained public parameter set shared by MCP search_awards. Searches all time unless dateRange is given. searchType defaults to the authenticated user''s market focus (fed or sled); sled and international require the matching organization subscription.
-
-        '
+      description: Search awarded government contracts with the constrained public parameter set shared by MCP search_awards. Searches all time unless dateRange is given. searchType defaults to the authenticated user's market focus (fed or sled); sled and international require the matching organization subscription.
       requestBody:
         required: false
         content:
@@ -171,6 +165,25 @@ components:
           type: string
         code:
           type: string
+    CursorMeta:
+      type: object
+      required:
+      - count
+      properties:
+        count:
+          type: integer
+          description: Number of records in this page.
+        totalCount:
+          type: integer
+          description: 'Total matching records (award search only), capped at 10,000 by the search engine. Pagination via nextCursor is not limited by this cap.
+
+            '
+        perPage:
+          type: integer
+        nextCursor:
+          type:
+          - string
+          - 'null'
     Award:
       type: object
       required:
@@ -343,25 +356,6 @@ components:
           description: Detail only. Up to 100 associated contacts (id, name, email).
           items:
             type: object
-    CursorMeta:
-      type: object
-      required:
-      - count
-      properties:
-        count:
-          type: integer
-          description: Number of records in this page.
-        totalCount:
-          type: integer
-          description: 'Total matching records (award search only), capped at 10,000 by the search engine. Pagination via nextCursor is not limited by this cap.
-
-            '
-        perPage:
-          type: integer
-        nextCursor:
-          type:
-          - string
-          - 'null'
     ErrorEnvelope:
       type: object
       required:

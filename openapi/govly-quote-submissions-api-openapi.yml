@@ -1,12 +1,10 @@
-openapi: 3.1.0
+openapi: 3.2.0
 info:
-  title: Govly Tools API (Alpha) Awards Quote Submissions API
+  title: Govly Tools API (Alpha) Quote Submissions API
   version: 1.0.0-alpha
   description: 'ALPHA / UNSTABLE: This API is still in active development. Endpoint behavior, request fields, response fields, error codes, and operation names may change before the Tools API is declared stable.
 
-    REST-callable tool surface for agent and automation workflows. Agents are the primary consumer, but integrations can be built on this API. Responses are JSON for typed clients; MCP tools may render action results into text-oriented formats separately.
-
-    '
+    REST-callable tool surface for agent and automation workflows. Agents are the primary consumer, but integrations can be built on this API. Responses are JSON for typed clients; MCP tools may render action results into text-oriented formats separately.'
 servers:
 - url: https://app.govly.com
 security:
@@ -22,9 +20,7 @@ paths:
       - Quote Submissions
       operationId: get_quote_submission_requirements
       summary: Check quote submission requirements
-      description: 'Returns portal-specific quote submission requirements and blocking reasons for the authenticated actor and workspace.
-
-        '
+      description: Returns portal-specific quote submission requirements and blocking reasons for the authenticated actor and workspace.
       parameters:
       - name: workspaceId
         in: query
@@ -78,9 +74,7 @@ paths:
       - Quote Submissions
       operationId: create_quote_submission
       summary: Submit a quote
-      description: 'Submit a quote to the portal for an opportunity workspace. Upload the quote file to the workspace attachments endpoint first, then pass the returned workspaceAttachmentId here. The response returns a submission ID that can be polled with show_quote_submission.
-
-        '
+      description: Submit a quote to the portal for an opportunity workspace. Upload the quote file to the workspace attachments endpoint first, then pass the returned workspaceAttachmentId here. The response returns a submission ID that can be polled with show_quote_submission.
       requestBody:
         required: true
         content:
@@ -124,9 +118,7 @@ paths:
       - Quote Submissions
       operationId: show_quote_submission
       summary: Show quote submission status
-      description: 'Poll this endpoint after create_quote_submission until meta.terminal is true. Completed submissions include confirmation details when the portal returns them; failed submissions include failureReason when available.
-
-        '
+      description: Poll this endpoint after create_quote_submission until meta.terminal is true. Completed submissions include confirmation details when the portal returns them; failed submissions include failureReason when available.
       parameters:
       - $ref: '#/components/parameters/id'
       responses:
@@ -146,18 +138,6 @@ paths:
           $ref: '#/components/responses/Error'
 components:
   schemas:
-    QuoteSubmissionField:
-      type: object
-      required:
-      - name
-      - type
-      properties:
-        name:
-          type: string
-        type:
-          type: string
-        description:
-          type: string
     QuoteSubmissionFileRules:
       type: object
       required:
@@ -184,6 +164,49 @@ components:
         retryable:
           type: boolean
           description: Present for failed submissions when creating a new submission is reasonable.
+    QuoteSubmissionBlockingReason:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          enum:
+          - quote_submission_not_available_for_portal
+          - missing_or_inactive_portal_account
+          - workspace_not_linked_to_opportunity
+        message:
+          type: string
+    AttachmentFile:
+      type: object
+      description: Presigned download metadata. Omitted when the attachment is redacted or URLs are excluded.
+      required:
+      - url
+      - expiresAt
+      properties:
+        url:
+          type: string
+          format: uri
+        expiresAt:
+          type: string
+          format: date-time
+    QuoteSubmissionAttachment:
+      type: object
+      required:
+      - id
+      - filename
+      properties:
+        id:
+          type: string
+        filename:
+          type: string
+        contentType:
+          type: string
+        byteSize:
+          type: integer
+        file:
+          $ref: '#/components/schemas/AttachmentFile'
     QuoteSubmission:
       type: object
       required:
@@ -234,51 +257,18 @@ components:
           $ref: '#/components/schemas/QuoteSubmissionAttachment'
         evidence:
           $ref: '#/components/schemas/QuoteSubmissionAttachment'
-    CountMeta:
+    QuoteSubmissionField:
       type: object
       required:
-      - count
+      - name
+      - type
       properties:
-        count:
-          type: integer
-    QuoteSubmissionListEnvelope:
-      type: object
-      required:
-      - data
-      - meta
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/QuoteSubmission'
-        meta:
-          $ref: '#/components/schemas/CountMeta'
-    QuoteSubmissionAttachment:
-      type: object
-      required:
-      - id
-      - filename
-      properties:
-        id:
+        name:
           type: string
-        filename:
+        type:
           type: string
-        contentType:
+        description:
           type: string
-        byteSize:
-          type: integer
-        file:
-          $ref: '#/components/schemas/AttachmentFile'
-    QuoteSubmissionEnvelope:
-      type: object
-      required:
-      - data
-      - meta
-      properties:
-        data:
-          $ref: '#/components/schemas/QuoteSubmission'
-        meta:
-          $ref: '#/components/schemas/QuoteSubmissionStatusMeta'
     QuoteSubmissionRequirements:
       type: object
       required:
@@ -312,6 +302,25 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/QuoteSubmissionBlockingReason'
+    CountMeta:
+      type: object
+      required:
+      - count
+      properties:
+        count:
+          type: integer
+    QuoteSubmissionListEnvelope:
+      type: object
+      required:
+      - data
+      - meta
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/QuoteSubmission'
+        meta:
+          $ref: '#/components/schemas/CountMeta'
     QuoteSubmissionRequirementsEnvelope:
       type: object
       required:
@@ -319,6 +328,16 @@ components:
       properties:
         data:
           $ref: '#/components/schemas/QuoteSubmissionRequirements'
+    QuoteSubmissionEnvelope:
+      type: object
+      required:
+      - data
+      - meta
+      properties:
+        data:
+          $ref: '#/components/schemas/QuoteSubmission'
+        meta:
+          $ref: '#/components/schemas/QuoteSubmissionStatusMeta'
     ErrorEnvelope:
       type: object
       required:
@@ -347,40 +366,6 @@ components:
                 properties:
                   pointer:
                     type: string
-    QuoteSubmissionBlockingReason:
-      type: object
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: string
-          enum:
-          - quote_submission_not_available_for_portal
-          - missing_or_inactive_portal_account
-          - workspace_not_linked_to_opportunity
-        message:
-          type: string
-    AttachmentFile:
-      type: object
-      description: Presigned download metadata. Omitted when the attachment is redacted or URLs are excluded.
-      required:
-      - url
-      - expiresAt
-      properties:
-        url:
-          type: string
-          format: uri
-        expiresAt:
-          type: string
-          format: date-time
-  parameters:
-    id:
-      name: id
-      in: path
-      required: true
-      schema:
-        type: string
   responses:
     Error:
       description: Error response
@@ -388,6 +373,13 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/ErrorEnvelope'
+  parameters:
+    id:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: string
   securitySchemes:
     bearerApiKey:
       type: http
