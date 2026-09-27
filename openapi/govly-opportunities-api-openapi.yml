@@ -243,96 +243,49 @@ paths:
           $ref: '#/components/responses/Error'
 components:
   schemas:
-    OpportunitySource:
+    WorkspaceMember:
       type: object
       required:
       - id
-      - attachments
+      - member
       properties:
         id:
           type: string
-        postedAt:
+        state:
+          type: string
+        notifications:
+          type: string
+        createdAt:
           type: string
           format: date-time
-        externalUrl:
+        updatedAt:
           type: string
-          format: uri
-        noticeType:
-          type: string
-        recordType:
-          type: string
-        attachments:
-          type: array
-          items:
-            $ref: '#/components/schemas/OpportunityAttachment'
-    OpportunityAttachment:
-      type: object
-      required:
-      - id
-      - documentType
-      - filename
-      - redacted
-      properties:
-        id:
-          type: string
-          description: Canonical OppAttachment.id. Pass this value to document_read and document_download.
-        documentType:
-          type: string
-          const: opportunity_attachment
-        filename:
-          type: string
-        contentType:
-          type: string
-        byteSize:
-          type: integer
-        redacted:
-          type: boolean
-        tags:
-          type: array
-          items:
-            type: string
-        file:
-          $ref: '#/components/schemas/AttachmentFile'
-    AvailableAction:
-      type: object
-      required:
-      - name
-      - description
-      - arguments
-      - idPaths
-      properties:
-        name:
-          type: string
-          description: MCP/tool operation name.
-        description:
-          type: string
-        arguments:
+          format: date-time
+        member:
           type: object
-          description: Static arguments to pass to the action.
-        idPaths:
-          type: array
-          description: JSON paths where IDs for this action can be found in the current response.
-          items:
-            type: string
-    CursorMeta:
-      type: object
-      required:
-      - count
-      properties:
-        count:
-          type: integer
-          description: Number of records in this page.
-        totalCount:
-          type: integer
-          description: 'Total matching records (award search only), capped at 10,000 by the search engine. Pagination via nextCursor is not limited by this cap.
-
-            '
-        perPage:
-          type: integer
-        nextCursor:
-          type:
-          - string
-          - 'null'
+          required:
+          - type
+          - id
+          properties:
+            type:
+              type: string
+              enum:
+              - user
+              - team
+            id:
+              type: string
+            name:
+              type: string
+            email:
+              type: string
+              format: email
+            organization:
+              type: object
+              properties:
+                id:
+                  type: string
+                name:
+                  type: string
     AttachmentFile:
       type: object
       description: Presigned download metadata. Omitted when the attachment is redacted or URLs are excluded.
@@ -390,49 +343,83 @@ components:
           description: Active workspace follows. Inactive/unfollowed/disinterested rows are omitted.
           items:
             $ref: '#/components/schemas/WorkspaceMember'
-    WorkspaceMember:
+    OpportunitySource:
       type: object
       required:
       - id
-      - member
+      - attachments
       properties:
         id:
           type: string
-        state:
-          type: string
-        notifications:
-          type: string
-        createdAt:
+        postedAt:
           type: string
           format: date-time
-        updatedAt:
+        externalUrl:
           type: string
-          format: date-time
-        member:
-          type: object
-          required:
-          - type
-          - id
-          properties:
-            type:
-              type: string
-              enum:
-              - user
-              - team
-            id:
-              type: string
-            name:
-              type: string
-            email:
-              type: string
-              format: email
-            organization:
-              type: object
-              properties:
-                id:
-                  type: string
-                name:
-                  type: string
+          format: uri
+        noticeType:
+          type: string
+        recordType:
+          type: string
+        attachments:
+          type: array
+          items:
+            $ref: '#/components/schemas/OpportunityAttachment'
+    CursorMeta:
+      type: object
+      required:
+      - count
+      properties:
+        count:
+          type: integer
+          description: Number of records in this page.
+        totalCount:
+          type: integer
+          description: 'Total matching records (award search only), capped at 10,000 by the search engine. Pagination via nextCursor is not limited by this cap.
+
+            '
+        perPage:
+          type: integer
+        nextCursor:
+          type:
+          - string
+          - 'null'
+    OpportunityAttachment:
+      type: object
+      required:
+      - id
+      - documentType
+      - filename
+      - redacted
+      properties:
+        id:
+          type: string
+          description: Canonical OppAttachment.id. Pass this value to document_read and document_download.
+        documentType:
+          type: string
+          const: opportunity_attachment
+        filename:
+          type: string
+        contentType:
+          type: string
+        byteSize:
+          type: integer
+        redacted:
+          type: boolean
+        tags:
+          type: array
+          items:
+            type: string
+        file:
+          $ref: '#/components/schemas/AttachmentFile'
+    ActionMeta:
+      type: object
+      properties:
+        availableActions:
+          type: array
+          description: Structured hints for useful follow-up actions. These are advisory; clients should still rely on tool schemas and authorization.
+          items:
+            $ref: '#/components/schemas/AvailableAction'
     Opportunity:
       type: object
       required:
@@ -520,14 +507,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/OpportunitySource'
-    ActionMeta:
-      type: object
-      properties:
-        availableActions:
-          type: array
-          description: Structured hints for useful follow-up actions. These are advisory; clients should still rely on tool schemas and authorization.
-          items:
-            $ref: '#/components/schemas/AvailableAction'
     NotInterestedResult:
       type: object
       required:
@@ -557,13 +536,6 @@ components:
               type: string
             undo:
               type: boolean
-    CountMeta:
-      type: object
-      required:
-      - count
-      properties:
-        count:
-          type: integer
     ErrorEnvelope:
       type: object
       required:
@@ -592,6 +564,34 @@ components:
                 properties:
                   pointer:
                     type: string
+    AvailableAction:
+      type: object
+      required:
+      - name
+      - description
+      - arguments
+      - idPaths
+      properties:
+        name:
+          type: string
+          description: MCP/tool operation name.
+        description:
+          type: string
+        arguments:
+          type: object
+          description: Static arguments to pass to the action.
+        idPaths:
+          type: array
+          description: JSON paths where IDs for this action can be found in the current response.
+          items:
+            type: string
+    CountMeta:
+      type: object
+      required:
+      - count
+      properties:
+        count:
+          type: integer
   responses:
     Error:
       description: Error response

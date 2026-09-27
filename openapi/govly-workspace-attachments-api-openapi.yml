@@ -101,20 +101,6 @@ paths:
         '422':
           $ref: '#/components/responses/Error'
 components:
-  parameters:
-    workspaceId:
-      name: workspaceId
-      in: path
-      required: true
-      schema:
-        type: string
-  responses:
-    Error:
-      description: Error response
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorEnvelope'
   schemas:
     AttachmentFile:
       type: object
@@ -129,13 +115,6 @@ components:
         expiresAt:
           type: string
           format: date-time
-    CountMeta:
-      type: object
-      required:
-      - count
-      properties:
-        count:
-          type: integer
     WorkspaceAttachment:
       type: object
       required:
@@ -190,6 +169,27 @@ components:
                 properties:
                   pointer:
                     type: string
+    CountMeta:
+      type: object
+      required:
+      - count
+      properties:
+        count:
+          type: integer
+  parameters:
+    workspaceId:
+      name: workspaceId
+      in: path
+      required: true
+      schema:
+        type: string
+  responses:
+    Error:
+      description: Error response
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorEnvelope'
   securitySchemes:
     bearerApiKey:
       type: http

@@ -60,20 +60,6 @@ paths:
         '422':
           $ref: '#/components/responses/Error'
 components:
-  responses:
-    Error:
-      description: Error response
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorEnvelope'
-  parameters:
-    workspaceId:
-      name: workspaceId
-      in: path
-      required: true
-      schema:
-        type: string
   schemas:
     AttachmentFile:
       type: object
@@ -86,30 +72,6 @@ components:
           type: string
           format: uri
         expiresAt:
-          type: string
-          format: date-time
-    Comment:
-      type: object
-      required:
-      - id
-      - body
-      - createdAt
-      - attachments
-      properties:
-        id:
-          type: string
-        body:
-          type: string
-          description: Markdown body for the comment.
-        attachments:
-          type: array
-          description: Workspace attachments tied to this comment.
-          items:
-            $ref: '#/components/schemas/WorkspaceAttachment'
-        createdAt:
-          type: string
-          format: date-time
-        updatedAt:
           type: string
           format: date-time
     WorkspaceAttachment:
@@ -138,6 +100,30 @@ components:
         file:
           description: Present only on the workspace attachments endpoint. Workspace show responses surface attachments without download metadata.
           $ref: '#/components/schemas/AttachmentFile'
+    Comment:
+      type: object
+      required:
+      - id
+      - body
+      - createdAt
+      - attachments
+      properties:
+        id:
+          type: string
+        body:
+          type: string
+          description: Markdown body for the comment.
+        attachments:
+          type: array
+          description: Workspace attachments tied to this comment.
+          items:
+            $ref: '#/components/schemas/WorkspaceAttachment'
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
     ErrorEnvelope:
       type: object
       required:
@@ -166,6 +152,20 @@ components:
                 properties:
                   pointer:
                     type: string
+  parameters:
+    workspaceId:
+      name: workspaceId
+      in: path
+      required: true
+      schema:
+        type: string
+  responses:
+    Error:
+      description: Error response
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorEnvelope'
   securitySchemes:
     bearerApiKey:
       type: http

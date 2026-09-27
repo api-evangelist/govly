@@ -126,29 +126,12 @@ components:
       - workspace_attachment
       - session_attachment
       - document
-    DocumentReadMeta:
-      allOf:
-      - $ref: '#/components/schemas/ActionMeta'
-      - type: object
-        required:
-        - hasMore
-        - nextCursor
-        properties:
-          totalLength:
-            type: integer
-          returnedLength:
-            type: integer
-          pageCount:
-            type: integer
-          contentRange:
-            $ref: '#/components/schemas/DocumentContentRange'
-          hasMore:
-            type: boolean
-          nextCursor:
-            type:
-            - string
-            - 'null'
-            description: Opaque continuation token. Present only in meta and non-null when hasMore is true.
+    DocumentRepresentation:
+      type: string
+      enum:
+      - text
+      - positioned_text
+      default: text
     DocumentRead:
       type: object
       required:
@@ -197,81 +180,6 @@ components:
         message:
           type: string
           description: Guidance when extraction is processing or a requested representation is unavailable.
-    AvailableAction:
-      type: object
-      required:
-      - name
-      - description
-      - arguments
-      - idPaths
-      properties:
-        name:
-          type: string
-          description: MCP/tool operation name.
-        description:
-          type: string
-        arguments:
-          type: object
-          description: Static arguments to pass to the action.
-        idPaths:
-          type: array
-          description: JSON paths where IDs for this action can be found in the current response.
-          items:
-            type: string
-    DocumentContentRange:
-      type: object
-      required:
-      - pageStart
-      - pageEnd
-      properties:
-        pageStart:
-          type: integer
-          minimum: 1
-        pageEnd:
-          type: integer
-          minimum: 1
-    DocumentDownload:
-      type: object
-      required:
-      - id
-      - documentType
-      - filename
-      - url
-      - expiresAt
-      properties:
-        id:
-          type: string
-        documentType:
-          $ref: '#/components/schemas/DocumentType'
-        filename:
-          type: string
-        contentType:
-          type: string
-        byteSize:
-          type: integer
-        url:
-          type: string
-          format: uri
-          description: Temporary presigned URL for the original file.
-        expiresAt:
-          type: string
-          format: date-time
-    DocumentReadEnvelope:
-      type: object
-      required:
-      - data
-      - meta
-      properties:
-        data:
-          $ref: '#/components/schemas/DocumentRead'
-        meta:
-          $ref: '#/components/schemas/DocumentReadMeta'
-    DocumentRepresentation:
-      type: string
-      enum:
-      - text
-      - positioned_text
-      default: text
     ActionMeta:
       type: object
       properties:
@@ -280,13 +188,6 @@ components:
           description: Structured hints for useful follow-up actions. These are advisory; clients should still rely on tool schemas and authorization.
           items:
             $ref: '#/components/schemas/AvailableAction'
-    DocumentDownloadEnvelope:
-      type: object
-      required:
-      - data
-      properties:
-        data:
-          $ref: '#/components/schemas/DocumentDownload'
     ErrorEnvelope:
       type: object
       required:
@@ -315,6 +216,105 @@ components:
                 properties:
                   pointer:
                     type: string
+    DocumentReadMeta:
+      allOf:
+      - $ref: '#/components/schemas/ActionMeta'
+      - type: object
+        required:
+        - hasMore
+        - nextCursor
+        properties:
+          totalLength:
+            type: integer
+          returnedLength:
+            type: integer
+          pageCount:
+            type: integer
+          contentRange:
+            $ref: '#/components/schemas/DocumentContentRange'
+          hasMore:
+            type: boolean
+          nextCursor:
+            type:
+            - string
+            - 'null'
+            description: Opaque continuation token. Present only in meta and non-null when hasMore is true.
+    DocumentReadEnvelope:
+      type: object
+      required:
+      - data
+      - meta
+      properties:
+        data:
+          $ref: '#/components/schemas/DocumentRead'
+        meta:
+          $ref: '#/components/schemas/DocumentReadMeta'
+    DocumentDownload:
+      type: object
+      required:
+      - id
+      - documentType
+      - filename
+      - url
+      - expiresAt
+      properties:
+        id:
+          type: string
+        documentType:
+          $ref: '#/components/schemas/DocumentType'
+        filename:
+          type: string
+        contentType:
+          type: string
+        byteSize:
+          type: integer
+        url:
+          type: string
+          format: uri
+          description: Temporary presigned URL for the original file.
+        expiresAt:
+          type: string
+          format: date-time
+    AvailableAction:
+      type: object
+      required:
+      - name
+      - description
+      - arguments
+      - idPaths
+      properties:
+        name:
+          type: string
+          description: MCP/tool operation name.
+        description:
+          type: string
+        arguments:
+          type: object
+          description: Static arguments to pass to the action.
+        idPaths:
+          type: array
+          description: JSON paths where IDs for this action can be found in the current response.
+          items:
+            type: string
+    DocumentDownloadEnvelope:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          $ref: '#/components/schemas/DocumentDownload'
+    DocumentContentRange:
+      type: object
+      required:
+      - pageStart
+      - pageEnd
+      properties:
+        pageStart:
+          type: integer
+          minimum: 1
+        pageEnd:
+          type: integer
+          minimum: 1
   responses:
     Error:
       description: Error response

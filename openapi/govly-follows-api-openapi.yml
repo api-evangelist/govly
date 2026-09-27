@@ -79,14 +79,153 @@ paths:
         '422':
           $ref: '#/components/responses/Error'
 components:
-  responses:
-    Error:
-      description: Error response
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorEnvelope'
   schemas:
+    WorkspaceMember:
+      type: object
+      required:
+      - id
+      - member
+      properties:
+        id:
+          type: string
+        state:
+          type: string
+        notifications:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        member:
+          type: object
+          required:
+          - type
+          - id
+          properties:
+            type:
+              type: string
+              enum:
+              - user
+              - team
+            id:
+              type: string
+            name:
+              type: string
+            email:
+              type: string
+              format: email
+            organization:
+              type: object
+              properties:
+                id:
+                  type: string
+                name:
+                  type: string
+    AttachmentFile:
+      type: object
+      description: Presigned download metadata. Omitted when the attachment is redacted or URLs are excluded.
+      required:
+      - url
+      - expiresAt
+      properties:
+        url:
+          type: string
+          format: uri
+        expiresAt:
+          type: string
+          format: date-time
+    WorkspaceAttachment:
+      type: object
+      required:
+      - id
+      - workspaceId
+      - filename
+      properties:
+        id:
+          type: string
+        workspaceId:
+          type: string
+        commentId:
+          type: string
+          nullable: true
+        filename:
+          type: string
+        contentType:
+          type: string
+        byteSize:
+          type: integer
+        createdAt:
+          type: string
+          format: date-time
+        file:
+          description: Present only on the workspace attachments endpoint. Workspace show responses surface attachments without download metadata.
+          $ref: '#/components/schemas/AttachmentFile'
+    AssociatedEntity:
+      type: object
+      required:
+      - type
+      - id
+      properties:
+        type:
+          type: string
+          enum:
+          - opportunity
+        id:
+          type: string
+    Comment:
+      type: object
+      required:
+      - id
+      - body
+      - createdAt
+      - attachments
+      properties:
+        id:
+          type: string
+        body:
+          type: string
+          description: Markdown body for the comment.
+        attachments:
+          type: array
+          description: Workspace attachments tied to this comment.
+          items:
+            $ref: '#/components/schemas/WorkspaceAttachment'
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    ErrorEnvelope:
+      type: object
+      required:
+      - errors
+      properties:
+        errors:
+          type: array
+          items:
+            type: object
+            required:
+            - status
+            - code
+            - title
+            - detail
+            properties:
+              status:
+                type: string
+              code:
+                type: string
+              title:
+                type: string
+              detail:
+                type: string
+              source:
+                type: object
+                properties:
+                  pointer:
+                    type: string
     Workspace:
       type: object
       required:
@@ -132,152 +271,13 @@ components:
           description: Workspace attachments. Only present on show/create/update responses.
           items:
             $ref: '#/components/schemas/WorkspaceAttachment'
-    AttachmentFile:
-      type: object
-      description: Presigned download metadata. Omitted when the attachment is redacted or URLs are excluded.
-      required:
-      - url
-      - expiresAt
-      properties:
-        url:
-          type: string
-          format: uri
-        expiresAt:
-          type: string
-          format: date-time
-    WorkspaceMember:
-      type: object
-      required:
-      - id
-      - member
-      properties:
-        id:
-          type: string
-        state:
-          type: string
-        notifications:
-          type: string
-        createdAt:
-          type: string
-          format: date-time
-        updatedAt:
-          type: string
-          format: date-time
-        member:
-          type: object
-          required:
-          - type
-          - id
-          properties:
-            type:
-              type: string
-              enum:
-              - user
-              - team
-            id:
-              type: string
-            name:
-              type: string
-            email:
-              type: string
-              format: email
-            organization:
-              type: object
-              properties:
-                id:
-                  type: string
-                name:
-                  type: string
-    AssociatedEntity:
-      type: object
-      required:
-      - type
-      - id
-      properties:
-        type:
-          type: string
-          enum:
-          - opportunity
-        id:
-          type: string
-    Comment:
-      type: object
-      required:
-      - id
-      - body
-      - createdAt
-      - attachments
-      properties:
-        id:
-          type: string
-        body:
-          type: string
-          description: Markdown body for the comment.
-        attachments:
-          type: array
-          description: Workspace attachments tied to this comment.
-          items:
-            $ref: '#/components/schemas/WorkspaceAttachment'
-        createdAt:
-          type: string
-          format: date-time
-        updatedAt:
-          type: string
-          format: date-time
-    WorkspaceAttachment:
-      type: object
-      required:
-      - id
-      - workspaceId
-      - filename
-      properties:
-        id:
-          type: string
-        workspaceId:
-          type: string
-        commentId:
-          type: string
-          nullable: true
-        filename:
-          type: string
-        contentType:
-          type: string
-        byteSize:
-          type: integer
-        createdAt:
-          type: string
-          format: date-time
-        file:
-          description: Present only on the workspace attachments endpoint. Workspace show responses surface attachments without download metadata.
-          $ref: '#/components/schemas/AttachmentFile'
-    ErrorEnvelope:
-      type: object
-      required:
-      - errors
-      properties:
-        errors:
-          type: array
-          items:
-            type: object
-            required:
-            - status
-            - code
-            - title
-            - detail
-            properties:
-              status:
-                type: string
-              code:
-                type: string
-              title:
-                type: string
-              detail:
-                type: string
-              source:
-                type: object
-                properties:
-                  pointer:
-                    type: string
+  responses:
+    Error:
+      description: Error response
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorEnvelope'
   securitySchemes:
     bearerApiKey:
       type: http
