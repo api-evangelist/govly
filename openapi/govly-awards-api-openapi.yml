@@ -156,62 +156,6 @@ paths:
           $ref: '#/components/responses/Error'
 components:
   schemas:
-    CursorMeta:
-      type: object
-      required:
-      - count
-      properties:
-        count:
-          type: integer
-          description: Number of records in this page.
-        totalCount:
-          type: integer
-          description: 'Total matching records (award search only), capped at 10,000 by the search engine. Pagination via nextCursor is not limited by this cap.
-
-            '
-        perPage:
-          type: integer
-        nextCursor:
-          type:
-          - string
-          - 'null'
-    AwardGovernmentEntity:
-      type: object
-      properties:
-        id:
-          type: string
-        name:
-          type: string
-        code:
-          type: string
-    ErrorEnvelope:
-      type: object
-      required:
-      - errors
-      properties:
-        errors:
-          type: array
-          items:
-            type: object
-            required:
-            - status
-            - code
-            - title
-            - detail
-            properties:
-              status:
-                type: string
-              code:
-                type: string
-              title:
-                type: string
-              detail:
-                type: string
-              source:
-                type: object
-                properties:
-                  pointer:
-                    type: string
     Award:
       type: object
       required:
@@ -384,13 +328,62 @@ components:
           description: Detail only. Up to 100 associated contacts (id, name, email).
           items:
             type: object
-  responses:
-    Error:
-      description: Error response
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorEnvelope'
+    ErrorEnvelope:
+      type: object
+      required:
+      - errors
+      properties:
+        errors:
+          type: array
+          items:
+            type: object
+            required:
+            - status
+            - code
+            - title
+            - detail
+            properties:
+              status:
+                type: string
+              code:
+                type: string
+              title:
+                type: string
+              detail:
+                type: string
+              source:
+                type: object
+                properties:
+                  pointer:
+                    type: string
+    CursorMeta:
+      type: object
+      required:
+      - count
+      properties:
+        count:
+          type: integer
+          description: Number of records in this page.
+        totalCount:
+          type: integer
+          description: 'Total matching records (award search only), capped at 10,000 by the search engine. Pagination via nextCursor is not limited by this cap.
+
+            '
+        perPage:
+          type: integer
+        nextCursor:
+          type:
+          - string
+          - 'null'
+    AwardGovernmentEntity:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        code:
+          type: string
   parameters:
     id:
       name: id
@@ -398,6 +391,13 @@ components:
       required: true
       schema:
         type: string
+  responses:
+    Error:
+      description: Error response
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorEnvelope'
   securitySchemes:
     bearerApiKey:
       type: http

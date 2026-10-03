@@ -167,181 +167,7 @@ paths:
         '422':
           $ref: '#/components/responses/Error'
 components:
-  parameters:
-    associatedType:
-      name: associatedType
-      in: query
-      required: true
-      schema:
-        type: string
-        enum:
-        - opportunity
-    associatedId:
-      name: associatedId
-      in: query
-      required: true
-      schema:
-        type: string
-    id:
-      name: id
-      in: path
-      required: true
-      schema:
-        type: string
   schemas:
-    AttachmentFile:
-      type: object
-      description: Presigned download metadata. Omitted when the attachment is redacted or URLs are excluded.
-      required:
-      - url
-      - expiresAt
-      properties:
-        url:
-          type: string
-          format: uri
-        expiresAt:
-          type: string
-          format: date-time
-    WorkspaceAttachment:
-      type: object
-      required:
-      - id
-      - workspaceId
-      - filename
-      properties:
-        id:
-          type: string
-        workspaceId:
-          type: string
-        commentId:
-          type: string
-          nullable: true
-        filename:
-          type: string
-        contentType:
-          type: string
-        byteSize:
-          type: integer
-        createdAt:
-          type: string
-          format: date-time
-        file:
-          description: Present only on the workspace attachments endpoint. Workspace show responses surface attachments without download metadata.
-          $ref: '#/components/schemas/AttachmentFile'
-    AssociatedEntity:
-      type: object
-      required:
-      - type
-      - id
-      properties:
-        type:
-          type: string
-          enum:
-          - opportunity
-        id:
-          type: string
-    WorkspaceEnvelope:
-      type: object
-      required:
-      - data
-      properties:
-        data:
-          $ref: '#/components/schemas/Workspace'
-        meta:
-          $ref: '#/components/schemas/ActionMeta'
-    PrimaryFocusInput:
-      type: object
-      required:
-      - type
-      - id
-      properties:
-        type:
-          type: string
-          enum:
-          - opportunity
-        id:
-          type: string
-    ActionMeta:
-      type: object
-      properties:
-        availableActions:
-          type: array
-          description: Structured hints for useful follow-up actions. These are advisory; clients should still rely on tool schemas and authorization.
-          items:
-            $ref: '#/components/schemas/AvailableAction'
-    Comment:
-      type: object
-      required:
-      - id
-      - body
-      - createdAt
-      - attachments
-      properties:
-        id:
-          type: string
-        body:
-          type: string
-          description: Markdown body for the comment.
-        attachments:
-          type: array
-          description: Workspace attachments tied to this comment.
-          items:
-            $ref: '#/components/schemas/WorkspaceAttachment'
-        createdAt:
-          type: string
-          format: date-time
-        updatedAt:
-          type: string
-          format: date-time
-    ErrorEnvelope:
-      type: object
-      required:
-      - errors
-      properties:
-        errors:
-          type: array
-          items:
-            type: object
-            required:
-            - status
-            - code
-            - title
-            - detail
-            properties:
-              status:
-                type: string
-              code:
-                type: string
-              title:
-                type: string
-              detail:
-                type: string
-              source:
-                type: object
-                properties:
-                  pointer:
-                    type: string
-    AvailableAction:
-      type: object
-      required:
-      - name
-      - description
-      - arguments
-      - idPaths
-      properties:
-        name:
-          type: string
-          description: MCP/tool operation name.
-        description:
-          type: string
-        arguments:
-          type: object
-          description: Static arguments to pass to the action.
-        idPaths:
-          type: array
-          description: JSON paths where IDs for this action can be found in the current response.
-          items:
-            type: string
     Workspace:
       type: object
       required:
@@ -387,6 +213,180 @@ components:
           description: Workspace attachments. Only present on show/create/update responses.
           items:
             $ref: '#/components/schemas/WorkspaceAttachment'
+    WorkspaceEnvelope:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          $ref: '#/components/schemas/Workspace'
+        meta:
+          $ref: '#/components/schemas/ActionMeta'
+    PrimaryFocusInput:
+      type: object
+      required:
+      - type
+      - id
+      properties:
+        type:
+          type: string
+          enum:
+          - opportunity
+        id:
+          type: string
+    ActionMeta:
+      type: object
+      properties:
+        availableActions:
+          type: array
+          description: Structured hints for useful follow-up actions. These are advisory; clients should still rely on tool schemas and authorization.
+          items:
+            $ref: '#/components/schemas/AvailableAction'
+    AssociatedEntity:
+      type: object
+      required:
+      - type
+      - id
+      properties:
+        type:
+          type: string
+          enum:
+          - opportunity
+        id:
+          type: string
+    WorkspaceAttachment:
+      type: object
+      required:
+      - id
+      - workspaceId
+      - filename
+      properties:
+        id:
+          type: string
+        workspaceId:
+          type: string
+        commentId:
+          type: string
+          nullable: true
+        filename:
+          type: string
+        contentType:
+          type: string
+        byteSize:
+          type: integer
+        createdAt:
+          type: string
+          format: date-time
+        file:
+          description: Present only on the workspace attachments endpoint. Workspace show responses surface attachments without download metadata.
+          $ref: '#/components/schemas/AttachmentFile'
+    ErrorEnvelope:
+      type: object
+      required:
+      - errors
+      properties:
+        errors:
+          type: array
+          items:
+            type: object
+            required:
+            - status
+            - code
+            - title
+            - detail
+            properties:
+              status:
+                type: string
+              code:
+                type: string
+              title:
+                type: string
+              detail:
+                type: string
+              source:
+                type: object
+                properties:
+                  pointer:
+                    type: string
+    Comment:
+      type: object
+      required:
+      - id
+      - body
+      - createdAt
+      - attachments
+      properties:
+        id:
+          type: string
+        body:
+          type: string
+          description: Markdown body for the comment.
+        attachments:
+          type: array
+          description: Workspace attachments tied to this comment.
+          items:
+            $ref: '#/components/schemas/WorkspaceAttachment'
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    AttachmentFile:
+      type: object
+      description: Presigned download metadata. Omitted when the attachment is redacted or URLs are excluded.
+      required:
+      - url
+      - expiresAt
+      properties:
+        url:
+          type: string
+          format: uri
+        expiresAt:
+          type: string
+          format: date-time
+    AvailableAction:
+      type: object
+      required:
+      - name
+      - description
+      - arguments
+      - idPaths
+      properties:
+        name:
+          type: string
+          description: MCP/tool operation name.
+        description:
+          type: string
+        arguments:
+          type: object
+          description: Static arguments to pass to the action.
+        idPaths:
+          type: array
+          description: JSON paths where IDs for this action can be found in the current response.
+          items:
+            type: string
+  parameters:
+    associatedId:
+      name: associatedId
+      in: query
+      required: true
+      schema:
+        type: string
+    id:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: string
+    associatedType:
+      name: associatedType
+      in: query
+      required: true
+      schema:
+        type: string
+        enum:
+        - opportunity
   responses:
     Error:
       description: Error response

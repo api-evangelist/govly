@@ -243,6 +243,35 @@ paths:
           $ref: '#/components/responses/Error'
 components:
   schemas:
+    OpportunitySource:
+      type: object
+      required:
+      - id
+      - attachments
+      properties:
+        id:
+          type: string
+        postedAt:
+          type: string
+          format: date-time
+        externalUrl:
+          type: string
+          format: uri
+        noticeType:
+          type: string
+        recordType:
+          type: string
+        attachments:
+          type: array
+          items:
+            $ref: '#/components/schemas/OpportunityAttachment'
+    CountMeta:
+      type: object
+      required:
+      - count
+      properties:
+        count:
+          type: integer
     WorkspaceMember:
       type: object
       required:
@@ -286,85 +315,14 @@ components:
                   type: string
                 name:
                   type: string
-    AttachmentFile:
+    ActionMeta:
       type: object
-      description: Presigned download metadata. Omitted when the attachment is redacted or URLs are excluded.
-      required:
-      - url
-      - expiresAt
       properties:
-        url:
-          type: string
-          format: uri
-        expiresAt:
-          type: string
-          format: date-time
-    OpportunityWorkspace:
-      type: object
-      required:
-      - id
-      - name
-      - status
-      - followerCount
-      - follows
-      properties:
-        id:
-          type: string
-        name:
-          type: string
-        organizationDefault:
-          type: boolean
-        organization:
-          type: object
-          properties:
-            id:
-              type: string
-            name:
-              type: string
-        status:
-          type: object
-          required:
-          - category
-          - label
-          properties:
-            category:
-              type: string
-            label:
-              type: string
-        followerCount:
-          type: integer
-          description: Count of active follow rows on this workspace.
-        followedByCurrentUser:
-          type: boolean
-        followedByCurrentOrganization:
-          type: boolean
-        follows:
+        availableActions:
           type: array
-          description: Active workspace follows. Inactive/unfollowed/disinterested rows are omitted.
+          description: Structured hints for useful follow-up actions. These are advisory; clients should still rely on tool schemas and authorization.
           items:
-            $ref: '#/components/schemas/WorkspaceMember'
-    OpportunitySource:
-      type: object
-      required:
-      - id
-      - attachments
-      properties:
-        id:
-          type: string
-        postedAt:
-          type: string
-          format: date-time
-        externalUrl:
-          type: string
-          format: uri
-        noticeType:
-          type: string
-        recordType:
-          type: string
-        attachments:
-          type: array
-          items:
-            $ref: '#/components/schemas/OpportunityAttachment'
+            $ref: '#/components/schemas/AvailableAction'
     CursorMeta:
       type: object
       required:
@@ -384,6 +342,63 @@ components:
           type:
           - string
           - 'null'
+    ErrorEnvelope:
+      type: object
+      required:
+      - errors
+      properties:
+        errors:
+          type: array
+          items:
+            type: object
+            required:
+            - status
+            - code
+            - title
+            - detail
+            properties:
+              status:
+                type: string
+              code:
+                type: string
+              title:
+                type: string
+              detail:
+                type: string
+              source:
+                type: object
+                properties:
+                  pointer:
+                    type: string
+    NotInterestedResult:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          required:
+          - id
+          - type
+          - notInterested
+          properties:
+            id:
+              type: string
+              description: Govly opportunity ID.
+            type:
+              type: string
+              enum:
+              - opportunity
+            notInterested:
+              type: boolean
+              description: Whether the opportunity is now marked not interested for the authenticated user.
+        meta:
+          type: object
+          properties:
+            oppId:
+              type: string
+            undo:
+              type: boolean
     OpportunityAttachment:
       type: object
       required:
@@ -412,14 +427,6 @@ components:
             type: string
         file:
           $ref: '#/components/schemas/AttachmentFile'
-    ActionMeta:
-      type: object
-      properties:
-        availableActions:
-          type: array
-          description: Structured hints for useful follow-up actions. These are advisory; clients should still rely on tool schemas and authorization.
-          items:
-            $ref: '#/components/schemas/AvailableAction'
     Opportunity:
       type: object
       required:
@@ -507,63 +514,63 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/OpportunitySource'
-    NotInterestedResult:
+    AttachmentFile:
+      type: object
+      description: Presigned download metadata. Omitted when the attachment is redacted or URLs are excluded.
+      required:
+      - url
+      - expiresAt
+      properties:
+        url:
+          type: string
+          format: uri
+        expiresAt:
+          type: string
+          format: date-time
+    OpportunityWorkspace:
       type: object
       required:
-      - data
+      - id
+      - name
+      - status
+      - followerCount
+      - follows
       properties:
-        data:
+        id:
+          type: string
+        name:
+          type: string
+        organizationDefault:
+          type: boolean
+        organization:
           type: object
-          required:
-          - id
-          - type
-          - notInterested
           properties:
             id:
               type: string
-              description: Govly opportunity ID.
-            type:
+            name:
               type: string
-              enum:
-              - opportunity
-            notInterested:
-              type: boolean
-              description: Whether the opportunity is now marked not interested for the authenticated user.
-        meta:
+        status:
           type: object
+          required:
+          - category
+          - label
           properties:
-            oppId:
+            category:
               type: string
-            undo:
-              type: boolean
-    ErrorEnvelope:
-      type: object
-      required:
-      - errors
-      properties:
-        errors:
+            label:
+              type: string
+        followerCount:
+          type: integer
+          description: Count of active follow rows on this workspace.
+        followedByCurrentUser:
+          type: boolean
+        followedByCurrentOrganization:
+          type: boolean
+        follows:
           type: array
+          description: Active workspace follows. Inactive/unfollowed/disinterested rows are omitted.
           items:
-            type: object
-            required:
-            - status
-            - code
-            - title
-            - detail
-            properties:
-              status:
-                type: string
-              code:
-                type: string
-              title:
-                type: string
-              detail:
-                type: string
-              source:
-                type: object
-                properties:
-                  pointer:
-                    type: string
+            $ref: '#/components/schemas/WorkspaceMember'
     AvailableAction:
       type: object
       required:
@@ -585,13 +592,6 @@ components:
           description: JSON paths where IDs for this action can be found in the current response.
           items:
             type: string
-    CountMeta:
-      type: object
-      required:
-      - count
-      properties:
-        count:
-          type: integer
   responses:
     Error:
       description: Error response

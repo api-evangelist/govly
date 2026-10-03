@@ -57,6 +57,34 @@ paths:
           $ref: '#/components/responses/Error'
 components:
   schemas:
+    ErrorEnvelope:
+      type: object
+      required:
+      - errors
+      properties:
+        errors:
+          type: array
+          items:
+            type: object
+            required:
+            - status
+            - code
+            - title
+            - detail
+            properties:
+              status:
+                type: string
+              code:
+                type: string
+              title:
+                type: string
+              detail:
+                type: string
+              source:
+                type: object
+                properties:
+                  pointer:
+                    type: string
     WorkspaceMember:
       type: object
       required:
@@ -100,34 +128,6 @@ components:
                   type: string
                 name:
                   type: string
-    ErrorEnvelope:
-      type: object
-      required:
-      - errors
-      properties:
-        errors:
-          type: array
-          items:
-            type: object
-            required:
-            - status
-            - code
-            - title
-            - detail
-            properties:
-              status:
-                type: string
-              code:
-                type: string
-              title:
-                type: string
-              detail:
-                type: string
-              source:
-                type: object
-                properties:
-                  pointer:
-                    type: string
   responses:
     Error:
       description: Error response

@@ -110,7 +110,84 @@ paths:
         '422':
           $ref: '#/components/responses/Error'
 components:
+  parameters:
+    savedSearchId:
+      name: savedSearchId
+      in: path
+      required: true
+      schema:
+        type: string
+    id:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: string
+    cursor:
+      name: cursor
+      in: query
+      required: false
+      schema:
+        type: string
+    perPage:
+      name: perPage
+      in: query
+      required: false
+      schema:
+        type: integer
+        default: 25
+        maximum: 100
   schemas:
+    OpportunitySource:
+      type: object
+      required:
+      - id
+      - attachments
+      properties:
+        id:
+          type: string
+        postedAt:
+          type: string
+          format: date-time
+        externalUrl:
+          type: string
+          format: uri
+        noticeType:
+          type: string
+        recordType:
+          type: string
+        attachments:
+          type: array
+          items:
+            $ref: '#/components/schemas/OpportunityAttachment'
+    OppSearch:
+      type: object
+      required:
+      - id
+      - name
+      - active
+      - criteria
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        active:
+          type: boolean
+        criteria:
+          type: object
+          description: Stored search criteria for this saved search.
+        matchCount:
+          type: integer
+        lastMatchedAt:
+          type: string
+          format: date-time
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
     WorkspaceMember:
       type: object
       required:
@@ -154,113 +231,6 @@ components:
                   type: string
                 name:
                   type: string
-    AttachmentFile:
-      type: object
-      description: Presigned download metadata. Omitted when the attachment is redacted or URLs are excluded.
-      required:
-      - url
-      - expiresAt
-      properties:
-        url:
-          type: string
-          format: uri
-        expiresAt:
-          type: string
-          format: date-time
-    OppSearch:
-      type: object
-      required:
-      - id
-      - name
-      - active
-      - criteria
-      properties:
-        id:
-          type: string
-        name:
-          type: string
-        active:
-          type: boolean
-        criteria:
-          type: object
-          description: Stored search criteria for this saved search.
-        matchCount:
-          type: integer
-        lastMatchedAt:
-          type: string
-          format: date-time
-        createdAt:
-          type: string
-          format: date-time
-        updatedAt:
-          type: string
-          format: date-time
-    OpportunityWorkspace:
-      type: object
-      required:
-      - id
-      - name
-      - status
-      - followerCount
-      - follows
-      properties:
-        id:
-          type: string
-        name:
-          type: string
-        organizationDefault:
-          type: boolean
-        organization:
-          type: object
-          properties:
-            id:
-              type: string
-            name:
-              type: string
-        status:
-          type: object
-          required:
-          - category
-          - label
-          properties:
-            category:
-              type: string
-            label:
-              type: string
-        followerCount:
-          type: integer
-          description: Count of active follow rows on this workspace.
-        followedByCurrentUser:
-          type: boolean
-        followedByCurrentOrganization:
-          type: boolean
-        follows:
-          type: array
-          description: Active workspace follows. Inactive/unfollowed/disinterested rows are omitted.
-          items:
-            $ref: '#/components/schemas/WorkspaceMember'
-    OpportunitySource:
-      type: object
-      required:
-      - id
-      - attachments
-      properties:
-        id:
-          type: string
-        postedAt:
-          type: string
-          format: date-time
-        externalUrl:
-          type: string
-          format: uri
-        noticeType:
-          type: string
-        recordType:
-          type: string
-        attachments:
-          type: array
-          items:
-            $ref: '#/components/schemas/OpportunityAttachment'
     CursorMeta:
       type: object
       required:
@@ -280,6 +250,62 @@ components:
           type:
           - string
           - 'null'
+    ErrorEnvelope:
+      type: object
+      required:
+      - errors
+      properties:
+        errors:
+          type: array
+          items:
+            type: object
+            required:
+            - status
+            - code
+            - title
+            - detail
+            properties:
+              status:
+                type: string
+              code:
+                type: string
+              title:
+                type: string
+              detail:
+                type: string
+              source:
+                type: object
+                properties:
+                  pointer:
+                    type: string
+    OpportunityAttachment:
+      type: object
+      required:
+      - id
+      - documentType
+      - filename
+      - redacted
+      properties:
+        id:
+          type: string
+          description: Canonical OppAttachment.id. Pass this value to document_read and document_download.
+        documentType:
+          type: string
+          const: opportunity_attachment
+        filename:
+          type: string
+        contentType:
+          type: string
+        byteSize:
+          type: integer
+        redacted:
+          type: boolean
+        tags:
+          type: array
+          items:
+            type: string
+        file:
+          $ref: '#/components/schemas/AttachmentFile'
     Opportunity:
       type: object
       required:
@@ -367,34 +393,63 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/OpportunitySource'
-    ErrorEnvelope:
+    AttachmentFile:
+      type: object
+      description: Presigned download metadata. Omitted when the attachment is redacted or URLs are excluded.
+      required:
+      - url
+      - expiresAt
+      properties:
+        url:
+          type: string
+          format: uri
+        expiresAt:
+          type: string
+          format: date-time
+    OpportunityWorkspace:
       type: object
       required:
-      - errors
+      - id
+      - name
+      - status
+      - followerCount
+      - follows
       properties:
-        errors:
+        id:
+          type: string
+        name:
+          type: string
+        organizationDefault:
+          type: boolean
+        organization:
+          type: object
+          properties:
+            id:
+              type: string
+            name:
+              type: string
+        status:
+          type: object
+          required:
+          - category
+          - label
+          properties:
+            category:
+              type: string
+            label:
+              type: string
+        followerCount:
+          type: integer
+          description: Count of active follow rows on this workspace.
+        followedByCurrentUser:
+          type: boolean
+        followedByCurrentOrganization:
+          type: boolean
+        follows:
           type: array
+          description: Active workspace follows. Inactive/unfollowed/disinterested rows are omitted.
           items:
-            type: object
-            required:
-            - status
-            - code
-            - title
-            - detail
-            properties:
-              status:
-                type: string
-              code:
-                type: string
-              title:
-                type: string
-              detail:
-                type: string
-              source:
-                type: object
-                properties:
-                  pointer:
-                    type: string
+            $ref: '#/components/schemas/WorkspaceMember'
     OppSearchMatch:
       type: object
       required:
@@ -412,61 +467,6 @@ components:
           type: string
         opportunity:
           $ref: '#/components/schemas/Opportunity'
-    OpportunityAttachment:
-      type: object
-      required:
-      - id
-      - documentType
-      - filename
-      - redacted
-      properties:
-        id:
-          type: string
-          description: Canonical OppAttachment.id. Pass this value to document_read and document_download.
-        documentType:
-          type: string
-          const: opportunity_attachment
-        filename:
-          type: string
-        contentType:
-          type: string
-        byteSize:
-          type: integer
-        redacted:
-          type: boolean
-        tags:
-          type: array
-          items:
-            type: string
-        file:
-          $ref: '#/components/schemas/AttachmentFile'
-  parameters:
-    cursor:
-      name: cursor
-      in: query
-      required: false
-      schema:
-        type: string
-    perPage:
-      name: perPage
-      in: query
-      required: false
-      schema:
-        type: integer
-        default: 25
-        maximum: 100
-    savedSearchId:
-      name: savedSearchId
-      in: path
-      required: true
-      schema:
-        type: string
-    id:
-      name: id
-      in: path
-      required: true
-      schema:
-        type: string
   responses:
     Error:
       description: Error response
