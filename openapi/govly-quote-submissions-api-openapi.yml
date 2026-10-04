@@ -138,6 +138,67 @@ paths:
           $ref: '#/components/responses/Error'
 components:
   schemas:
+    ErrorEnvelope:
+      type: object
+      required:
+      - errors
+      properties:
+        errors:
+          type: array
+          items:
+            type: object
+            required:
+            - status
+            - code
+            - title
+            - detail
+            properties:
+              status:
+                type: string
+              code:
+                type: string
+              title:
+                type: string
+              detail:
+                type: string
+              source:
+                type: object
+                properties:
+                  pointer:
+                    type: string
+    QuoteSubmissionListEnvelope:
+      type: object
+      required:
+      - data
+      - meta
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/QuoteSubmission'
+        meta:
+          $ref: '#/components/schemas/CountMeta'
+    QuoteSubmissionBlockingReason:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+          enum:
+          - quote_submission_not_available_for_portal
+          - missing_or_inactive_portal_account
+          - workspace_not_linked_to_opportunity
+        message:
+          type: string
+    QuoteSubmissionRequirementsEnvelope:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          $ref: '#/components/schemas/QuoteSubmissionRequirements'
     CountMeta:
       type: object
       required:
@@ -145,22 +206,16 @@ components:
       properties:
         count:
           type: integer
-    QuoteSubmissionAttachment:
+    QuoteSubmissionEnvelope:
       type: object
       required:
-      - id
-      - filename
+      - data
+      - meta
       properties:
-        id:
-          type: string
-        filename:
-          type: string
-        contentType:
-          type: string
-        byteSize:
-          type: integer
-        file:
-          $ref: '#/components/schemas/AttachmentFile'
+        data:
+          $ref: '#/components/schemas/QuoteSubmission'
+        meta:
+          $ref: '#/components/schemas/QuoteSubmissionStatusMeta'
     QuoteSubmissionRequirements:
       type: object
       required:
@@ -194,13 +249,31 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/QuoteSubmissionBlockingReason'
-    QuoteSubmissionRequirementsEnvelope:
+    QuoteSubmissionFileRules:
       type: object
       required:
-      - data
+      - maxBytes
+      - allowedExtensions
       properties:
-        data:
-          $ref: '#/components/schemas/QuoteSubmissionRequirements'
+        maxBytes:
+          type: integer
+        allowedExtensions:
+          type: array
+          items:
+            type: string
+    AttachmentFile:
+      type: object
+      description: Presigned download metadata. Omitted when the attachment is redacted or URLs are excluded.
+      required:
+      - url
+      - expiresAt
+      properties:
+        url:
+          type: string
+          format: uri
+        expiresAt:
+          type: string
+          format: date-time
     QuoteSubmissionStatusMeta:
       type: object
       required:
@@ -215,58 +288,22 @@ components:
         retryable:
           type: boolean
           description: Present for failed submissions when creating a new submission is reasonable.
-    QuoteSubmissionEnvelope:
+    QuoteSubmissionAttachment:
       type: object
       required:
-      - data
-      - meta
+      - id
+      - filename
       properties:
-        data:
-          $ref: '#/components/schemas/QuoteSubmission'
-        meta:
-          $ref: '#/components/schemas/QuoteSubmissionStatusMeta'
-    ErrorEnvelope:
-      type: object
-      required:
-      - errors
-      properties:
-        errors:
-          type: array
-          items:
-            type: object
-            required:
-            - status
-            - code
-            - title
-            - detail
-            properties:
-              status:
-                type: string
-              code:
-                type: string
-              title:
-                type: string
-              detail:
-                type: string
-              source:
-                type: object
-                properties:
-                  pointer:
-                    type: string
-    QuoteSubmissionBlockingReason:
-      type: object
-      required:
-      - code
-      - message
-      properties:
-        code:
+        id:
           type: string
-          enum:
-          - quote_submission_not_available_for_portal
-          - missing_or_inactive_portal_account
-          - workspace_not_linked_to_opportunity
-        message:
+        filename:
           type: string
+        contentType:
+          type: string
+        byteSize:
+          type: integer
+        file:
+          $ref: '#/components/schemas/AttachmentFile'
     QuoteSubmission:
       type: object
       required:
@@ -317,43 +354,6 @@ components:
           $ref: '#/components/schemas/QuoteSubmissionAttachment'
         evidence:
           $ref: '#/components/schemas/QuoteSubmissionAttachment'
-    QuoteSubmissionFileRules:
-      type: object
-      required:
-      - maxBytes
-      - allowedExtensions
-      properties:
-        maxBytes:
-          type: integer
-        allowedExtensions:
-          type: array
-          items:
-            type: string
-    AttachmentFile:
-      type: object
-      description: Presigned download metadata. Omitted when the attachment is redacted or URLs are excluded.
-      required:
-      - url
-      - expiresAt
-      properties:
-        url:
-          type: string
-          format: uri
-        expiresAt:
-          type: string
-          format: date-time
-    QuoteSubmissionListEnvelope:
-      type: object
-      required:
-      - data
-      - meta
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/QuoteSubmission'
-        meta:
-          $ref: '#/components/schemas/CountMeta'
     QuoteSubmissionField:
       type: object
       required:

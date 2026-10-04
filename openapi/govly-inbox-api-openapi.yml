@@ -286,81 +286,6 @@ paths:
           $ref: '#/components/responses/Error'
 components:
   schemas:
-    InboxItemOrigin:
-      type: object
-      required:
-      - sourceType
-      properties:
-        sourceType:
-          type: string
-          enum:
-          - govly_ai
-          - saved_search
-        savedSearchId:
-          type: string
-        savedSearchName:
-          type: string
-    InboxAggregations:
-      type: object
-      required:
-      - matchableType
-      properties:
-        matchableType:
-          type: object
-          description: Count of matching items per matchable type.
-          additionalProperties:
-            type: integer
-    InboxAcceptMeta:
-      type: object
-      required:
-      - state
-      - feedback
-      - matchableType
-      - matchableId
-      - final
-      properties:
-        state:
-          type: string
-        feedback:
-          type: string
-        matchableType:
-          type: string
-        matchableId:
-          type: string
-        workspaceId:
-          type:
-          - string
-          - 'null'
-          description: Default workspace the accept followed, when one exists.
-        final:
-          type: boolean
-          description: Always true — accept is irreversible.
-    InboxItemEnvelope:
-      type: object
-      required:
-      - data
-      properties:
-        data:
-          $ref: '#/components/schemas/InboxItem'
-    CursorMeta:
-      type: object
-      required:
-      - count
-      properties:
-        count:
-          type: integer
-          description: Number of records in this page.
-        totalCount:
-          type: integer
-          description: 'Total matching records (award search only), capped at 10,000 by the search engine. Pagination via nextCursor is not limited by this cap.
-
-            '
-        perPage:
-          type: integer
-        nextCursor:
-          type:
-          - string
-          - 'null'
     ErrorEnvelope:
       type: object
       required:
@@ -389,6 +314,80 @@ components:
                 properties:
                   pointer:
                     type: string
+    InboxItemEnvelope:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          $ref: '#/components/schemas/InboxItem'
+    InboxSearchMeta:
+      type: object
+      required:
+      - total
+      - nextCursor
+      properties:
+        total:
+          type: integer
+          description: Total matching items (capped at 10000 by the search index).
+        nextCursor:
+          type:
+          - string
+          - 'null'
+    InboxAcceptMeta:
+      type: object
+      required:
+      - state
+      - feedback
+      - matchableType
+      - matchableId
+      - final
+      properties:
+        state:
+          type: string
+        feedback:
+          type: string
+        matchableType:
+          type: string
+        matchableId:
+          type: string
+        workspaceId:
+          type:
+          - string
+          - 'null'
+          description: Default workspace the accept followed, when one exists.
+        final:
+          type: boolean
+          description: Always true — accept is irreversible.
+    InboxAggregations:
+      type: object
+      required:
+      - matchableType
+      properties:
+        matchableType:
+          type: object
+          description: Count of matching items per matchable type.
+          additionalProperties:
+            type: integer
+    CursorMeta:
+      type: object
+      required:
+      - count
+      properties:
+        count:
+          type: integer
+          description: Number of records in this page.
+        totalCount:
+          type: integer
+          description: 'Total matching records (award search only), capped at 10,000 by the search engine. Pagination via nextCursor is not limited by this cap.
+
+            '
+        perPage:
+          type: integer
+        nextCursor:
+          type:
+          - string
+          - 'null'
     InboxItem:
       type: object
       required:
@@ -476,20 +475,36 @@ components:
           description: Every source that surfaced this (deduped) item.
           items:
             $ref: '#/components/schemas/InboxItemOrigin'
-    InboxSearchMeta:
+    InboxItemOrigin:
       type: object
       required:
-      - total
-      - nextCursor
+      - sourceType
       properties:
-        total:
-          type: integer
-          description: Total matching items (capped at 10000 by the search index).
-        nextCursor:
-          type:
-          - string
-          - 'null'
+        sourceType:
+          type: string
+          enum:
+          - govly_ai
+          - saved_search
+        savedSearchId:
+          type: string
+        savedSearchName:
+          type: string
+  responses:
+    Error:
+      description: Error response
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorEnvelope'
   parameters:
+    perPage:
+      name: perPage
+      in: query
+      required: false
+      schema:
+        type: integer
+        default: 25
+        maximum: 100
     id:
       name: id
       in: path
@@ -502,21 +517,6 @@ components:
       required: false
       schema:
         type: string
-    perPage:
-      name: perPage
-      in: query
-      required: false
-      schema:
-        type: integer
-        default: 25
-        maximum: 100
-  responses:
-    Error:
-      description: Error response
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorEnvelope'
   securitySchemes:
     bearerApiKey:
       type: http

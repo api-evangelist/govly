@@ -102,39 +102,6 @@ paths:
           $ref: '#/components/responses/Error'
 components:
   schemas:
-    CountMeta:
-      type: object
-      required:
-      - count
-      properties:
-        count:
-          type: integer
-    WorkspaceAttachment:
-      type: object
-      required:
-      - id
-      - workspaceId
-      - filename
-      properties:
-        id:
-          type: string
-        workspaceId:
-          type: string
-        commentId:
-          type: string
-          nullable: true
-        filename:
-          type: string
-        contentType:
-          type: string
-        byteSize:
-          type: integer
-        createdAt:
-          type: string
-          format: date-time
-        file:
-          description: Present only on the workspace attachments endpoint. Workspace show responses surface attachments without download metadata.
-          $ref: '#/components/schemas/AttachmentFile'
     ErrorEnvelope:
       type: object
       required:
@@ -163,6 +130,39 @@ components:
                 properties:
                   pointer:
                     type: string
+    WorkspaceAttachment:
+      type: object
+      required:
+      - id
+      - workspaceId
+      - filename
+      properties:
+        id:
+          type: string
+        workspaceId:
+          type: string
+        commentId:
+          type: string
+          nullable: true
+        filename:
+          type: string
+        contentType:
+          type: string
+        byteSize:
+          type: integer
+        createdAt:
+          type: string
+          format: date-time
+        file:
+          description: Present only on the workspace attachments endpoint. Workspace show responses surface attachments without download metadata.
+          $ref: '#/components/schemas/AttachmentFile'
+    CountMeta:
+      type: object
+      required:
+      - count
+      properties:
+        count:
+          type: integer
     AttachmentFile:
       type: object
       description: Presigned download metadata. Omitted when the attachment is redacted or URLs are excluded.
@@ -176,13 +176,6 @@ components:
         expiresAt:
           type: string
           format: date-time
-  responses:
-    Error:
-      description: Error response
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorEnvelope'
   parameters:
     workspaceId:
       name: workspaceId
@@ -190,6 +183,13 @@ components:
       required: true
       schema:
         type: string
+  responses:
+    Error:
+      description: Error response
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorEnvelope'
   securitySchemes:
     bearerApiKey:
       type: http

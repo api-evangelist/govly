@@ -56,6 +56,13 @@ paths:
         '422':
           $ref: '#/components/responses/Error'
 components:
+  responses:
+    Error:
+      description: Error response
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorEnvelope'
   schemas:
     ErrorEnvelope:
       type: object
@@ -128,13 +135,6 @@ components:
                   type: string
                 name:
                   type: string
-  responses:
-    Error:
-      description: Error response
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorEnvelope'
   parameters:
     workspaceId:
       name: workspaceId
