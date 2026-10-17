@@ -56,6 +56,13 @@ paths:
         '422':
           $ref: '#/components/responses/Error'
 components:
+  parameters:
+    workspaceId:
+      name: workspaceId
+      in: path
+      required: true
+      schema:
+        type: string
   responses:
     Error:
       description: Error response
@@ -64,34 +71,6 @@ components:
           schema:
             $ref: '#/components/schemas/ErrorEnvelope'
   schemas:
-    ErrorEnvelope:
-      type: object
-      required:
-      - errors
-      properties:
-        errors:
-          type: array
-          items:
-            type: object
-            required:
-            - status
-            - code
-            - title
-            - detail
-            properties:
-              status:
-                type: string
-              code:
-                type: string
-              title:
-                type: string
-              detail:
-                type: string
-              source:
-                type: object
-                properties:
-                  pointer:
-                    type: string
     WorkspaceMember:
       type: object
       required:
@@ -135,13 +114,34 @@ components:
                   type: string
                 name:
                   type: string
-  parameters:
-    workspaceId:
-      name: workspaceId
-      in: path
-      required: true
-      schema:
-        type: string
+    ErrorEnvelope:
+      type: object
+      required:
+      - errors
+      properties:
+        errors:
+          type: array
+          items:
+            type: object
+            required:
+            - status
+            - code
+            - title
+            - detail
+            properties:
+              status:
+                type: string
+              code:
+                type: string
+              title:
+                type: string
+              detail:
+                type: string
+              source:
+                type: object
+                properties:
+                  pointer:
+                    type: string
   securitySchemes:
     bearerApiKey:
       type: http

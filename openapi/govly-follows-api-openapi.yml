@@ -80,85 +80,6 @@ paths:
           $ref: '#/components/responses/Error'
 components:
   schemas:
-    ErrorEnvelope:
-      type: object
-      required:
-      - errors
-      properties:
-        errors:
-          type: array
-          items:
-            type: object
-            required:
-            - status
-            - code
-            - title
-            - detail
-            properties:
-              status:
-                type: string
-              code:
-                type: string
-              title:
-                type: string
-              detail:
-                type: string
-              source:
-                type: object
-                properties:
-                  pointer:
-                    type: string
-    WorkspaceAttachment:
-      type: object
-      required:
-      - id
-      - workspaceId
-      - filename
-      properties:
-        id:
-          type: string
-        workspaceId:
-          type: string
-        commentId:
-          type: string
-          nullable: true
-        filename:
-          type: string
-        contentType:
-          type: string
-        byteSize:
-          type: integer
-        createdAt:
-          type: string
-          format: date-time
-        file:
-          description: Present only on the workspace attachments endpoint. Workspace show responses surface attachments without download metadata.
-          $ref: '#/components/schemas/AttachmentFile'
-    AssociatedEntity:
-      type: object
-      required:
-      - type
-      - id
-      properties:
-        type:
-          type: string
-          enum:
-          - opportunity
-        id:
-          type: string
-    AttachmentFile:
-      type: object
-      description: Presigned download metadata. Omitted when the attachment is redacted or URLs are excluded.
-      required:
-      - url
-      - expiresAt
-      properties:
-        url:
-          type: string
-          format: uri
-        expiresAt:
-          type: string
-          format: date-time
     Comment:
       type: object
       required:
@@ -226,6 +147,57 @@ components:
                   type: string
                 name:
                   type: string
+    WorkspaceAttachment:
+      type: object
+      required:
+      - id
+      - workspaceId
+      - filename
+      properties:
+        id:
+          type: string
+        workspaceId:
+          type: string
+        commentId:
+          type: string
+          nullable: true
+        filename:
+          type: string
+        contentType:
+          type: string
+        byteSize:
+          type: integer
+        createdAt:
+          type: string
+          format: date-time
+        file:
+          description: Present only on the workspace attachments endpoint. Workspace show responses surface attachments without download metadata.
+          $ref: '#/components/schemas/AttachmentFile'
+    AttachmentFile:
+      type: object
+      description: Presigned download metadata. Omitted when the attachment is redacted or URLs are excluded.
+      required:
+      - url
+      - expiresAt
+      properties:
+        url:
+          type: string
+          format: uri
+        expiresAt:
+          type: string
+          format: date-time
+    AssociatedEntity:
+      type: object
+      required:
+      - type
+      - id
+      properties:
+        type:
+          type: string
+          enum:
+          - opportunity
+        id:
+          type: string
     Workspace:
       type: object
       required:
@@ -271,6 +243,34 @@ components:
           description: Workspace attachments. Only present on show/create/update responses.
           items:
             $ref: '#/components/schemas/WorkspaceAttachment'
+    ErrorEnvelope:
+      type: object
+      required:
+      - errors
+      properties:
+        errors:
+          type: array
+          items:
+            type: object
+            required:
+            - status
+            - code
+            - title
+            - detail
+            properties:
+              status:
+                type: string
+              code:
+                type: string
+              title:
+                type: string
+              detail:
+                type: string
+              source:
+                type: object
+                properties:
+                  pointer:
+                    type: string
   responses:
     Error:
       description: Error response

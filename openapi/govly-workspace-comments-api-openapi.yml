@@ -61,34 +61,30 @@ paths:
           $ref: '#/components/responses/Error'
 components:
   schemas:
-    ErrorEnvelope:
+    Comment:
       type: object
       required:
-      - errors
+      - id
+      - body
+      - createdAt
+      - attachments
       properties:
-        errors:
+        id:
+          type: string
+        body:
+          type: string
+          description: Markdown body for the comment.
+        attachments:
           type: array
+          description: Workspace attachments tied to this comment.
           items:
-            type: object
-            required:
-            - status
-            - code
-            - title
-            - detail
-            properties:
-              status:
-                type: string
-              code:
-                type: string
-              title:
-                type: string
-              detail:
-                type: string
-              source:
-                type: object
-                properties:
-                  pointer:
-                    type: string
+            $ref: '#/components/schemas/WorkspaceAttachment'
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
     WorkspaceAttachment:
       type: object
       required:
@@ -128,37 +124,34 @@ components:
         expiresAt:
           type: string
           format: date-time
-    Comment:
+    ErrorEnvelope:
       type: object
       required:
-      - id
-      - body
-      - createdAt
-      - attachments
+      - errors
       properties:
-        id:
-          type: string
-        body:
-          type: string
-          description: Markdown body for the comment.
-        attachments:
+        errors:
           type: array
-          description: Workspace attachments tied to this comment.
           items:
-            $ref: '#/components/schemas/WorkspaceAttachment'
-        createdAt:
-          type: string
-          format: date-time
-        updatedAt:
-          type: string
-          format: date-time
-  parameters:
-    workspaceId:
-      name: workspaceId
-      in: path
-      required: true
-      schema:
-        type: string
+            type: object
+            required:
+            - status
+            - code
+            - title
+            - detail
+            properties:
+              status:
+                type: string
+              code:
+                type: string
+              title:
+                type: string
+              detail:
+                type: string
+              source:
+                type: object
+                properties:
+                  pointer:
+                    type: string
   responses:
     Error:
       description: Error response
@@ -166,6 +159,13 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/ErrorEnvelope'
+  parameters:
+    workspaceId:
+      name: workspaceId
+      in: path
+      required: true
+      schema:
+        type: string
   securitySchemes:
     bearerApiKey:
       type: http

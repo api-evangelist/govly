@@ -102,6 +102,45 @@ paths:
           $ref: '#/components/responses/Error'
 components:
   schemas:
+    WorkspaceAttachment:
+      type: object
+      required:
+      - id
+      - workspaceId
+      - filename
+      properties:
+        id:
+          type: string
+        workspaceId:
+          type: string
+        commentId:
+          type: string
+          nullable: true
+        filename:
+          type: string
+        contentType:
+          type: string
+        byteSize:
+          type: integer
+        createdAt:
+          type: string
+          format: date-time
+        file:
+          description: Present only on the workspace attachments endpoint. Workspace show responses surface attachments without download metadata.
+          $ref: '#/components/schemas/AttachmentFile'
+    AttachmentFile:
+      type: object
+      description: Presigned download metadata. Omitted when the attachment is redacted or URLs are excluded.
+      required:
+      - url
+      - expiresAt
+      properties:
+        url:
+          type: string
+          format: uri
+        expiresAt:
+          type: string
+          format: date-time
     ErrorEnvelope:
       type: object
       required:
@@ -130,32 +169,6 @@ components:
                 properties:
                   pointer:
                     type: string
-    WorkspaceAttachment:
-      type: object
-      required:
-      - id
-      - workspaceId
-      - filename
-      properties:
-        id:
-          type: string
-        workspaceId:
-          type: string
-        commentId:
-          type: string
-          nullable: true
-        filename:
-          type: string
-        contentType:
-          type: string
-        byteSize:
-          type: integer
-        createdAt:
-          type: string
-          format: date-time
-        file:
-          description: Present only on the workspace attachments endpoint. Workspace show responses surface attachments without download metadata.
-          $ref: '#/components/schemas/AttachmentFile'
     CountMeta:
       type: object
       required:
@@ -163,26 +176,6 @@ components:
       properties:
         count:
           type: integer
-    AttachmentFile:
-      type: object
-      description: Presigned download metadata. Omitted when the attachment is redacted or URLs are excluded.
-      required:
-      - url
-      - expiresAt
-      properties:
-        url:
-          type: string
-          format: uri
-        expiresAt:
-          type: string
-          format: date-time
-  parameters:
-    workspaceId:
-      name: workspaceId
-      in: path
-      required: true
-      schema:
-        type: string
   responses:
     Error:
       description: Error response
@@ -190,6 +183,13 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/ErrorEnvelope'
+  parameters:
+    workspaceId:
+      name: workspaceId
+      in: path
+      required: true
+      schema:
+        type: string
   securitySchemes:
     bearerApiKey:
       type: http

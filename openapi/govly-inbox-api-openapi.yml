@@ -285,109 +285,28 @@ paths:
         '422':
           $ref: '#/components/responses/Error'
 components:
+  parameters:
+    id:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: string
+    perPage:
+      name: perPage
+      in: query
+      required: false
+      schema:
+        type: integer
+        default: 25
+        maximum: 100
+    cursor:
+      name: cursor
+      in: query
+      required: false
+      schema:
+        type: string
   schemas:
-    ErrorEnvelope:
-      type: object
-      required:
-      - errors
-      properties:
-        errors:
-          type: array
-          items:
-            type: object
-            required:
-            - status
-            - code
-            - title
-            - detail
-            properties:
-              status:
-                type: string
-              code:
-                type: string
-              title:
-                type: string
-              detail:
-                type: string
-              source:
-                type: object
-                properties:
-                  pointer:
-                    type: string
-    InboxItemEnvelope:
-      type: object
-      required:
-      - data
-      properties:
-        data:
-          $ref: '#/components/schemas/InboxItem'
-    InboxSearchMeta:
-      type: object
-      required:
-      - total
-      - nextCursor
-      properties:
-        total:
-          type: integer
-          description: Total matching items (capped at 10000 by the search index).
-        nextCursor:
-          type:
-          - string
-          - 'null'
-    InboxAcceptMeta:
-      type: object
-      required:
-      - state
-      - feedback
-      - matchableType
-      - matchableId
-      - final
-      properties:
-        state:
-          type: string
-        feedback:
-          type: string
-        matchableType:
-          type: string
-        matchableId:
-          type: string
-        workspaceId:
-          type:
-          - string
-          - 'null'
-          description: Default workspace the accept followed, when one exists.
-        final:
-          type: boolean
-          description: Always true — accept is irreversible.
-    InboxAggregations:
-      type: object
-      required:
-      - matchableType
-      properties:
-        matchableType:
-          type: object
-          description: Count of matching items per matchable type.
-          additionalProperties:
-            type: integer
-    CursorMeta:
-      type: object
-      required:
-      - count
-      properties:
-        count:
-          type: integer
-          description: Number of records in this page.
-        totalCount:
-          type: integer
-          description: 'Total matching records (award search only), capped at 10,000 by the search engine. Pagination via nextCursor is not limited by this cap.
-
-            '
-        perPage:
-          type: integer
-        nextCursor:
-          type:
-          - string
-          - 'null'
     InboxItem:
       type: object
       required:
@@ -489,6 +408,108 @@ components:
           type: string
         savedSearchName:
           type: string
+    InboxSearchMeta:
+      type: object
+      required:
+      - total
+      - nextCursor
+      properties:
+        total:
+          type: integer
+          description: Total matching items (capped at 10000 by the search index).
+        nextCursor:
+          type:
+          - string
+          - 'null'
+    InboxItemEnvelope:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          $ref: '#/components/schemas/InboxItem'
+    InboxAggregations:
+      type: object
+      required:
+      - matchableType
+      properties:
+        matchableType:
+          type: object
+          description: Count of matching items per matchable type.
+          additionalProperties:
+            type: integer
+    InboxAcceptMeta:
+      type: object
+      required:
+      - state
+      - feedback
+      - matchableType
+      - matchableId
+      - final
+      properties:
+        state:
+          type: string
+        feedback:
+          type: string
+        matchableType:
+          type: string
+        matchableId:
+          type: string
+        workspaceId:
+          type:
+          - string
+          - 'null'
+          description: Default workspace the accept followed, when one exists.
+        final:
+          type: boolean
+          description: Always true — accept is irreversible.
+    ErrorEnvelope:
+      type: object
+      required:
+      - errors
+      properties:
+        errors:
+          type: array
+          items:
+            type: object
+            required:
+            - status
+            - code
+            - title
+            - detail
+            properties:
+              status:
+                type: string
+              code:
+                type: string
+              title:
+                type: string
+              detail:
+                type: string
+              source:
+                type: object
+                properties:
+                  pointer:
+                    type: string
+    CursorMeta:
+      type: object
+      required:
+      - count
+      properties:
+        count:
+          type: integer
+          description: Number of records in this page.
+        totalCount:
+          type: integer
+          description: 'Total matching records (award search only), capped at 10,000 by the search engine. Pagination via nextCursor is not limited by this cap.
+
+            '
+        perPage:
+          type: integer
+        nextCursor:
+          type:
+          - string
+          - 'null'
   responses:
     Error:
       description: Error response
@@ -496,27 +517,6 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/ErrorEnvelope'
-  parameters:
-    perPage:
-      name: perPage
-      in: query
-      required: false
-      schema:
-        type: integer
-        default: 25
-        maximum: 100
-    id:
-      name: id
-      in: path
-      required: true
-      schema:
-        type: string
-    cursor:
-      name: cursor
-      in: query
-      required: false
-      schema:
-        type: string
   securitySchemes:
     bearerApiKey:
       type: http
