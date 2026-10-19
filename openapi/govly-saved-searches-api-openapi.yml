@@ -1,10 +1,14 @@
 openapi: 3.2.0
 info:
-  title: Govly Tools API (Alpha) Saved Searches API
+  title: Govly Tools Saved Searches API
   version: 1.0.0-alpha
   description: 'ALPHA / UNSTABLE: This API is still in active development. Endpoint behavior, request fields, response fields, error codes, and operation names may change before the Tools API is declared stable.
 
-    REST-callable tool surface for agent and automation workflows. Agents are the primary consumer, but integrations can be built on this API. Responses are JSON for typed clients; MCP tools may render action results into text-oriented formats separately.'
+    REST-callable tool surface for agent and automation workflows. Agents are the primary consumer, but integrations can be built on this API. Responses are JSON for typed clients; MCP tools may render action results into text-oriented formats separately.
+
+    Validating requests: validate against this schema in your client before sending. Govly ignores a request field it does not recognize rather than rejecting it, so a misspelled filter name is not applied — the response returns 200 with a broader result set than you intended, and nothing marks the difference. Where a request body declares `additionalProperties: false`, strict client-side validation is what catches that. Fields sent with the wrong type are rejected with 400 on most endpoints; validate types in your client too rather than relying on it.
+
+    Rate limits: each resource (for example awards, opportunities, or workspaces) allows 70 requests per minute per user. Exceeding it returns 429 with the standard error envelope, `code: rate_limited`, and a `Retry-After` header. Keys sent in the `X-API-KEY` header are also subject to the Enterprise API limit of 300 requests per minute per key; see the Rate Limits page.'
 servers:
 - url: https://app.govly.com
 security:
@@ -14,6 +18,314 @@ tags:
 - name: Saved Searches
   description: List saved opportunity searches and cached matches.
 paths:
+  /api/tools/v1/awards/saved_searches:
+    get:
+      tags:
+      - Saved Searches
+      operationId: list_award_saved_searches
+      summary: List award saved searches
+      parameters:
+      - $ref: '#/components/parameters/cursor'
+      - $ref: '#/components/parameters/perPage'
+      responses:
+        '200':
+          description: Award saved searches
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - data
+                - meta
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/SavedSearch'
+                  meta:
+                    $ref: '#/components/schemas/CursorMeta'
+        '401':
+          $ref: '#/components/responses/Error'
+        '403':
+          $ref: '#/components/responses/Error'
+        '422':
+          $ref: '#/components/responses/Error'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+    post:
+      tags:
+      - Saved Searches
+      operationId: create_award_saved_search
+      summary: Create an award saved search
+      description: Saves a set of award search criteria as a replayable search. Award saved searches do not send notifications — run one any time with the results endpoint. The date window is stored as relative day offsets and defaults to the last year. The market the search is created under is stored and bounds every replay, so set searchType explicitly when scoping to a state or local place. Stored filters can be changed but not removed.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              required:
+              - name
+              properties:
+                name:
+                  type: string
+                  description: Display name for the saved search.
+                query:
+                  type: string
+                  description: Free-text search terms.
+                searchType:
+                  type: string
+                  enum:
+                  - fed
+                  - sled
+                  - international
+                  description: 'Market this search covers. Defaults to the caller''s market focus and is stored, so it bounds every later replay.
+
+                    '
+                recipientNames:
+                  type: array
+                  items:
+                    type: string
+                  description: Recipient/vendor names to filter by.
+                buyerNames:
+                  type: array
+                  items:
+                    type: string
+                  description: Awarding buyer names.
+                funderNames:
+                  type: array
+                  items:
+                    type: string
+                  description: Funding agency names.
+                naics:
+                  type: array
+                  items:
+                    type: string
+                  description: NAICS codes to filter by.
+                psc:
+                  type: array
+                  items:
+                    type: string
+                  description: Product/service codes.
+                amountRange:
+                  type: array
+                  items:
+                    type: number
+                  minItems: 2
+                  maxItems: 2
+                  description: '[min, max] awarded amount.'
+                placeIds:
+                  type: array
+                  items:
+                    type: string
+                  description: 'Canonical Govly Place ids to scope the saved search to, from the place search or list tools. Matches at any administrative level. Bounded by the stored market, and changeable but not removable.
+
+                    '
+                placeIdsNone:
+                  type: array
+                  items:
+                    type: string
+                  description: Canonical Govly Place ids to exclude. Same matching rules as placeIds.
+                dateRangeParam:
+                  type: string
+                  description: Which award date field the relative window applies to.
+                relativeStartDayPivot:
+                  type: integer
+                  description: Window start, in days relative to today. Defaults to -365.
+                relativeEndDayPivot:
+                  type: integer
+                  description: Window end, in days relative to today. Defaults to 0.
+      responses:
+        '201':
+          description: Created award saved search
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - data
+                properties:
+                  data:
+                    $ref: '#/components/schemas/SavedSearch'
+        '400':
+          $ref: '#/components/responses/Error'
+        '401':
+          $ref: '#/components/responses/Error'
+        '403':
+          $ref: '#/components/responses/Error'
+        '422':
+          $ref: '#/components/responses/Error'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+  /api/tools/v1/awards/saved_searches/{id}:
+    get:
+      tags:
+      - Saved Searches
+      operationId: show_award_saved_search
+      summary: Show an award saved search
+      parameters:
+      - $ref: '#/components/parameters/id'
+      responses:
+        '200':
+          description: Award saved search
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - data
+                - meta
+                properties:
+                  data:
+                    $ref: '#/components/schemas/SavedSearch'
+                  meta:
+                    $ref: '#/components/schemas/SavedSearchWindowMeta'
+        '401':
+          $ref: '#/components/responses/Error'
+        '403':
+          $ref: '#/components/responses/Error'
+        '404':
+          $ref: '#/components/responses/Error'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+    patch:
+      tags:
+      - Saved Searches
+      operationId: update_award_saved_search
+      summary: Update an award saved search
+      description: Merges the supplied criteria into the stored ones. Only supplied keys change; omitted keys are left as they are, and there is no way to remove a stored filter — recreate the saved search to clear one. Award saved searches do not send notifications.
+      parameters:
+      - $ref: '#/components/parameters/id'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              properties:
+                name:
+                  type: string
+                query:
+                  type: string
+                searchType:
+                  type: string
+                  enum:
+                  - fed
+                  - sled
+                  - international
+                recipientNames:
+                  type: array
+                  items:
+                    type: string
+                buyerNames:
+                  type: array
+                  items:
+                    type: string
+                funderNames:
+                  type: array
+                  items:
+                    type: string
+                naics:
+                  type: array
+                  items:
+                    type: string
+                psc:
+                  type: array
+                  items:
+                    type: string
+                amountRange:
+                  type: array
+                  items:
+                    type: number
+                  minItems: 2
+                  maxItems: 2
+                placeIds:
+                  type: array
+                  items:
+                    type: string
+                  description: 'Canonical Govly Place ids to scope the saved search to. Replaces the stored set; an empty array does not clear it.
+
+                    '
+                placeIdsNone:
+                  type: array
+                  items:
+                    type: string
+                  description: Canonical Govly Place ids to exclude.
+                dateRangeParam:
+                  type: string
+                relativeStartDayPivot:
+                  type: integer
+                relativeEndDayPivot:
+                  type: integer
+                active:
+                  type: boolean
+                  description: Set false to deactivate the saved search.
+      responses:
+        '200':
+          description: Updated award saved search
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - data
+                properties:
+                  data:
+                    $ref: '#/components/schemas/SavedSearch'
+        '400':
+          $ref: '#/components/responses/Error'
+        '401':
+          $ref: '#/components/responses/Error'
+        '403':
+          $ref: '#/components/responses/Error'
+        '404':
+          $ref: '#/components/responses/Error'
+        '422':
+          $ref: '#/components/responses/Error'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+  /api/tools/v1/awards/saved_searches/{savedSearchId}/results:
+    get:
+      tags:
+      - Saved Searches
+      operationId: execute_award_saved_search
+      summary: Execute an award saved search
+      description: Runs the saved search live against the award index rather than reading a cached match list, so results reflect the index at call time. The saved search's own relative date window is applied; meta.dateRange reports the absolute window actually searched.
+      parameters:
+      - $ref: '#/components/parameters/savedSearchId'
+      - $ref: '#/components/parameters/cursor'
+      - $ref: '#/components/parameters/perPage'
+      responses:
+        '200':
+          description: Awards currently matching the saved search
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - data
+                - meta
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Award'
+                  meta:
+                    $ref: '#/components/schemas/AwardSavedSearchExecutionMeta'
+        '400':
+          $ref: '#/components/responses/Error'
+        '401':
+          $ref: '#/components/responses/Error'
+        '403':
+          $ref: '#/components/responses/Error'
+        '404':
+          $ref: '#/components/responses/Error'
+        '422':
+          $ref: '#/components/responses/Error'
+        '429':
+          $ref: '#/components/responses/RateLimited'
   /api/tools/v1/opportunities/saved_searches:
     get:
       tags:
@@ -47,6 +359,110 @@ paths:
           $ref: '#/components/responses/Error'
         '422':
           $ref: '#/components/responses/Error'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+    post:
+      tags:
+      - Saved Searches
+      operationId: create_opportunity_saved_search
+      summary: Create an opportunity saved search
+      description: Saves a set of opportunity search criteria. Opportunity saved searches percolate, so the stored filters also drive match notifications. The market the search is created under is stored with it and bounds every later match, so set searchType explicitly when scoping to a state or local place. Stored filters can be changed but not removed.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              required:
+              - name
+              properties:
+                name:
+                  type: string
+                  description: Display name for the saved search.
+                query:
+                  type: string
+                  description: Free-text search terms.
+                searchType:
+                  type: string
+                  enum:
+                  - fed
+                  - sled
+                  - international
+                  description: 'Market this search covers. Defaults to the caller''s market focus and is stored, so it bounds every later match.
+
+                    '
+                buyerIds:
+                  type: array
+                  items:
+                    type: string
+                  description: Govly buyer (government entity) ids.
+                includeSubBuyers:
+                  type: boolean
+                  description: Include opportunities from child agencies. Default true when buyerIds is set.
+                naics:
+                  type: array
+                  items:
+                    type: string
+                  description: NAICS codes to filter by.
+                placeIds:
+                  type: array
+                  items:
+                    type: string
+                  description: 'Canonical Govly Place ids to scope the saved search to, from the place search or list tools. Matches at any administrative level. Bounded by the stored market, and changeable but not removable.
+
+                    '
+                placeIdsNone:
+                  type: array
+                  items:
+                    type: string
+                  description: Canonical Govly Place ids to exclude. Same matching rules as placeIds.
+                recordType:
+                  type: array
+                  items:
+                    type: string
+                  description: Record types. Published and forecast types cannot be mixed.
+                noticeType:
+                  type: array
+                  items:
+                    type: string
+                  description: Notice types.
+                status:
+                  type: array
+                  items:
+                    type: string
+                  description: Opportunity statuses.
+                dateRangeParam:
+                  type: string
+                  description: Which date field the relative window applies to.
+                relativeStartDayPivot:
+                  type: integer
+                  description: Window start, in days relative to today.
+                relativeEndDayPivot:
+                  type: integer
+                  description: Window end, in days relative to today.
+      responses:
+        '201':
+          description: Created opportunity saved search
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - data
+                properties:
+                  data:
+                    $ref: '#/components/schemas/OppSearch'
+        '400':
+          $ref: '#/components/responses/Error'
+        '401':
+          $ref: '#/components/responses/Error'
+        '403':
+          $ref: '#/components/responses/Error'
+        '422':
+          $ref: '#/components/responses/Error'
+        '429':
+          $ref: '#/components/responses/RateLimited'
   /api/tools/v1/opportunities/saved_searches/{id}:
     get:
       tags:
@@ -73,6 +489,101 @@ paths:
           $ref: '#/components/responses/Error'
         '404':
           $ref: '#/components/responses/Error'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+    patch:
+      tags:
+      - Saved Searches
+      operationId: update_opportunity_saved_search
+      summary: Update an opportunity saved search
+      description: Merges the supplied criteria into the stored ones. Only supplied keys change; omitted keys are left as they are, and there is no way to remove a stored filter — recreate the saved search to clear one.
+      parameters:
+      - $ref: '#/components/parameters/id'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              properties:
+                name:
+                  type: string
+                query:
+                  type: string
+                searchType:
+                  type: string
+                  enum:
+                  - fed
+                  - sled
+                  - international
+                buyerIds:
+                  type: array
+                  items:
+                    type: string
+                includeSubBuyers:
+                  type: boolean
+                naics:
+                  type: array
+                  items:
+                    type: string
+                placeIds:
+                  type: array
+                  items:
+                    type: string
+                  description: 'Canonical Govly Place ids to scope the saved search to. Replaces the stored set; an empty array does not clear it.
+
+                    '
+                placeIdsNone:
+                  type: array
+                  items:
+                    type: string
+                  description: Canonical Govly Place ids to exclude.
+                recordType:
+                  type: array
+                  items:
+                    type: string
+                noticeType:
+                  type: array
+                  items:
+                    type: string
+                status:
+                  type: array
+                  items:
+                    type: string
+                dateRangeParam:
+                  type: string
+                relativeStartDayPivot:
+                  type: integer
+                relativeEndDayPivot:
+                  type: integer
+                active:
+                  type: boolean
+                  description: Set false to stop the saved search matching and notifying.
+      responses:
+        '200':
+          description: Updated opportunity saved search
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - data
+                properties:
+                  data:
+                    $ref: '#/components/schemas/OppSearch'
+        '400':
+          $ref: '#/components/responses/Error'
+        '401':
+          $ref: '#/components/responses/Error'
+        '403':
+          $ref: '#/components/responses/Error'
+        '404':
+          $ref: '#/components/responses/Error'
+        '422':
+          $ref: '#/components/responses/Error'
+        '429':
+          $ref: '#/components/responses/RateLimited'
   /api/tools/v1/opportunities/saved_searches/{savedSearchId}/results:
     get:
       tags:
@@ -109,24 +620,14 @@ paths:
           $ref: '#/components/responses/Error'
         '422':
           $ref: '#/components/responses/Error'
+        '429':
+          $ref: '#/components/responses/RateLimited'
 components:
   parameters:
-    savedSearchId:
-      name: savedSearchId
-      in: path
-      required: true
-      schema:
-        type: string
     id:
       name: id
       in: path
       required: true
-      schema:
-        type: string
-    cursor:
-      name: cursor
-      in: query
-      required: false
       schema:
         type: string
     perPage:
@@ -137,26 +638,327 @@ components:
         type: integer
         default: 25
         maximum: 100
+    savedSearchId:
+      name: savedSearchId
+      in: path
+      required: true
+      schema:
+        type: string
+    cursor:
+      name: cursor
+      in: query
+      required: false
+      schema:
+        type: string
   schemas:
-    CursorMeta:
+    AwardSavedSearchExecutionMeta:
       type: object
       required:
-      - count
-      properties:
-        count:
-          type: integer
-          description: Number of records in this page.
-        totalCount:
-          type: integer
-          description: 'Total matching records (award search only), capped at 10,000 by the search engine. Pagination via nextCursor is not limited by this cap.
+      - total
+      - perPage
+      - searchType
+      - nextCursor
+      description: 'Execution metadata for a live award saved-search run. Distinct from CursorMeta, which requires a count this endpoint does not emit.
 
-            '
+        '
+      properties:
+        total:
+          type: integer
+          description: Matching awards, capped at 10,000 by the search engine.
         perPage:
           type: integer
+        searchType:
+          type: string
+          enum:
+          - fed
+          - sled
+          - international
+          description: The market actually searched.
+        searchTypeDefaulted:
+          type: boolean
+          description: 'True when the saved search stored no market and federal was applied as the default.
+
+            '
+        savedSearchId:
+          type: string
+        savedSearchName:
+          type: string
+        dateRange:
+          type: array
+          items:
+            type: string
+            format: date-time
+          description: 'The absolute window searched, resolved from the saved search''s stored relative day offsets at request time.
+
+            '
+        dateRangeParam:
+          type: string
+          enum:
+          - action_dates
+          - period_of_performance_start_date
+          - period_of_performance_end_date
+          - period_of_performance_potential_end_date
+          - last_modified_date
+          - awarded_date
+          - last_summarized_at
+          description: The award date field the window was applied to.
+        timedOut:
+          type: boolean
+          description: 'True when the search engine returned partial results before completing. Treat total and data as a lower bound.
+
+            '
         nextCursor:
           type:
           - string
           - 'null'
+    Award:
+      type: object
+      required:
+      - id
+      description: 'Stable external award shape. Empty members are omitted rather than rendered blank, and money fields are JSON numbers. Detail responses (show_award) add bounded collections; search responses return the summary shape.
+
+        '
+      properties:
+        id:
+          type: string
+        uniqueKey:
+          type: string
+          description: Stable award business key, such as CONT_AWD_... or CONT_IDV_....
+        displayName:
+          type: string
+        title:
+          type: string
+        identifier:
+          type: string
+        description:
+          type: string
+        aiSummary:
+          type: string
+        externalUrl:
+          type: string
+        awardUrl:
+          type: string
+          deprecated: true
+          description: Deprecated alias of links.self. Retained for Tools API v1 compatibility.
+        links:
+          type: object
+          description: Canonical links for this award. Omitted when the award has no unique key.
+          required:
+          - self
+          properties:
+            self:
+              type: string
+              format: uri
+              description: Canonical Govly app link for this award.
+            external:
+              type: string
+              format: uri
+              description: Source-system link, omitted when the source does not provide one.
+        acquisitionType:
+          type: string
+        acquisitionCategory:
+          type: string
+        searchType:
+          type: string
+          enum:
+          - fed
+          - sled
+          - international
+        treasuryAccountIds:
+          type: array
+          items:
+            type: string
+        dates:
+          type: object
+          properties:
+            awardedDate:
+              type: string
+            lastModifiedDate:
+              type: string
+            periodOfPerformanceStartDate:
+              type: string
+            periodOfPerformanceEndDate:
+              type: string
+            periodOfPerformancePotentialEndDate:
+              type: string
+        amounts:
+          type: object
+          properties:
+            awardAmount:
+              type: number
+            obligatedAmount:
+              type: number
+            paidAmount:
+              type: number
+            ceilingAmount:
+              type: number
+        recipient:
+          type: object
+          properties:
+            name:
+              type: string
+            uniqueKey:
+              type: string
+            uei:
+              type: string
+            cageCode:
+              type: string
+            parentUniqueKey:
+              type: string
+            parentName:
+              type: string
+        buyer:
+          $ref: '#/components/schemas/AwardGovernmentEntity'
+        buyingOffice:
+          $ref: '#/components/schemas/AwardGovernmentEntity'
+        funder:
+          $ref: '#/components/schemas/AwardGovernmentEntity'
+        fundingOffice:
+          $ref: '#/components/schemas/AwardGovernmentEntity'
+        classification:
+          type: object
+          properties:
+            psc:
+              type: string
+            naics:
+              type: string
+            setAside:
+              type: object
+              properties:
+                id:
+                  type: string
+                code:
+                  type: string
+                name:
+                  type: string
+        contractVehicle:
+          type: object
+          properties:
+            id:
+              type: string
+            slug:
+              type: string
+            name:
+              type: string
+        parentAward:
+          type: object
+          properties:
+            uniqueKey:
+              type: string
+            identifier:
+              type: string
+        jurisdiction:
+          type: object
+          properties:
+            id:
+              type: string
+            name:
+              type: string
+            isoCode:
+              type: string
+        transactions:
+          type: array
+          description: Detail only. Up to 100, newest action first.
+          items:
+            type: object
+        subAwards:
+          type: array
+          description: Detail only. Up to 100 award summaries.
+          items:
+            type: object
+        subAwardsCount:
+          type: integer
+          description: Detail only.
+        relatedOpportunities:
+          type: array
+          description: Detail only. Up to 25, newest posting first.
+          items:
+            type: object
+        programLinks:
+          type: array
+          description: Detail only. Up to 100.
+          items:
+            type: object
+        awardLineItems:
+          type: array
+          description: Detail only. Up to 100.
+          items:
+            type: object
+        places:
+          type: array
+          description: Detail only. AI-extracted places, most specific category first.
+          items:
+            type: object
+        classificationCodes:
+          type: array
+          description: Detail only. Up to 100 resolved classification codes with codeset.
+          items:
+            type: object
+        contacts:
+          type: array
+          description: Detail only. Up to 100 associated contacts (id, name, email).
+          items:
+            type: object
+    OpportunitySource:
+      type: object
+      required:
+      - id
+      - attachments
+      properties:
+        id:
+          type: string
+        postedAt:
+          type: string
+          format: date-time
+        externalUrl:
+          type: string
+          format: uri
+        noticeType:
+          type: string
+        recordType:
+          type: string
+        cancelReason:
+          type: string
+          description: Original cancellation reason, with source-specific sharing redaction.
+        reportedChanges:
+          type: array
+          description: Source-reported amendments; dates are omitted when the source did not supply them.
+          items:
+            type: object
+            properties:
+              amendmentId:
+                type: string
+              versionNumber:
+                type: integer
+              modifiedAt:
+                type: string
+                description: ISO 8601 timestamp or YYYY-MM-DD when only a calendar date is known.
+              text:
+                type: string
+                description: Original change reason, with source-specific sharing redaction.
+              documents:
+                type: array
+                items:
+                  type: object
+                  required:
+                  - filename
+                  - status
+                  properties:
+                    filename:
+                      type: string
+                    status:
+                      type: string
+                      enum:
+                      - matched
+                      - not_captured
+                      - ambiguous
+                    attachment:
+                      description: Present for one unambiguous visible revision; ordinary attachment access and URL controls apply.
+                      $ref: '#/components/schemas/OpportunityAttachment'
+        attachments:
+          type: array
+          items:
+            $ref: '#/components/schemas/OpportunityAttachment'
     Opportunity:
       type: object
       required:
@@ -176,6 +978,20 @@ components:
         externalUrl:
           type: string
           format: uri
+        links:
+          type: object
+          description: Canonical links for this opportunity. Prefer these over externalUrl.
+          required:
+          - self
+          properties:
+            self:
+              type: string
+              format: uri
+              description: Canonical Govly app link for this opportunity.
+            external:
+              type: string
+              format: uri
+              description: Source-system link, omitted when the source does not provide one.
         recordType:
           type: string
         status:
@@ -206,6 +1022,60 @@ components:
           type: string
         aiSummary:
           type: string
+        aiPeriodOfPerformance:
+          type: string
+          description: Detail only. AI-generated period-of-performance summary.
+        estimatedContractValue:
+          type: object
+          description: Detail only. Normalized estimated contract value in USD from authorized explicit sources, falling back to the opportunity AI estimate.
+          properties:
+            min:
+              type: number
+              format: double
+            max:
+              type: number
+              format: double
+        buyer:
+          type: object
+          description: Search and detail. Government buyer and its hierarchy.
+          properties:
+            id:
+              type: string
+            name:
+              type: string
+            domains:
+              type: array
+              items:
+                type: string
+            hierarchy:
+              type: array
+              items:
+                type: string
+        locations:
+          type: array
+          description: Search and detail. Displayable opportunity locations.
+          items:
+            $ref: '#/components/schemas/OpportunityLocation'
+        naics:
+          type: array
+          description: Search and detail. Most-specific NAICS codes.
+          items:
+            type: string
+        psc:
+          type: array
+          description: Search and detail. Most-specific Product and Service Codes.
+          items:
+            type: string
+        nigp:
+          type: array
+          description: Search and detail. Most-specific NIGP codes.
+          items:
+            type: string
+        unspsc:
+          type: array
+          description: Search and detail. Most-specific UNSPSC codes.
+          items:
+            type: string
         jurisdiction:
           type: object
           properties:
@@ -222,6 +1092,21 @@ components:
               type: string
             name:
               type: string
+        tags:
+          type: object
+          description: Tags grouped by context. Keys are contexts — "contract" holds contract vehicle groups such as SEWP V groups (and non-vehicle markers such as "Manual" for hand-created opportunities), "warning" holds pursuit cautions such as clearance designations, "productCategory" holds product classifications. Each value is a list of objects with a stable "slug" and a display "label". An empty object when the opportunity has no tags — the key is always present.
+          additionalProperties:
+            type: array
+            items:
+              type: object
+              required:
+              - slug
+              - label
+              properties:
+                slug:
+                  type: string
+                label:
+                  type: string
         followerCount:
           type: integer
           description: Count of active follow rows across visible workspaces for this opportunity.
@@ -244,49 +1129,104 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/OpportunitySource'
-    WorkspaceMember:
+        contacts:
+          type: array
+          description: Detail only. Up to 100 government contacts linked to the opportunity or its attachments, ordered by id. email and phoneNumbers appear only for paid seats and only when the opportunity's source data is not anonymized for the caller's organization.
+          items:
+            $ref: '#/components/schemas/OpportunityContact'
+    SavedSearchWindowMeta:
+      type: object
+      required:
+      - dateRange
+      - dateRangeParam
+      description: 'The date window this saved search would search, resolved at request time. It is not part of `criteria`: date_range is stripped before a saved search is persisted and the window is stored as relative day offsets, so the stored filters show a date field with no range beside it. Returned on show only — a window is per saved search, so it has no unambiguous place in a list response.
+
+        '
+      properties:
+        dateRange:
+          type: array
+          items:
+            type: string
+            format: date-time
+          description: Absolute window, on Eastern calendar-day boundaries.
+        dateRangeParam:
+          type: string
+          enum:
+          - action_dates
+          - period_of_performance_start_date
+          - period_of_performance_end_date
+          - period_of_performance_potential_end_date
+          - last_modified_date
+          - awarded_date
+          - last_summarized_at
+          description: The award date field the window applies to.
+    OpportunityContact:
       type: object
       required:
       - id
-      - member
+      description: A contact embedded in show_opportunity, including identity, titles, active status, and permitted email and phone numbers. When active is true, use show_contact for buyers, vendors, and places.
       properties:
         id:
           type: string
-        state:
+        name:
           type: string
-        notifications:
+        titles:
+          type: array
+          items:
+            type: string
+        active:
+          type: boolean
+        email:
           type: string
-        createdAt:
+          description: Present only for paid callers when the opportunity is not anonymized for their organization.
+        phoneNumbers:
+          type: array
+          items:
+            type: string
+          description: Present only for paid callers when the opportunity is not anonymized for their organization.
+    OpportunityLocation:
+      type: object
+      properties:
+        placeLocationId:
+          type: string
+        postalCode:
+          type: string
+        city:
+          type: string
+        region:
+          type: string
+        street:
+          type: string
+        place:
+          type: string
+        country:
+          type: string
+        countryCode:
+          type: string
+        label:
+          type: string
+        type:
+          type: string
+    RateLimitError:
+      type: object
+      required:
+      - error
+      properties:
+        error:
+          type: string
+    AttachmentFile:
+      type: object
+      description: Presigned download metadata. Omitted when attachment content is unavailable or URLs are excluded.
+      required:
+      - url
+      - expiresAt
+      properties:
+        url:
+          type: string
+          format: uri
+        expiresAt:
           type: string
           format: date-time
-        updatedAt:
-          type: string
-          format: date-time
-        member:
-          type: object
-          required:
-          - type
-          - id
-          properties:
-            type:
-              type: string
-              enum:
-              - user
-              - team
-            id:
-              type: string
-            name:
-              type: string
-            email:
-              type: string
-              format: email
-            organization:
-              type: object
-              properties:
-                id:
-                  type: string
-                name:
-                  type: string
     OppSearch:
       type: object
       required:
@@ -294,6 +1234,9 @@ components:
       - name
       - active
       - criteria
+      - followedByCurrentUser
+      - createdByCurrentUser
+      - createdByName
       properties:
         id:
           type: string
@@ -315,114 +1258,45 @@ components:
         updatedAt:
           type: string
           format: date-time
-    AttachmentFile:
-      type: object
-      description: Presigned download metadata. Omitted when the attachment is redacted or URLs are excluded.
-      required:
-      - url
-      - expiresAt
-      properties:
-        url:
-          type: string
-          format: uri
-        expiresAt:
-          type: string
-          format: date-time
-    OpportunityAttachment:
-      type: object
-      required:
-      - id
-      - documentType
-      - filename
-      - redacted
-      properties:
-        id:
-          type: string
-          description: Canonical OppAttachment.id. Pass this value to document_read and document_download.
-        documentType:
-          type: string
-          const: opportunity_attachment
-        filename:
-          type: string
-        contentType:
-          type: string
-        byteSize:
-          type: integer
-        redacted:
+        followedByCurrentUser:
           type: boolean
-        tags:
-          type: array
-          items:
-            type: string
-        file:
-          $ref: '#/components/schemas/AttachmentFile'
-    ErrorEnvelope:
+          description: True when the requesting user follows this search, directly or through one of their teams.
+        createdByCurrentUser:
+          type: boolean
+          description: True when the requesting user created this search.
+        createdByName:
+          type:
+          - string
+          - 'null'
+          description: Name of the user who created this search, or null when no creator is recorded.
+    CursorMeta:
       type: object
       required:
-      - errors
+      - count
       properties:
-        errors:
-          type: array
-          items:
-            type: object
-            required:
-            - status
-            - code
-            - title
-            - detail
-            properties:
-              status:
-                type: string
-              code:
-                type: string
-              title:
-                type: string
-              detail:
-                type: string
-              source:
-                type: object
-                properties:
-                  pointer:
-                    type: string
-    OppSearchMatch:
-      type: object
-      required:
-      - id
-      - matchedAt
-      - savedSearchId
-      - opportunity
-      properties:
-        id:
+        count:
+          type: integer
+          description: Number of records in this page.
+        totalCount:
+          type: integer
+          description: 'Total matching records (award and contact search), capped at 10,000 by the search engine. Pagination via nextCursor is not limited by this cap.
+
+            '
+        perPage:
+          type: integer
+        searchType:
           type: string
-        matchedAt:
-          type: string
-          format: date-time
-        savedSearchId:
-          type: string
-        opportunity:
-          $ref: '#/components/schemas/Opportunity'
-    OpportunitySource:
-      type: object
-      required:
-      - id
-      - attachments
-      properties:
-        id:
-          type: string
-        postedAt:
-          type: string
-          format: date-time
-        externalUrl:
-          type: string
-          format: uri
-        noticeType:
-          type: string
-        recordType:
-          type: string
-        attachments:
-          type: array
-          items:
-            $ref: '#/components/schemas/OpportunityAttachment'
+          enum:
+          - fed
+          - sled
+          - international
+          description: 'Market actually searched (opportunity and award search only). Echoes the resolved searchType, including the value defaulted from the user''s market focus when the request omitted it.
+
+            '
+        nextCursor:
+          type:
+          - string
+          - 'null'
     OpportunityWorkspace:
       type: object
       required:
@@ -467,6 +1341,182 @@ components:
           description: Active workspace follows. Inactive/unfollowed/disinterested rows are omitted.
           items:
             $ref: '#/components/schemas/WorkspaceMember'
+    OppSearchMatch:
+      type: object
+      required:
+      - id
+      - matchedAt
+      - savedSearchId
+      - opportunity
+      properties:
+        id:
+          type: string
+        matchedAt:
+          type: string
+          format: date-time
+        savedSearchId:
+          type: string
+        opportunity:
+          $ref: '#/components/schemas/Opportunity'
+    AwardGovernmentEntity:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        code:
+          type: string
+    ErrorEnvelope:
+      type: object
+      required:
+      - errors
+      properties:
+        errors:
+          type: array
+          items:
+            type: object
+            required:
+            - status
+            - code
+            - title
+            - detail
+            properties:
+              status:
+                type: string
+              code:
+                type: string
+              title:
+                type: string
+              detail:
+                type: string
+              source:
+                type: object
+                properties:
+                  pointer:
+                    type: string
+    OpportunityAttachment:
+      type: object
+      required:
+      - id
+      - documentType
+      - filename
+      - redacted
+      - contentAvailable
+      properties:
+        id:
+          type: string
+          description: Canonical OppAttachment.id. Pass this value to document_read and document_download.
+        documentType:
+          type: string
+          const: opportunity_attachment
+        filename:
+          type: string
+        contentType:
+          type: string
+        byteSize:
+          type: integer
+        contentAvailable:
+          type: boolean
+          description: Whether attachment content is available to the current organization.
+        redacted:
+          type: boolean
+          deprecated: true
+          description: Deprecated inverse of contentAvailable. Retained for Tools API v1 compatibility.
+        tags:
+          type: array
+          items:
+            type: string
+        file:
+          $ref: '#/components/schemas/AttachmentFile'
+    WorkspaceMember:
+      type: object
+      required:
+      - id
+      - member
+      properties:
+        id:
+          type: string
+        state:
+          type: string
+        notifications:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        member:
+          type: object
+          required:
+          - type
+          - id
+          properties:
+            type:
+              type: string
+              enum:
+              - user
+              - team
+            id:
+              type: string
+            name:
+              type: string
+            email:
+              type: string
+              format: email
+            organization:
+              type: object
+              properties:
+                id:
+                  type: string
+                name:
+                  type: string
+    SavedSearch:
+      type: object
+      required:
+      - id
+      - name
+      - searchableType
+      - followedByCurrentUser
+      - createdByCurrentUser
+      - createdByName
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        active:
+          type: boolean
+        searchableType:
+          type: string
+          enum:
+          - Award
+          - Contact
+          description: Which corpus this saved search targets.
+        criteria:
+          type: object
+          additionalProperties: true
+          description: 'The stored filter set. Keys are camelized on the way out like every other field, so they do not match the snake_case names a search request expects; convert before replaying them.
+
+            '
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        followedByCurrentUser:
+          type: boolean
+          description: True when the requesting user follows this search, directly or through one of their teams.
+        createdByCurrentUser:
+          type: boolean
+          description: True when the requesting user created this search.
+        createdByName:
+          type:
+          - string
+          - 'null'
+          description: Name of the user who created this search, or null when no creator is recorded.
   responses:
     Error:
       description: Error response
@@ -474,6 +1524,21 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/ErrorEnvelope'
+    RateLimited:
+      description: 'Too many requests. Two limiters can produce this status and they use different bodies. The per-user limit of 70 requests per minute for each resource returns the standard error envelope with `code: rate_limited` and a `Retry-After` header. Keys sent in the `X-API-KEY` header are also subject to the Enterprise API limit of 300 requests per minute per key, which returns the plain `error` form with `Retry-After` and the `X-RateLimit-*` headers. Clients should accept either body.
+
+        '
+      headers:
+        Retry-After:
+          description: Seconds to wait before retrying.
+          schema:
+            type: string
+      content:
+        application/json:
+          schema:
+            oneOf:
+            - $ref: '#/components/schemas/ErrorEnvelope'
+            - $ref: '#/components/schemas/RateLimitError'
   securitySchemes:
     bearerApiKey:
       type: http

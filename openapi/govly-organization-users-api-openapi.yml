@@ -1,0 +1,212 @@
+openapi: 3.2.0
+info:
+  title: Govly Tools Organization Users API
+  version: 1.0.0-alpha
+  description: 'ALPHA / UNSTABLE: This API is still in active development. Endpoint behavior, request fields, response fields, error codes, and operation names may change before the Tools API is declared stable.
+
+    REST-callable tool surface for agent and automation workflows. Agents are the primary consumer, but integrations can be built on this API. Responses are JSON for typed clients; MCP tools may render action results into text-oriented formats separately.
+
+    Validating requests: validate against this schema in your client before sending. Govly ignores a request field it does not recognize rather than rejecting it, so a misspelled filter name is not applied — the response returns 200 with a broader result set than you intended, and nothing marks the difference. Where a request body declares `additionalProperties: false`, strict client-side validation is what catches that. Fields sent with the wrong type are rejected with 400 on most endpoints; validate types in your client too rather than relying on it.
+
+    Rate limits: each resource (for example awards, opportunities, or workspaces) allows 70 requests per minute per user. Exceeding it returns 429 with the standard error envelope, `code: rate_limited`, and a `Retry-After` header. Keys sent in the `X-API-KEY` header are also subject to the Enterprise API limit of 300 requests per minute per key; see the Rate Limits page.'
+servers:
+- url: https://app.govly.com
+security:
+- bearerApiKey: []
+- headerApiKey: []
+tags:
+- name: Organization Users
+  description: Discover the members of your organization and their account status.
+paths:
+  /api/tools/v1/organization_users:
+    get:
+      tags:
+      - Organization Users
+      operationId: list_organization_users
+      summary: List users in your Govly organization
+      description: List the people in the authenticated user's organization, ordered by email and organization-user ID. Returns names, emails, roles and account status. Excludes service accounts. Archived users are excluded unless includeArchived is true and the caller is an organization admin or system admin. Non-admin callers requesting archived users still receive only unarchived users. Follow meta.page and meta.totalPages to retrieve every page. meta.summary provides total, active, deactivated and active-admin counts across users visible to the caller, independently of pagination. Deactivated means archived; admins receive that count even when archived details are excluded from data. Also available in MCP and GovlyAI as list_organization_users.
+      parameters:
+      - name: page
+        in: query
+        schema:
+          type: integer
+          minimum: 1
+          default: 1
+      - name: perPage
+        in: query
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 100
+          default: 50
+      - name: includeArchived
+        in: query
+        schema:
+          type: boolean
+          default: false
+      responses:
+        '200':
+          description: Visible organization users and pagination metadata
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrganizationUserListResponse'
+        '400':
+          $ref: '#/components/responses/Error'
+        '401':
+          $ref: '#/components/responses/Error'
+        '403':
+          $ref: '#/components/responses/Error'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+components:
+  schemas:
+    RateLimitError:
+      type: object
+      required:
+      - error
+      properties:
+        error:
+          type: string
+    ErrorEnvelope:
+      type: object
+      required:
+      - errors
+      properties:
+        errors:
+          type: array
+          items:
+            type: object
+            required:
+            - status
+            - code
+            - title
+            - detail
+            properties:
+              status:
+                type: string
+              code:
+                type: string
+              title:
+                type: string
+              detail:
+                type: string
+              source:
+                type: object
+                properties:
+                  pointer:
+                    type: string
+    OrganizationUserListResponse:
+      type: object
+      required:
+      - data
+      - meta
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrganizationUser'
+        meta:
+          type: object
+          required:
+          - totalCount
+          - page
+          - perPage
+          - totalPages
+          - summary
+          properties:
+            totalCount:
+              type: integer
+              minimum: 0
+            page:
+              type: integer
+              minimum: 1
+            perPage:
+              type: integer
+              minimum: 1
+              maximum: 100
+            totalPages:
+              type: integer
+              minimum: 0
+            summary:
+              type: object
+              description: Counts over all human users visible to the caller, including archived users when permitted, independent of pagination and includeArchived.
+              required:
+              - totalCount
+              - activeCount
+              - deactivatedCount
+              - adminCount
+              properties:
+                totalCount:
+                  type: integer
+                  minimum: 0
+                activeCount:
+                  type: integer
+                  minimum: 0
+                  description: Unarchived users, including members without a paid seat.
+                deactivatedCount:
+                  type: integer
+                  minimum: 0
+                  description: Archived users visible to the caller; zero when the caller cannot view archived users.
+                adminCount:
+                  type: integer
+                  minimum: 0
+                  description: Unarchived users whose organization role is admin.
+    OrganizationUser:
+      type: object
+      required:
+      - id
+      - name
+      - email
+      - role
+      - active
+      properties:
+        id:
+          type: string
+          description: Organization-user membership ID, not the global user ID.
+        name:
+          type: string
+        email:
+          type: string
+        role:
+          type: string
+        active:
+          type: boolean
+          description: False when the user is archived.
+        archivedAt:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          description: Archive timestamp, omitted when the user is not archived.
+  responses:
+    Error:
+      description: Error response
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorEnvelope'
+    RateLimited:
+      description: 'Too many requests. Two limiters can produce this status and they use different bodies. The per-user limit of 70 requests per minute for each resource returns the standard error envelope with `code: rate_limited` and a `Retry-After` header. Keys sent in the `X-API-KEY` header are also subject to the Enterprise API limit of 300 requests per minute per key, which returns the plain `error` form with `Retry-After` and the `X-RateLimit-*` headers. Clients should accept either body.
+
+        '
+      headers:
+        Retry-After:
+          description: Seconds to wait before retrying.
+          schema:
+            type: string
+      content:
+        application/json:
+          schema:
+            oneOf:
+            - $ref: '#/components/schemas/ErrorEnvelope'
+            - $ref: '#/components/schemas/RateLimitError'
+  securitySchemes:
+    bearerApiKey:
+      type: http
+      scheme: bearer
+      bearerFormat: API key
+    headerApiKey:
+      type: apiKey
+      in: header
+      name: X-API-KEY

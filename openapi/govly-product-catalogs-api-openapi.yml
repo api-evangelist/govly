@@ -1,0 +1,306 @@
+openapi: 3.2.0
+info:
+  title: Govly Tools Product Catalogs API
+  version: 1.0.0-alpha
+  description: 'ALPHA / UNSTABLE: This API is still in active development. Endpoint behavior, request fields, response fields, error codes, and operation names may change before the Tools API is declared stable.
+
+    REST-callable tool surface for agent and automation workflows. Agents are the primary consumer, but integrations can be built on this API. Responses are JSON for typed clients; MCP tools may render action results into text-oriented formats separately.
+
+    Validating requests: validate against this schema in your client before sending. Govly ignores a request field it does not recognize rather than rejecting it, so a misspelled filter name is not applied — the response returns 200 with a broader result set than you intended, and nothing marks the difference. Where a request body declares `additionalProperties: false`, strict client-side validation is what catches that. Fields sent with the wrong type are rejected with 400 on most endpoints; validate types in your client too rather than relying on it.
+
+    Rate limits: each resource (for example awards, opportunities, or workspaces) allows 70 requests per minute per user. Exceeding it returns 429 with the standard error envelope, `code: rate_limited`, and a `Retry-After` header. Keys sent in the `X-API-KEY` header are also subject to the Enterprise API limit of 300 requests per minute per key; see the Rate Limits page.'
+servers:
+- url: https://app.govly.com
+security:
+- bearerApiKey: []
+- headerApiKey: []
+tags:
+- name: Product Catalogs
+  description: List government contract price lists and search their line items.
+paths:
+  /api/tools/v1/product_catalogs:
+    get:
+      tags:
+      - Product Catalogs
+      operationId: list_product_catalogs
+      summary: List public product catalogs
+      description: List the public government contract price lists (product catalogs). Returns catalog metadata only, no pricing. Not paginated; the catalog set is small. Use the returned ids and groups to filter search_product_catalog.
+      responses:
+        '200':
+          description: Public catalogs
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - data
+                - meta
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ProductCatalog'
+                  meta:
+                    $ref: '#/components/schemas/ProductCatalogListMeta'
+        '401':
+          $ref: '#/components/responses/Error'
+        '403':
+          $ref: '#/components/responses/Error'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+  /api/tools/v1/product_catalogs/search:
+    post:
+      tags:
+      - Product Catalogs
+      operationId: search_product_catalog
+      summary: Search product catalog items
+      description: Search line items across government contract price lists for negotiated pricing, part numbers, and availability, with the constrained public parameter set shared by MCP search_product_catalog. query is a fuzzy search over item descriptions, manufacturers, and part numbers; productCatalogIds, group, category, manufacturer, and priceRange are exact filters AND-combined with query. productCatalogIds is always intersected with the public catalogs, so any other ids drop out rather than erroring. Results are relevance-ordered; there is no sort control. Paginate with cursor; a request carrying a page number is rejected with 400.
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              properties:
+                query:
+                  type: string
+                  maxLength: 500
+                  description: Search text over item description, manufacturer, and part numbers.
+                cursor:
+                  type: string
+                  description: 'Opaque cursor from a previous response''s meta.nextCursor. Omit for the first page.
+
+                    '
+                perPage:
+                  type: integer
+                  default: 25
+                  description: 'Results per page. Default 25, maximum 100. Non-enterprise MCP access is capped at 50; REST access is Enterprise-only.
+
+                    '
+                productCatalogIds:
+                  type: array
+                  items:
+                    type: integer
+                  description: 'Restrict to these catalog ids, from list_product_catalogs. Intersected with the catalogs the caller may access.
+
+                    '
+                group:
+                  type: string
+                  description: 'Exact filter on catalog group, a free-text bucket set at upload (for example "ESI" for the DoD Enterprise Software Initiative).
+
+                    '
+                category:
+                  type: string
+                  description: Exact filter on the item's product category.
+                manufacturer:
+                  type: string
+                  description: Exact filter on the item's manufacturer name.
+                priceRange:
+                  type: array
+                  items:
+                    type: number
+                  minItems: 2
+                  maxItems: 2
+                  description: 'Filter on contract price as [min, max]. Items with no contract price are excluded when this is set.
+
+                    '
+      responses:
+        '200':
+          description: Matching catalog items
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - data
+                - meta
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ProductCatalogItem'
+                  meta:
+                    $ref: '#/components/schemas/ProductCatalogSearchMeta'
+        '400':
+          $ref: '#/components/responses/Error'
+        '401':
+          $ref: '#/components/responses/Error'
+        '403':
+          $ref: '#/components/responses/Error'
+        '422':
+          $ref: '#/components/responses/Error'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+components:
+  schemas:
+    ProductCatalogSearchMeta:
+      type: object
+      description: 'Cursor pagination metadata for product catalog search. Results are relevance-ordered with a stable id tiebreaker, so following nextCursor neither repeats nor skips an item while the indexed results remain unchanged. Not CursorMeta, whose required count this endpoint does not emit.
+
+        '
+      required:
+      - total
+      - perPage
+      - nextCursor
+      properties:
+        total:
+          type: integer
+          description: 'Total matching items (capped at 10,000 by the search engine). Pagination via nextCursor is not limited by this cap.
+
+            '
+        perPage:
+          type: integer
+        nextCursor:
+          type:
+          - string
+          - 'null'
+          description: 'Opaque cursor for the next page; null when the results are exhausted.
+
+            '
+    RateLimitError:
+      type: object
+      required:
+      - error
+      properties:
+        error:
+          type: string
+    ErrorEnvelope:
+      type: object
+      required:
+      - errors
+      properties:
+        errors:
+          type: array
+          items:
+            type: object
+            required:
+            - status
+            - code
+            - title
+            - detail
+            properties:
+              status:
+                type: string
+              code:
+                type: string
+              title:
+                type: string
+              detail:
+                type: string
+              source:
+                type: object
+                properties:
+                  pointer:
+                    type: string
+    ProductCatalogListMeta:
+      type: object
+      description: 'Count metadata for the catalog list. The endpoint is not paginated, so this carries no page fields and does not use CursorMeta.
+
+        '
+      required:
+      - totalCount
+      properties:
+        totalCount:
+          type: integer
+          description: Number of catalogs returned.
+    ProductCatalogItem:
+      type: object
+      description: One line item in a product catalog, with its negotiated pricing.
+      required:
+      - id
+      properties:
+        id:
+          type: string
+        itemIdentifier:
+          type: string
+          description: The catalog's own identifier for the item (CLIN, SKU, or similar).
+        description:
+          type: string
+        manufacturer:
+          type: string
+        manufacturerPartNumber:
+          type: string
+        vendorPartNumber:
+          type: string
+        category:
+          type: string
+        subcategory:
+          type: string
+        contractNumber:
+          type: string
+        listPrice:
+          type: number
+        contractPrice:
+          type: number
+          description: The negotiated price, and the field priceRange filters on.
+        discountPercentage:
+          type: number
+        productCatalog:
+          type: object
+          description: The catalog this item belongs to.
+          properties:
+            id:
+              type: string
+            name:
+              type: string
+    ProductCatalog:
+      type: object
+      description: A government contract price list. Metadata only; no pricing.
+      required:
+      - id
+      - name
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        group:
+          type: string
+          description: 'Free-text bucket set at upload, used to cluster related catalogs (for example "ESI"). No fixed vocabulary.
+
+            '
+        contractVehicleName:
+          type: string
+          description: The contract vehicle this catalog belongs to, when it has one.
+        itemCount:
+          type: integer
+          description: Number of line items in the catalog.
+        organizationOwned:
+          type: boolean
+          description: 'Always false. This endpoint returns only public catalogs, which no organization owns. The field is kept for response-shape compatibility.
+
+            '
+  responses:
+    Error:
+      description: Error response
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorEnvelope'
+    RateLimited:
+      description: 'Too many requests. Two limiters can produce this status and they use different bodies. The per-user limit of 70 requests per minute for each resource returns the standard error envelope with `code: rate_limited` and a `Retry-After` header. Keys sent in the `X-API-KEY` header are also subject to the Enterprise API limit of 300 requests per minute per key, which returns the plain `error` form with `Retry-After` and the `X-RateLimit-*` headers. Clients should accept either body.
+
+        '
+      headers:
+        Retry-After:
+          description: Seconds to wait before retrying.
+          schema:
+            type: string
+      content:
+        application/json:
+          schema:
+            oneOf:
+            - $ref: '#/components/schemas/ErrorEnvelope'
+            - $ref: '#/components/schemas/RateLimitError'
+  securitySchemes:
+    bearerApiKey:
+      type: http
+      scheme: bearer
+      bearerFormat: API key
+    headerApiKey:
+      type: apiKey
+      in: header
+      name: X-API-KEY

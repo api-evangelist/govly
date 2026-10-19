@@ -1,10 +1,14 @@
 openapi: 3.2.0
 info:
-  title: Govly Tools API (Alpha) Quote Submissions API
+  title: Govly Tools Quote Submissions API
   version: 1.0.0-alpha
   description: 'ALPHA / UNSTABLE: This API is still in active development. Endpoint behavior, request fields, response fields, error codes, and operation names may change before the Tools API is declared stable.
 
-    REST-callable tool surface for agent and automation workflows. Agents are the primary consumer, but integrations can be built on this API. Responses are JSON for typed clients; MCP tools may render action results into text-oriented formats separately.'
+    REST-callable tool surface for agent and automation workflows. Agents are the primary consumer, but integrations can be built on this API. Responses are JSON for typed clients; MCP tools may render action results into text-oriented formats separately.
+
+    Validating requests: validate against this schema in your client before sending. Govly ignores a request field it does not recognize rather than rejecting it, so a misspelled filter name is not applied — the response returns 200 with a broader result set than you intended, and nothing marks the difference. Where a request body declares `additionalProperties: false`, strict client-side validation is what catches that. Fields sent with the wrong type are rejected with 400 on most endpoints; validate types in your client too rather than relying on it.
+
+    Rate limits: each resource (for example awards, opportunities, or workspaces) allows 70 requests per minute per user. Exceeding it returns 429 with the standard error envelope, `code: rate_limited`, and a `Retry-After` header. Keys sent in the `X-API-KEY` header are also subject to the Enterprise API limit of 300 requests per minute per key; see the Rate Limits page.'
 servers:
 - url: https://app.govly.com
 security:
@@ -20,7 +24,7 @@ paths:
       - Quote Submissions
       operationId: get_quote_submission_requirements
       summary: Check quote submission requirements
-      description: Returns portal-specific quote submission requirements and blocking reasons for the authenticated actor and workspace.
+      description: Returns destination-specific quote submission requirements and blocking reasons for the authenticated actor and workspace.
       parameters:
       - name: workspaceId
         in: query
@@ -42,6 +46,8 @@ paths:
           $ref: '#/components/responses/Error'
         '422':
           $ref: '#/components/responses/Error'
+        '429':
+          $ref: '#/components/responses/RateLimited'
   /api/tools/v1/quote/submissions:
     get:
       tags:
@@ -69,12 +75,14 @@ paths:
           $ref: '#/components/responses/Error'
         '422':
           $ref: '#/components/responses/Error'
+        '429':
+          $ref: '#/components/responses/RateLimited'
     post:
       tags:
       - Quote Submissions
       operationId: create_quote_submission
       summary: Submit a quote
-      description: Submit a quote to the portal for an opportunity workspace. Upload the quote file to the workspace attachments endpoint first, then pass the returned workspaceAttachmentId here. The response returns a submission ID that can be polled with show_quote_submission.
+      description: Submit a quote to the destination for an opportunity workspace. Upload each file to the workspace attachments endpoint first, then describe the destination-specific package in files. Call get_quote_submission_requirements for the supported roles, fields, and modes. The response returns a submission ID that can be polled with show_quote_submission.
       requestBody:
         required: true
         content:
@@ -84,19 +92,52 @@ paths:
               additionalProperties: false
               required:
               - workspaceId
-              - workspaceAttachmentId
               - quoteTotal
+              - files
               properties:
                 workspaceId:
                   type: string
-                workspaceAttachmentId:
+                oppId:
                   type: string
+                  description: Optional opportunity ID assertion. It must match the workspace opportunity.
                 quoteTotal:
                   type: string
-                  description: Decimal quote total. Must be greater than 0.
+                  description: Decimal quote total accepted by the destination.
                 comment:
                   type: string
-                  description: Optional portal submission comment.
+                  description: Optional destination submission comment.
+                destinationData:
+                  type: object
+                  additionalProperties: true
+                  description: Destination-specific fields returned by the requirements endpoint.
+                validateOnly:
+                  type: boolean
+                  description: Validate without submitting when the destination supports validation.
+                confirmLiveSubmission:
+                  type: boolean
+                  description: Confirms a live submission when required by the destination.
+                scheduledAt:
+                  type: string
+                  format: date-time
+                  description: Optional future dispatch time.
+                files:
+                  type: array
+                  minItems: 1
+                  items:
+                    type: object
+                    additionalProperties: false
+                    required:
+                    - workspaceAttachmentId
+                    - role
+                    properties:
+                      workspaceAttachmentId:
+                        type: string
+                      role:
+                        type: string
+                        description: Destination-specific role returned by the requirements endpoint.
+                      metadata:
+                        type: object
+                        additionalProperties: true
       responses:
         '201':
           description: Created quote submission
@@ -112,6 +153,10 @@ paths:
           $ref: '#/components/responses/Error'
         '422':
           $ref: '#/components/responses/Error'
+        '503':
+          $ref: '#/components/responses/Error'
+        '429':
+          $ref: '#/components/responses/RateLimited'
   /api/tools/v1/quote/submissions/{id}:
     get:
       tags:
@@ -136,33 +181,65 @@ paths:
           $ref: '#/components/responses/Error'
         '422':
           $ref: '#/components/responses/Error'
+        '429':
+          $ref: '#/components/responses/RateLimited'
 components:
   schemas:
+    QuoteSubmissionFileRequirement:
+      type: object
+      required:
+      - role
+      - label
+      - required
+      - maxBytes
+      - allowedExtensions
+      properties:
+        role:
+          type: string
+        label:
+          type: string
+        required:
+          type: boolean
+        maxFiles:
+          type: integer
+        maxBytes:
+          type: integer
+        allowedExtensions:
+          type: array
+          items:
+            type: string
+        allowedContentTypes:
+          type: array
+          items:
+            type: string
     QuoteSubmission:
       type: object
       required:
       - id
       - status
+      - terminal
       - portal
+      - mode
       - workspaceId
       - opportunityId
       - quoteTotal
+      - result
+      - files
       - createdAt
       properties:
         id:
           type: string
         status:
           type: string
-          enum:
-          - pending
-          - running
-          - completed
-          - failed
-          - cancelled
+        terminal:
+          type: boolean
         portal:
           type: string
+        mode:
+          type: string
           enum:
-          - chess
+          - validate
+          - submit
         workspaceId:
           type: string
         opportunityId:
@@ -175,6 +252,20 @@ components:
           type: string
         failureReason:
           type: string
+        errorCode:
+          type: string
+        result:
+          type: object
+          additionalProperties: true
+        scheduledAt:
+          type: string
+          format: date-time
+        startedAt:
+          type: string
+          format: date-time
+        completedAt:
+          type: string
+          format: date-time
         submittedAt:
           type: string
           format: date-time
@@ -184,114 +275,27 @@ components:
         createdAt:
           type: string
           format: date-time
-        file:
-          $ref: '#/components/schemas/QuoteSubmissionAttachment'
-        evidence:
-          $ref: '#/components/schemas/QuoteSubmissionAttachment'
-    QuoteSubmissionFileRules:
-      type: object
-      required:
-      - maxBytes
-      - allowedExtensions
-      properties:
-        maxBytes:
-          type: integer
-        allowedExtensions:
+        files:
           type: array
           items:
-            type: string
-    QuoteSubmissionField:
+            $ref: '#/components/schemas/QuoteSubmissionFile'
+    QuoteSubmissionRequirementsEnvelope:
       type: object
       required:
-      - name
-      - type
+      - data
       properties:
-        name:
-          type: string
-        type:
-          type: string
-        description:
-          type: string
-    QuoteSubmissionAttachment:
+        data:
+          $ref: '#/components/schemas/QuoteSubmissionRequirements'
+    RateLimitError:
       type: object
       required:
-      - id
-      - filename
+      - error
       properties:
-        id:
+        error:
           type: string
-        filename:
-          type: string
-        contentType:
-          type: string
-        byteSize:
-          type: integer
-        file:
-          $ref: '#/components/schemas/AttachmentFile'
-    QuoteSubmissionRequirements:
-      type: object
-      required:
-      - eligible
-      - requiredFields
-      - optionalFields
-      - blockingReasons
-      properties:
-        workspaceId:
-          type: string
-        opportunityId:
-          type: string
-        portal:
-          type: string
-          enum:
-          - chess
-        eligible:
-          type: boolean
-          description: True when the authenticated actor can submit with the returned requirements.
-        requiredFields:
-          type: array
-          items:
-            $ref: '#/components/schemas/QuoteSubmissionField'
-        optionalFields:
-          type: array
-          items:
-            $ref: '#/components/schemas/QuoteSubmissionField'
-        fileRules:
-          $ref: '#/components/schemas/QuoteSubmissionFileRules'
-        blockingReasons:
-          type: array
-          items:
-            $ref: '#/components/schemas/QuoteSubmissionBlockingReason'
-    QuoteSubmissionBlockingReason:
-      type: object
-      required:
-      - code
-      - message
-      properties:
-        code:
-          type: string
-          enum:
-          - quote_submission_not_available_for_portal
-          - missing_or_inactive_portal_account
-          - workspace_not_linked_to_opportunity
-        message:
-          type: string
-    QuoteSubmissionStatusMeta:
-      type: object
-      required:
-      - terminal
-      properties:
-        terminal:
-          type: boolean
-          description: True when the submission no longer needs polling.
-        nextPollAfterSeconds:
-          type: integer
-          description: Suggested delay before polling again. Omitted for terminal submissions.
-        retryable:
-          type: boolean
-          description: Present for failed submissions when creating a new submission is reasonable.
     AttachmentFile:
       type: object
-      description: Presigned download metadata. Omitted when the attachment is redacted or URLs are excluded.
+      description: Presigned download metadata. Omitted when attachment content is unavailable or URLs are excluded.
       required:
       - url
       - expiresAt
@@ -302,23 +306,6 @@ components:
         expiresAt:
           type: string
           format: date-time
-    QuoteSubmissionRequirementsEnvelope:
-      type: object
-      required:
-      - data
-      properties:
-        data:
-          $ref: '#/components/schemas/QuoteSubmissionRequirements'
-    QuoteSubmissionEnvelope:
-      type: object
-      required:
-      - data
-      - meta
-      properties:
-        data:
-          $ref: '#/components/schemas/QuoteSubmission'
-        meta:
-          $ref: '#/components/schemas/QuoteSubmissionStatusMeta'
     ErrorEnvelope:
       type: object
       required:
@@ -347,6 +334,108 @@ components:
                 properties:
                   pointer:
                     type: string
+    QuoteSubmissionFile:
+      type: object
+      required:
+      - id
+      - role
+      - metadata
+      - attachment
+      properties:
+        id:
+          type: string
+        role:
+          type: string
+          description: Destination-specific role captured for this attempt.
+        metadata:
+          type: object
+          additionalProperties: true
+        attachment:
+          $ref: '#/components/schemas/QuoteSubmissionAttachment'
+    QuoteSubmissionStatusMeta:
+      type: object
+      required:
+      - terminal
+      properties:
+        terminal:
+          type: boolean
+          description: True when the submission no longer needs polling.
+        nextPollAfterSeconds:
+          type: integer
+          description: Suggested delay before polling again. Omitted for terminal submissions.
+        retryable:
+          type: boolean
+          description: Present for failed submissions when creating a new submission is reasonable.
+    QuoteSubmissionField:
+      type: object
+      required:
+      - name
+      - type
+      properties:
+        name:
+          type: string
+        type:
+          type: string
+        description:
+          type: string
+    QuoteSubmissionRequirements:
+      type: object
+      required:
+      - eligible
+      - requiredFields
+      - optionalFields
+      - fileRequirements
+      - supportedModes
+      - availableModes
+      - blockingReasons
+      properties:
+        workspaceId:
+          type: string
+        opportunityId:
+          type: string
+        portal:
+          type: string
+        destination:
+          type: string
+        eligible:
+          type: boolean
+          description: True when the authenticated actor can submit with the returned requirements.
+        requiredFields:
+          type: array
+          items:
+            $ref: '#/components/schemas/QuoteSubmissionField'
+        optionalFields:
+          type: array
+          items:
+            $ref: '#/components/schemas/QuoteSubmissionField'
+        fileRequirements:
+          type: array
+          items:
+            $ref: '#/components/schemas/QuoteSubmissionFileRequirement'
+        supportedModes:
+          type: array
+          items:
+            type: string
+            enum:
+            - validate
+            - submit
+        availableModes:
+          type: array
+          description: Submission modes currently enabled for the authenticated organization.
+          items:
+            type: string
+            enum:
+            - validate
+            - submit
+        defaultMode:
+          type: string
+          enum:
+          - validate
+          - submit
+        blockingReasons:
+          type: array
+          items:
+            $ref: '#/components/schemas/QuoteSubmissionBlockingReason'
     CountMeta:
       type: object
       required:
@@ -366,6 +455,42 @@ components:
             $ref: '#/components/schemas/QuoteSubmission'
         meta:
           $ref: '#/components/schemas/CountMeta'
+    QuoteSubmissionEnvelope:
+      type: object
+      required:
+      - data
+      - meta
+      properties:
+        data:
+          $ref: '#/components/schemas/QuoteSubmission'
+        meta:
+          $ref: '#/components/schemas/QuoteSubmissionStatusMeta'
+    QuoteSubmissionAttachment:
+      type: object
+      required:
+      - id
+      - filename
+      properties:
+        id:
+          type: string
+        filename:
+          type: string
+        contentType:
+          type: string
+        byteSize:
+          type: integer
+        file:
+          $ref: '#/components/schemas/AttachmentFile'
+    QuoteSubmissionBlockingReason:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+        message:
+          type: string
   parameters:
     id:
       name: id
@@ -380,6 +505,21 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/ErrorEnvelope'
+    RateLimited:
+      description: 'Too many requests. Two limiters can produce this status and they use different bodies. The per-user limit of 70 requests per minute for each resource returns the standard error envelope with `code: rate_limited` and a `Retry-After` header. Keys sent in the `X-API-KEY` header are also subject to the Enterprise API limit of 300 requests per minute per key, which returns the plain `error` form with `Retry-After` and the `X-RateLimit-*` headers. Clients should accept either body.
+
+        '
+      headers:
+        Retry-After:
+          description: Seconds to wait before retrying.
+          schema:
+            type: string
+      content:
+        application/json:
+          schema:
+            oneOf:
+            - $ref: '#/components/schemas/ErrorEnvelope'
+            - $ref: '#/components/schemas/RateLimitError'
   securitySchemes:
     bearerApiKey:
       type: http

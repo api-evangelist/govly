@@ -1,0 +1,362 @@
+openapi: 3.2.0
+info:
+  title: Govly Tools Places API
+  version: 1.0.0-alpha
+  description: 'ALPHA / UNSTABLE: This API is still in active development. Endpoint behavior, request fields, response fields, error codes, and operation names may change before the Tools API is declared stable.
+
+    REST-callable tool surface for agent and automation workflows. Agents are the primary consumer, but integrations can be built on this API. Responses are JSON for typed clients; MCP tools may render action results into text-oriented formats separately.
+
+    Validating requests: validate against this schema in your client before sending. Govly ignores a request field it does not recognize rather than rejecting it, so a misspelled filter name is not applied — the response returns 200 with a broader result set than you intended, and nothing marks the difference. Where a request body declares `additionalProperties: false`, strict client-side validation is what catches that. Fields sent with the wrong type are rejected with 400 on most endpoints; validate types in your client too rather than relying on it.
+
+    Rate limits: each resource (for example awards, opportunities, or workspaces) allows 70 requests per minute per user. Exceeding it returns 429 with the standard error envelope, `code: rate_limited`, and a `Retry-After` header. Keys sent in the `X-API-KEY` header are also subject to the Enterprise API limit of 300 requests per minute per key; see the Rate Limits page.'
+servers:
+- url: https://app.govly.com
+security:
+- bearerApiKey: []
+- headerApiKey: []
+tags:
+- name: Places
+  description: Resolve place names to canonical Govly Place ids.
+paths:
+  /api/tools/v1/places/search:
+    post:
+      tags:
+      - Places
+      operationId: search_places
+      summary: Resolve place names to canonical Place ids
+      description: Resolve a place name to canonical Govly Place ids — counties, municipalities, states, ZIP codes, school districts, military installations, and countries. Results are relevance-ranked with records-bearing places first. Paging walks the matches for a query, not a category — use /api/tools/v1/places/list to enumerate a jurisdiction. Place ids are market-agnostic, but opportunity and award searches are market-scoped, so a returned id may not be searchable under the caller's subscription.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              required:
+              - query
+              properties:
+                query:
+                  type: string
+                  maxLength: 200
+                  description: The place name to resolve, such as "redstone arsenal".
+                categories:
+                  type: array
+                  items:
+                    type: string
+                    enum:
+                    - postal_code
+                    - county
+                    - municipality
+                    - region
+                    - country
+                    - military_installation
+                    - school_district
+                  description: Restrict to these place categories, to disambiguate a name shared across categories.
+                isoCodes:
+                  type: array
+                  items:
+                    type: string
+                  description: 'Restrict to these jurisdiction codes, matched exactly (e.g. US-NC). Not hierarchical — "US" matches only the country record. A bare foreign code such as "JP" scopes overseas military installations.
+
+                    '
+                cursor:
+                  type: string
+                  description: 'Opaque cursor from the previous response''s meta.nextCursor. Omit for the first page. Only valid for the exact query, categories, and isoCodes that produced it.
+
+                    '
+                perPage:
+                  type: integer
+                  default: 25
+                  maximum: 100
+                  description: Results per page. Default 25, maximum 100.
+      responses:
+        '200':
+          description: Matching places
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - data
+                - meta
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Place'
+                  meta:
+                    $ref: '#/components/schemas/PlaceSearchMeta'
+        '400':
+          $ref: '#/components/responses/Error'
+        '401':
+          $ref: '#/components/responses/Error'
+        '403':
+          $ref: '#/components/responses/Error'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+  /api/tools/v1/places/list:
+    post:
+      tags:
+      - Places
+      operationId: list_places
+      summary: Enumerate every Place of a category within a jurisdiction
+      description: 'Enumerate every canonical Govly Place of a category within a jurisdiction — every county in California, every school district in Texas. At least one of categories or isoCodes is required. Without sort, ordering is stable but arbitrary, not alphabetical — page until meta.nextCursor is null for the whole set, and sort client-side when presenting a list. With sort population and sortDirection desc (largest first, default) or asc (smallest first), the N most or least populous places are the first N: request perPage N (following nextCursor only if meta.perPage is smaller than N). Places without a population sort last either way; population exists only for states, counties, and municipalities, and a population sort on any other category returns 400. Use /api/tools/v1/places/search instead to look up a place by name.'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              properties:
+                categories:
+                  type: array
+                  items:
+                    type: string
+                    enum:
+                    - postal_code
+                    - county
+                    - municipality
+                    - region
+                    - country
+                    - military_installation
+                    - school_district
+                  description: Place categories to enumerate, such as county or school_district.
+                isoCodes:
+                  type: array
+                  maxItems: 60
+                  items:
+                    type: string
+                  description: 'Jurisdiction codes to enumerate within, matched exactly (e.g. US-CA). Not hierarchical — "US" matches only the country record. A bare foreign code such as "JP" scopes overseas military installations. At most 60 codes per call, which is above the 53 needed to cover every US state and territory at once.
+
+                    '
+                perPage:
+                  type: integer
+                  default: 25
+                  maximum: 100
+                  description: Results per page. Default 25, maximum 100.
+                cursor:
+                  type: string
+                  description: 'Opaque cursor from meta.nextCursor of the previous page. A cursor is bound to the filters and sort that produced it and is rejected if you change them.
+
+                    '
+                sort:
+                  type: string
+                  enum:
+                  - population
+                  description: 'population ranks by the latest census population; places without a population sort last. Omit for the default stable-but-arbitrary order.
+
+                    '
+                sortDirection:
+                  type: string
+                  enum:
+                  - asc
+                  - desc
+                  default: desc
+                  description: 'desc for most populous first, asc for least populous first. Requires sort.
+
+                    '
+      responses:
+        '200':
+          description: A page of places
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - data
+                - meta
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Place'
+                  meta:
+                    $ref: '#/components/schemas/PlaceListMeta'
+        '400':
+          $ref: '#/components/responses/Error'
+        '401':
+          $ref: '#/components/responses/Error'
+        '403':
+          $ref: '#/components/responses/Error'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+components:
+  schemas:
+    RateLimitError:
+      type: object
+      required:
+      - error
+      properties:
+        error:
+          type: string
+    PlaceListMeta:
+      type: object
+      description: Cursor pagination metadata for place enumeration.
+      required:
+      - perPage
+      - returned
+      - total
+      properties:
+        perPage:
+          type: integer
+          description: Effective page size after clamping. Default 25, maximum 100.
+        returned:
+          type: integer
+          description: Places on this page.
+        total:
+          type: integer
+          description: 'Exact size of the whole filtered set, independent of page size. Without sort, compare it against what you have collected to know whether the walk is complete; with a population sort it is only the category''s size.
+
+            '
+        nextCursor:
+          type: string
+          nullable: true
+          description: 'Pass as cursor to fetch the next page. Null means the set is exhausted. Without sort, keep requesting until it is, or you have only part of the answer; with a population sort, stop once you hold the N you need. A cursor is bound to the filters and sort that produced it and is rejected if you change them.
+
+            '
+    ErrorEnvelope:
+      type: object
+      required:
+      - errors
+      properties:
+        errors:
+          type: array
+          items:
+            type: object
+            required:
+            - status
+            - code
+            - title
+            - detail
+            properties:
+              status:
+                type: string
+              code:
+                type: string
+              title:
+                type: string
+              detail:
+                type: string
+              source:
+                type: object
+                properties:
+                  pointer:
+                    type: string
+    Place:
+      type: object
+      description: A canonical Govly Place, resolved from a name.
+      required:
+      - id
+      - name
+      - category
+      - jurisdictionIsoCode
+      - hasRecords
+      properties:
+        id:
+          type: string
+          description: 'Govly Place id, as a string. Matches the ES place_ids keyword field directly, so it can be used as a filter value without conversion.
+
+            '
+        name:
+          type: string
+        category:
+          type: string
+          enum:
+          - postal_code
+          - county
+          - municipality
+          - region
+          - country
+          - military_installation
+          - school_district
+        jurisdictionIsoCode:
+          type: string
+          description: The place's own ISO 3166-1 or 3166-2 code, e.g. US or US-NC.
+        hasRecords:
+          type: boolean
+          description: 'False means the place is in the gazetteer but matches no opportunities or awards, so filtering by its id returns nothing. Place search reports a periodically refreshed indexed value while place list computes it from live data, so the two can briefly disagree — treat list as authoritative.
+
+            '
+        nameMatch:
+          type: string
+          enum:
+          - exact
+          - partial
+          - semantic
+          description: 'How the name matched. Optional — omitted entirely when not applicable. semantic means the query did not really match and this is the nearest record; confirm before filtering on it. partial is expected for county and municipality lookups, whose canonical names carry a suffix.
+
+            '
+        population:
+          type: integer
+          description: 'Latest Census Population Estimates figure for the place. Present only for states, counties, and municipalities; omitted entirely when unknown.
+
+            '
+        populationYear:
+          type: integer
+          description: Calendar year of the population estimate. Omitted when population is.
+        populationHistory:
+          type: array
+          description: 'Yearly Census Population Estimates series, oldest first; the last entry matches population and populationYear. Omitted when population is.
+
+            '
+          items:
+            type: object
+            required:
+            - year
+            - population
+            properties:
+              year:
+                type: integer
+              population:
+                type: integer
+    PlaceSearchMeta:
+      type: object
+      description: Cursor-paginated result metadata for place search.
+      required:
+      - perPage
+      - returned
+      properties:
+        perPage:
+          type: integer
+          description: Effective page size after clamping. Default 25, maximum 100.
+        returned:
+          type: integer
+          description: Places returned on this page.
+        nextCursor:
+          type: string
+          nullable: true
+          description: 'Pass back as cursor for the next page. Absent when there are no more matches, and also withheld in the rare case where semantic scoring failed mid-query and the results were served from lexical ranking — restart the search rather than paging on.
+
+            '
+  responses:
+    Error:
+      description: Error response
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorEnvelope'
+    RateLimited:
+      description: 'Too many requests. Two limiters can produce this status and they use different bodies. The per-user limit of 70 requests per minute for each resource returns the standard error envelope with `code: rate_limited` and a `Retry-After` header. Keys sent in the `X-API-KEY` header are also subject to the Enterprise API limit of 300 requests per minute per key, which returns the plain `error` form with `Retry-After` and the `X-RateLimit-*` headers. Clients should accept either body.
+
+        '
+      headers:
+        Retry-After:
+          description: Seconds to wait before retrying.
+          schema:
+            type: string
+      content:
+        application/json:
+          schema:
+            oneOf:
+            - $ref: '#/components/schemas/ErrorEnvelope'
+            - $ref: '#/components/schemas/RateLimitError'
+  securitySchemes:
+    bearerApiKey:
+      type: http
+      scheme: bearer
+      bearerFormat: API key
+    headerApiKey:
+      type: apiKey
+      in: header
+      name: X-API-KEY

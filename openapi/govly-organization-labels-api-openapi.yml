@@ -1,0 +1,271 @@
+openapi: 3.2.0
+info:
+  title: Govly Tools Organization Labels API
+  version: 1.0.0-alpha
+  description: 'ALPHA / UNSTABLE: This API is still in active development. Endpoint behavior, request fields, response fields, error codes, and operation names may change before the Tools API is declared stable.
+
+    REST-callable tool surface for agent and automation workflows. Agents are the primary consumer, but integrations can be built on this API. Responses are JSON for typed clients; MCP tools may render action results into text-oriented formats separately.
+
+    Validating requests: validate against this schema in your client before sending. Govly ignores a request field it does not recognize rather than rejecting it, so a misspelled filter name is not applied — the response returns 200 with a broader result set than you intended, and nothing marks the difference. Where a request body declares `additionalProperties: false`, strict client-side validation is what catches that. Fields sent with the wrong type are rejected with 400 on most endpoints; validate types in your client too rather than relying on it.
+
+    Rate limits: each resource (for example awards, opportunities, or workspaces) allows 70 requests per minute per user. Exceeding it returns 429 with the standard error envelope, `code: rate_limited`, and a `Retry-After` header. Keys sent in the `X-API-KEY` header are also subject to the Enterprise API limit of 300 requests per minute per key; see the Rate Limits page.'
+servers:
+- url: https://app.govly.com
+security:
+- bearerApiKey: []
+- headerApiKey: []
+tags:
+- name: Organization Labels
+  description: List, create, rename, recolor, and delete the organization's labels.
+paths:
+  /api/tools/v1/organization_labels:
+    get:
+      tags:
+      - Organization Labels
+      operationId: list_organization_labels
+      summary: List organization labels
+      description: List the labels defined in the authenticated user's organization, ordered by name. Any organization user may list. Not paginated.
+      responses:
+        '200':
+          description: Organization labels
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - data
+                - meta
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/OrganizationLabel'
+                  meta:
+                    $ref: '#/components/schemas/CountMeta'
+        '401':
+          $ref: '#/components/responses/Error'
+        '403':
+          $ref: '#/components/responses/Error'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+    post:
+      tags:
+      - Organization Labels
+      operationId: create_organization_label
+      summary: Create an organization label
+      description: Create a label in the authenticated user's organization. Names are unique per organization, ignoring case. Requires an organization admin on a paid plan.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              required:
+              - name
+              properties:
+                name:
+                  type: string
+                  maxLength: 50
+                color:
+                  type: string
+                  pattern: ^#[0-9a-fA-F]{6}$
+                  description: Hex color. Defaults to
+                description:
+                  type: string
+      responses:
+        '201':
+          description: Created label
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrganizationLabelEnvelope'
+        '400':
+          $ref: '#/components/responses/Error'
+        '401':
+          $ref: '#/components/responses/Error'
+        '403':
+          $ref: '#/components/responses/Error'
+        '422':
+          $ref: '#/components/responses/Error'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+  /api/tools/v1/organization_labels/{id}:
+    patch:
+      tags:
+      - Organization Labels
+      operationId: update_organization_label
+      summary: Update an organization label
+      description: Rename, recolor, or redescribe a label. Only provided fields change; null or blank fields keep their current values. Requires an organization admin on a paid plan.
+      parameters:
+      - $ref: '#/components/parameters/id'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              properties:
+                name:
+                  type: string
+                  maxLength: 50
+                color:
+                  type: string
+                  pattern: ^#[0-9a-fA-F]{6}$
+                description:
+                  type: string
+                  description: 'New description. A blank value is treated as omitted, so this endpoint cannot clear a description.
+
+                    '
+      responses:
+        '200':
+          description: Updated label
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrganizationLabelEnvelope'
+        '400':
+          $ref: '#/components/responses/Error'
+        '401':
+          $ref: '#/components/responses/Error'
+        '403':
+          $ref: '#/components/responses/Error'
+        '404':
+          $ref: '#/components/responses/Error'
+        '422':
+          $ref: '#/components/responses/Error'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+    delete:
+      tags:
+      - Organization Labels
+      operationId: delete_organization_label
+      summary: Delete an organization label
+      description: 'Delete a label and return it. The label is removed from every record it is applied to, and any no-bid label rule that uses it is deleted. Not idempotent: a second call for the same id returns 404. Requires an organization admin on a paid plan.'
+      parameters:
+      - $ref: '#/components/parameters/id'
+      responses:
+        '200':
+          description: Deleted label
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrganizationLabelEnvelope'
+        '401':
+          $ref: '#/components/responses/Error'
+        '403':
+          $ref: '#/components/responses/Error'
+        '404':
+          $ref: '#/components/responses/Error'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+components:
+  parameters:
+    id:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: string
+  schemas:
+    OrganizationLabelEnvelope:
+      type: object
+      required:
+      - data
+      - meta
+      properties:
+        data:
+          $ref: '#/components/schemas/OrganizationLabel'
+        meta:
+          type: object
+    RateLimitError:
+      type: object
+      required:
+      - error
+      properties:
+        error:
+          type: string
+    ErrorEnvelope:
+      type: object
+      required:
+      - errors
+      properties:
+        errors:
+          type: array
+          items:
+            type: object
+            required:
+            - status
+            - code
+            - title
+            - detail
+            properties:
+              status:
+                type: string
+              code:
+                type: string
+              title:
+                type: string
+              detail:
+                type: string
+              source:
+                type: object
+                properties:
+                  pointer:
+                    type: string
+    CountMeta:
+      type: object
+      required:
+      - count
+      properties:
+        count:
+          type: integer
+    OrganizationLabel:
+      type: object
+      required:
+      - id
+      - name
+      - color
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        color:
+          type: string
+          description: Hex color such as
+        description:
+          type: string
+          description: Omitted when the label has no description.
+  responses:
+    Error:
+      description: Error response
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorEnvelope'
+    RateLimited:
+      description: 'Too many requests. Two limiters can produce this status and they use different bodies. The per-user limit of 70 requests per minute for each resource returns the standard error envelope with `code: rate_limited` and a `Retry-After` header. Keys sent in the `X-API-KEY` header are also subject to the Enterprise API limit of 300 requests per minute per key, which returns the plain `error` form with `Retry-After` and the `X-RateLimit-*` headers. Clients should accept either body.
+
+        '
+      headers:
+        Retry-After:
+          description: Seconds to wait before retrying.
+          schema:
+            type: string
+      content:
+        application/json:
+          schema:
+            oneOf:
+            - $ref: '#/components/schemas/ErrorEnvelope'
+            - $ref: '#/components/schemas/RateLimitError'
+  securitySchemes:
+    bearerApiKey:
+      type: http
+      scheme: bearer
+      bearerFormat: API key
+    headerApiKey:
+      type: apiKey
+      in: header
+      name: X-API-KEY

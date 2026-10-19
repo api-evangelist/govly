@@ -225,6 +225,76 @@ apis:
     url: https://docs.govly.com/getting-started/introduction
   - type: APIReference
     url: https://docs.govly.com/api-reference/tools-v1/opportunities/search-opportunities
+- aid: govly:govly-contacts-api
+  name: Govly Contacts API
+  description: Search and inspect government points of contact.
+  humanURL: https://docs.govly.com/getting-started/introduction
+  baseURL: https://app.govly.com
+  tags:
+  - Contacts
+  properties:
+  - type: OpenAPI
+    url: openapi/govly-contacts-api-openapi.yml
+- aid: govly:govly-organization-labels-api
+  name: Govly Organization Labels API
+  description: List, create, rename, recolor, and delete the organization's labels.
+  humanURL: https://docs.govly.com/getting-started/introduction
+  baseURL: https://app.govly.com
+  tags:
+  - Organization Labels
+  properties:
+  - type: OpenAPI
+    url: openapi/govly-organization-labels-api-openapi.yml
+- aid: govly:govly-organization-users-api
+  name: Govly Organization Users API
+  description: Discover the members of your organization and their account status.
+  humanURL: https://docs.govly.com/getting-started/introduction
+  baseURL: https://app.govly.com
+  tags:
+  - Organization Users
+  properties:
+  - type: OpenAPI
+    url: openapi/govly-organization-users-api-openapi.yml
+- aid: govly:govly-places-api
+  name: Govly Places API
+  description: Resolve place names to canonical Govly Place ids.
+  humanURL: https://docs.govly.com/getting-started/introduction
+  baseURL: https://app.govly.com
+  tags:
+  - Places
+  properties:
+  - type: OpenAPI
+    url: openapi/govly-places-api-openapi.yml
+- aid: govly:govly-product-catalogs-api
+  name: Govly Product Catalogs API
+  description: List government contract price lists and search their line items.
+  humanURL: https://docs.govly.com/getting-started/introduction
+  baseURL: https://app.govly.com
+  tags:
+  - Product Catalogs
+  properties:
+  - type: OpenAPI
+    url: openapi/govly-product-catalogs-api-openapi.yml
+- aid: govly:govly-shares-api
+  name: Govly Shares API
+  description: Share opportunities, awards, and contacts with colleagues by email.
+  humanURL: https://docs.govly.com/getting-started/introduction
+  baseURL: https://app.govly.com
+  tags:
+  - Shares
+  properties:
+  - type: OpenAPI
+    url: openapi/govly-shares-api-openapi.yml
+- aid: govly:govly-signals-api
+  name: Govly Signals API
+  description: Search clustered procurement and market intelligence signals.
+  humanURL: https://docs.govly.com/getting-started/introduction
+  baseURL: https://app.govly.com
+  tags:
+  - Signals
+  properties:
+  - type: OpenAPI
+    url: openapi/govly-signals-api-openapi.yml
 common:
 - type: CapabilityMap
   url: capabilities/govly-capability-edges.yml

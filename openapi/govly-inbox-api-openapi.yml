@@ -1,10 +1,14 @@
 openapi: 3.2.0
 info:
-  title: Govly Tools API (Alpha) Inbox API
+  title: Govly Tools Inbox API
   version: 1.0.0-alpha
   description: 'ALPHA / UNSTABLE: This API is still in active development. Endpoint behavior, request fields, response fields, error codes, and operation names may change before the Tools API is declared stable.
 
-    REST-callable tool surface for agent and automation workflows. Agents are the primary consumer, but integrations can be built on this API. Responses are JSON for typed clients; MCP tools may render action results into text-oriented formats separately.'
+    REST-callable tool surface for agent and automation workflows. Agents are the primary consumer, but integrations can be built on this API. Responses are JSON for typed clients; MCP tools may render action results into text-oriented formats separately.
+
+    Validating requests: validate against this schema in your client before sending. Govly ignores a request field it does not recognize rather than rejecting it, so a misspelled filter name is not applied — the response returns 200 with a broader result set than you intended, and nothing marks the difference. Where a request body declares `additionalProperties: false`, strict client-side validation is what catches that. Fields sent with the wrong type are rejected with 400 on most endpoints; validate types in your client too rather than relying on it.
+
+    Rate limits: each resource (for example awards, opportunities, or workspaces) allows 70 requests per minute per user. Exceeding it returns 429 with the standard error envelope, `code: rate_limited`, and a `Retry-After` header. Keys sent in the `X-API-KEY` header are also subject to the Enterprise API limit of 300 requests per minute per key; see the Rate Limits page.'
 servers:
 - url: https://app.govly.com
 security:
@@ -14,13 +18,84 @@ tags:
 - name: Inbox
   description: Read and triage the authenticated user's matched inbox items.
 paths:
+  /api/tools/v1/inbox_views:
+    get:
+      tags:
+      - Inbox
+      operationId: list_inbox_views
+      summary: List saved Inbox views
+      description: List the authenticated user's saved Inbox views and default selection. Views belong to the current organization membership. Unavailable views remain listed with available false and cannot be used for search. Pass an available view's id, or the built-in team_view, as inboxViewId to search_inbox_items. This endpoint does not modify views or defaults.
+      responses:
+        '200':
+          description: Saved views and Inbox preferences
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - data
+                - meta
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      required:
+                      - id
+                      - name
+                      - filters
+                      - available
+                      properties:
+                        id:
+                          type: string
+                          description: Saved Inbox view ID.
+                        name:
+                          type: string
+                        filters:
+                          type: object
+                          additionalProperties: true
+                          description: Stored filter snapshot. Use the view ID for search rather than copying snapshot fields into search arguments.
+                        available:
+                          type: boolean
+                          description: Whether the stored snapshot can be resolved for search.
+                  meta:
+                    type: object
+                    required:
+                    - inboxDefaultPreset
+                    - builtInViews
+                    properties:
+                      inboxDefaultPreset:
+                        type: string
+                        description: Default saved view ID or team_view. Search does not apply this default implicitly.
+                      builtInViews:
+                        type: array
+                        items:
+                          type: object
+                          required:
+                          - id
+                          - name
+                          properties:
+                            id:
+                              type: string
+                              enum:
+                              - team_view
+                            name:
+                              type: string
+                              enum:
+                              - All Results
+        '401':
+          $ref: '#/components/responses/Error'
+        '403':
+          $ref: '#/components/responses/Error'
+        '429':
+          $ref: '#/components/responses/RateLimited'
   /api/tools/v1/inbox_items:
     get:
       tags:
       - Inbox
       operationId: list_inbox_items
       summary: List inbox items
-      description: List the authenticated user's active inbox items (Govly AI matches and saved-search matches), newest first.
+      description: List the authenticated user's active inbox items (Govly AI matches and saved-search matches), newest first. Continue while meta.nextCursor is non-null. A page may contain fewer than perPage records, or no records, while a continuation cursor is present; do not infer completion from page size.
       parameters:
       - $ref: '#/components/parameters/cursor'
       - $ref: '#/components/parameters/perPage'
@@ -47,13 +122,15 @@ paths:
           $ref: '#/components/responses/Error'
         '422':
           $ref: '#/components/responses/Error'
+        '429':
+          $ref: '#/components/responses/RateLimited'
   /api/tools/v1/inbox_items/search:
     post:
       tags:
       - Inbox
       operationId: search_inbox_items
       summary: Search inbox items
-      description: Full-text search and filter the authenticated user's inbox items. Returns matchable-type aggregation counts.
+      description: Full-text search and filter the authenticated user's inbox items. Returns matchable-type aggregation counts. Use inboxStatus all for pending Inbox items, followed for followed Opportunities, or archived for dismissed items. Without an inboxStatus or state filter, active items include actioned items. Discover saved views through list_inbox_views, then pass inboxViewId. A view applies its saved filters, ordering and relative time window; only cursor and perPage may accompany inboxViewId. The user's default view is not applied implicitly. Continue with the returned cursor to retain the same relative time window across pages. A missing view or one owned by another user returns 404.
       requestBody:
         required: false
         content:
@@ -71,6 +148,17 @@ paths:
                   type: integer
                   default: 25
                   maximum: 100
+                inboxViewId:
+                  type: string
+                  pattern: ^(team_view|[1-9][0-9]{0,18})$
+                  description: Saved view ID from list_inbox_views, or team_view for All Results. Cannot be combined with explicit filters or sort.
+                inboxStatus:
+                  type: string
+                  enum:
+                  - all
+                  - followed
+                  - archived
+                  description: all selects pending items; followed selects followed Opportunities; archived selects dismissed items. Takes precedence over state when both are supplied.
                 sort:
                   type: string
                   enum:
@@ -108,6 +196,44 @@ paths:
                   enum:
                   - govly_ai
                   - saved_search
+                  description: Saved-search origin IDs are ignored when sourceType is govly_ai.
+                market:
+                  type: string
+                  enum:
+                  - all
+                  - fed
+                  - sled
+                  description: Market scope within the caller's access. all leaves the market unrestricted.
+                states:
+                  type: array
+                  items:
+                    type: string
+                  description: US state abbreviations for SLED matches, such as CA or CO.
+                recordPublicEntityIds:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/InboxFilterId'
+                  description: Include canonical PublicEntity buyer IDs and their descendants. Applies to Opportunities and linked SLED Signals.
+                recordPublicEntityIdsNone:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/InboxFilterId'
+                  description: Exclude canonical PublicEntity buyer IDs and their descendants. Applies to Opportunities and linked SLED Signals.
+                keywords:
+                  type: array
+                  items:
+                    type: string
+                  description: Match any phrase across title, description, buyer names, and identifier. At most 20 distinct nonblank phrases.
+                oppSearchIds:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/InboxFilterId'
+                  description: Opportunity saved-search origin IDs. Combined with signalSavedSearchIds using OR.
+                signalSavedSearchIds:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/InboxFilterId'
+                  description: Signal saved-search origin IDs. Combined with oppSearchIds using OR.
                 naicsCodes:
                   type: array
                   items:
@@ -146,8 +272,12 @@ paths:
           $ref: '#/components/responses/Error'
         '403':
           $ref: '#/components/responses/Error'
+        '404':
+          $ref: '#/components/responses/Error'
         '422':
           $ref: '#/components/responses/Error'
+        '429':
+          $ref: '#/components/responses/RateLimited'
   /api/tools/v1/inbox_items/{id}:
     get:
       tags:
@@ -169,13 +299,15 @@ paths:
           $ref: '#/components/responses/Error'
         '404':
           $ref: '#/components/responses/Error'
+        '429':
+          $ref: '#/components/responses/RateLimited'
   /api/tools/v1/inbox_items/{id}/accept:
     post:
       tags:
       - Inbox
       operationId: accept_inbox_item
-      summary: Accept (follow) an inbox item
-      description: Follow the underlying opportunity, award, or signal and create or reuse its default workspace. Accept is FINAL and cannot be reversed with restore. The response meta includes the resulting workspaceId.
+      summary: Accept an inbox item
+      description: Follow an underlying opportunity or award and create or reuse its default workspace. Signal acceptance is unsupported and returns 422. Opportunity and award accepts are final and cannot be reversed with restore. The response meta reports the resulting workspaceId and finality.
       parameters:
       - $ref: '#/components/parameters/id'
       responses:
@@ -199,14 +331,32 @@ paths:
           $ref: '#/components/responses/Error'
         '404':
           $ref: '#/components/responses/Error'
+        '422':
+          $ref: '#/components/responses/Error'
+        '429':
+          $ref: '#/components/responses/RateLimited'
   /api/tools/v1/inbox_items/{id}/dismiss:
     post:
       tags:
       - Inbox
       operationId: dismiss_inbox_item
       summary: Dismiss an inbox item
+      description: Dismiss the item with an optional written explanation retained for future analysis. Written feedback does not currently change matching and is not returned in API responses. Restoring the item withdraws its written feedback.
       parameters:
       - $ref: '#/components/parameters/id'
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              properties:
+                feedbackText:
+                  type: string
+                  description: 'Optional written explanation, limited to 2,000 characters after trimming surrounding whitespace. Blank text is ignored.
+
+                    '
       responses:
         '200':
           description: Dismissed inbox item
@@ -220,6 +370,10 @@ paths:
           $ref: '#/components/responses/Error'
         '404':
           $ref: '#/components/responses/Error'
+        '422':
+          $ref: '#/components/responses/Error'
+        '429':
+          $ref: '#/components/responses/RateLimited'
   /api/tools/v1/inbox_items/{id}/decline:
     post:
       tags:
@@ -260,6 +414,8 @@ paths:
           $ref: '#/components/responses/Error'
         '422':
           $ref: '#/components/responses/Error'
+        '429':
+          $ref: '#/components/responses/RateLimited'
   /api/tools/v1/inbox_items/{id}/restore:
     post:
       tags:
@@ -284,12 +440,20 @@ paths:
           $ref: '#/components/responses/Error'
         '422':
           $ref: '#/components/responses/Error'
+        '429':
+          $ref: '#/components/responses/RateLimited'
 components:
   parameters:
     id:
       name: id
       in: path
       required: true
+      schema:
+        type: string
+    cursor:
+      name: cursor
+      in: query
+      required: false
       schema:
         type: string
     perPage:
@@ -300,13 +464,147 @@ components:
         type: integer
         default: 25
         maximum: 100
-    cursor:
-      name: cursor
-      in: query
-      required: false
-      schema:
-        type: string
   schemas:
+    InboxFilterId:
+      description: Positive canonical ID at most 9223372036854775807. Strings preserve precision for large IDs.
+      anyOf:
+      - type: string
+        pattern: ^[1-9][0-9]{0,18}$
+      - type: integer
+        minimum: 1
+        maximum: 9223372036854775807
+    RateLimitError:
+      type: object
+      required:
+      - error
+      properties:
+        error:
+          type: string
+    ErrorEnvelope:
+      type: object
+      required:
+      - errors
+      properties:
+        errors:
+          type: array
+          items:
+            type: object
+            required:
+            - status
+            - code
+            - title
+            - detail
+            properties:
+              status:
+                type: string
+              code:
+                type: string
+              title:
+                type: string
+              detail:
+                type: string
+              source:
+                type: object
+                properties:
+                  pointer:
+                    type: string
+    InboxAcceptMeta:
+      type: object
+      required:
+      - state
+      - feedback
+      - matchableType
+      - matchableId
+      - final
+      properties:
+        state:
+          type: string
+        feedback:
+          type: string
+        matchableType:
+          type: string
+        matchableId:
+          type: string
+        workspaceId:
+          type:
+          - string
+          - 'null'
+          description: Default workspace followed for the opportunity or award.
+        final:
+          type: boolean
+          description: True for an opportunity or award follow, which cannot be reversed with Inbox restore.
+    InboxAggregations:
+      type: object
+      required:
+      - matchableType
+      properties:
+        matchableType:
+          type: object
+          description: Count of matching items per matchable type.
+          additionalProperties:
+            type: integer
+    InboxSearchMeta:
+      type: object
+      required:
+      - total
+      - nextCursor
+      properties:
+        total:
+          type: integer
+          description: Total matching items (capped at 10000 by the search index).
+        nextCursor:
+          type:
+          - string
+          - 'null'
+    CursorMeta:
+      type: object
+      required:
+      - count
+      properties:
+        count:
+          type: integer
+          description: Number of records in this page.
+        totalCount:
+          type: integer
+          description: 'Total matching records (award and contact search), capped at 10,000 by the search engine. Pagination via nextCursor is not limited by this cap.
+
+            '
+        perPage:
+          type: integer
+        searchType:
+          type: string
+          enum:
+          - fed
+          - sled
+          - international
+          description: 'Market actually searched (opportunity and award search only). Echoes the resolved searchType, including the value defaulted from the user''s market focus when the request omitted it.
+
+            '
+        nextCursor:
+          type:
+          - string
+          - 'null'
+    InboxItemOrigin:
+      type: object
+      required:
+      - sourceType
+      properties:
+        sourceType:
+          type: string
+          enum:
+          - govly_ai
+          - saved_search
+        savedSearchId:
+          type: string
+        savedSearchName:
+          type: string
+    InboxItemEnvelope:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          $ref: '#/components/schemas/InboxItem'
     InboxItem:
       type: object
       required:
@@ -394,122 +692,6 @@ components:
           description: Every source that surfaced this (deduped) item.
           items:
             $ref: '#/components/schemas/InboxItemOrigin'
-    InboxItemOrigin:
-      type: object
-      required:
-      - sourceType
-      properties:
-        sourceType:
-          type: string
-          enum:
-          - govly_ai
-          - saved_search
-        savedSearchId:
-          type: string
-        savedSearchName:
-          type: string
-    InboxSearchMeta:
-      type: object
-      required:
-      - total
-      - nextCursor
-      properties:
-        total:
-          type: integer
-          description: Total matching items (capped at 10000 by the search index).
-        nextCursor:
-          type:
-          - string
-          - 'null'
-    InboxItemEnvelope:
-      type: object
-      required:
-      - data
-      properties:
-        data:
-          $ref: '#/components/schemas/InboxItem'
-    InboxAggregations:
-      type: object
-      required:
-      - matchableType
-      properties:
-        matchableType:
-          type: object
-          description: Count of matching items per matchable type.
-          additionalProperties:
-            type: integer
-    InboxAcceptMeta:
-      type: object
-      required:
-      - state
-      - feedback
-      - matchableType
-      - matchableId
-      - final
-      properties:
-        state:
-          type: string
-        feedback:
-          type: string
-        matchableType:
-          type: string
-        matchableId:
-          type: string
-        workspaceId:
-          type:
-          - string
-          - 'null'
-          description: Default workspace the accept followed, when one exists.
-        final:
-          type: boolean
-          description: Always true — accept is irreversible.
-    ErrorEnvelope:
-      type: object
-      required:
-      - errors
-      properties:
-        errors:
-          type: array
-          items:
-            type: object
-            required:
-            - status
-            - code
-            - title
-            - detail
-            properties:
-              status:
-                type: string
-              code:
-                type: string
-              title:
-                type: string
-              detail:
-                type: string
-              source:
-                type: object
-                properties:
-                  pointer:
-                    type: string
-    CursorMeta:
-      type: object
-      required:
-      - count
-      properties:
-        count:
-          type: integer
-          description: Number of records in this page.
-        totalCount:
-          type: integer
-          description: 'Total matching records (award search only), capped at 10,000 by the search engine. Pagination via nextCursor is not limited by this cap.
-
-            '
-        perPage:
-          type: integer
-        nextCursor:
-          type:
-          - string
-          - 'null'
   responses:
     Error:
       description: Error response
@@ -517,6 +699,21 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/ErrorEnvelope'
+    RateLimited:
+      description: 'Too many requests. Two limiters can produce this status and they use different bodies. The per-user limit of 70 requests per minute for each resource returns the standard error envelope with `code: rate_limited` and a `Retry-After` header. Keys sent in the `X-API-KEY` header are also subject to the Enterprise API limit of 300 requests per minute per key, which returns the plain `error` form with `Retry-After` and the `X-RateLimit-*` headers. Clients should accept either body.
+
+        '
+      headers:
+        Retry-After:
+          description: Seconds to wait before retrying.
+          schema:
+            type: string
+      content:
+        application/json:
+          schema:
+            oneOf:
+            - $ref: '#/components/schemas/ErrorEnvelope'
+            - $ref: '#/components/schemas/RateLimitError'
   securitySchemes:
     bearerApiKey:
       type: http

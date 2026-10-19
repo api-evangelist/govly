@@ -1,10 +1,14 @@
 openapi: 3.2.0
 info:
-  title: Govly Tools API (Alpha) Awards API
+  title: Govly Tools Awards API
   version: 1.0.0-alpha
   description: 'ALPHA / UNSTABLE: This API is still in active development. Endpoint behavior, request fields, response fields, error codes, and operation names may change before the Tools API is declared stable.
 
-    REST-callable tool surface for agent and automation workflows. Agents are the primary consumer, but integrations can be built on this API. Responses are JSON for typed clients; MCP tools may render action results into text-oriented formats separately.'
+    REST-callable tool surface for agent and automation workflows. Agents are the primary consumer, but integrations can be built on this API. Responses are JSON for typed clients; MCP tools may render action results into text-oriented formats separately.
+
+    Validating requests: validate against this schema in your client before sending. Govly ignores a request field it does not recognize rather than rejecting it, so a misspelled filter name is not applied — the response returns 200 with a broader result set than you intended, and nothing marks the difference. Where a request body declares `additionalProperties: false`, strict client-side validation is what catches that. Fields sent with the wrong type are rejected with 400 on most endpoints; validate types in your client too rather than relying on it.
+
+    Rate limits: each resource (for example awards, opportunities, or workspaces) allows 70 requests per minute per user. Exceeding it returns 429 with the standard error envelope, `code: rate_limited`, and a `Retry-After` header. Keys sent in the `X-API-KEY` header are also subject to the Enterprise API limit of 300 requests per minute per key; see the Rate Limits page.'
 servers:
 - url: https://app.govly.com
 security:
@@ -41,6 +45,8 @@ paths:
           $ref: '#/components/responses/Error'
         '404':
           $ref: '#/components/responses/Error'
+        '429':
+          $ref: '#/components/responses/RateLimited'
   /api/tools/v1/awards/search:
     post:
       tags:
@@ -116,6 +122,16 @@ paths:
                   minItems: 2
                   maxItems: 2
                   description: Filter by award amount as [minimum, maximum].
+                placeIds:
+                  type: array
+                  items:
+                    type: string
+                  description: Filter to awards in any of these canonical place ids from POST /api/tools/v1/places/search or /places/list. Ids match at any administrative level (state, county, city, ZIP, school district, military installation).
+                placeIdsNone:
+                  type: array
+                  items:
+                    type: string
+                  description: Exclude awards in any of these canonical place ids.
                 sort:
                   type: string
                   enum:
@@ -154,6 +170,8 @@ paths:
           $ref: '#/components/responses/Error'
         '422':
           $ref: '#/components/responses/Error'
+        '429':
+          $ref: '#/components/responses/RateLimited'
 components:
   parameters:
     id:
@@ -163,6 +181,50 @@ components:
       schema:
         type: string
   schemas:
+    RateLimitError:
+      type: object
+      required:
+      - error
+      properties:
+        error:
+          type: string
+    AwardGovernmentEntity:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        code:
+          type: string
+    ErrorEnvelope:
+      type: object
+      required:
+      - errors
+      properties:
+        errors:
+          type: array
+          items:
+            type: object
+            required:
+            - status
+            - code
+            - title
+            - detail
+            properties:
+              status:
+                type: string
+              code:
+                type: string
+              title:
+                type: string
+              detail:
+                type: string
+              source:
+                type: object
+                properties:
+                  pointer:
+                    type: string
     Award:
       type: object
       required:
@@ -190,6 +252,22 @@ components:
           type: string
         awardUrl:
           type: string
+          deprecated: true
+          description: Deprecated alias of links.self. Retained for Tools API v1 compatibility.
+        links:
+          type: object
+          description: Canonical links for this award. Omitted when the award has no unique key.
+          required:
+          - self
+          properties:
+            self:
+              type: string
+              format: uri
+              description: Canonical Govly app link for this award.
+            external:
+              type: string
+              format: uri
+              description: Source-system link, omitted when the source does not provide one.
         acquisitionType:
           type: string
         acquisitionCategory:
@@ -335,43 +413,6 @@ components:
           description: Detail only. Up to 100 associated contacts (id, name, email).
           items:
             type: object
-    AwardGovernmentEntity:
-      type: object
-      properties:
-        id:
-          type: string
-        name:
-          type: string
-        code:
-          type: string
-    ErrorEnvelope:
-      type: object
-      required:
-      - errors
-      properties:
-        errors:
-          type: array
-          items:
-            type: object
-            required:
-            - status
-            - code
-            - title
-            - detail
-            properties:
-              status:
-                type: string
-              code:
-                type: string
-              title:
-                type: string
-              detail:
-                type: string
-              source:
-                type: object
-                properties:
-                  pointer:
-                    type: string
     CursorMeta:
       type: object
       required:
@@ -382,11 +423,20 @@ components:
           description: Number of records in this page.
         totalCount:
           type: integer
-          description: 'Total matching records (award search only), capped at 10,000 by the search engine. Pagination via nextCursor is not limited by this cap.
+          description: 'Total matching records (award and contact search), capped at 10,000 by the search engine. Pagination via nextCursor is not limited by this cap.
 
             '
         perPage:
           type: integer
+        searchType:
+          type: string
+          enum:
+          - fed
+          - sled
+          - international
+          description: 'Market actually searched (opportunity and award search only). Echoes the resolved searchType, including the value defaulted from the user''s market focus when the request omitted it.
+
+            '
         nextCursor:
           type:
           - string
@@ -398,6 +448,21 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/ErrorEnvelope'
+    RateLimited:
+      description: 'Too many requests. Two limiters can produce this status and they use different bodies. The per-user limit of 70 requests per minute for each resource returns the standard error envelope with `code: rate_limited` and a `Retry-After` header. Keys sent in the `X-API-KEY` header are also subject to the Enterprise API limit of 300 requests per minute per key, which returns the plain `error` form with `Retry-After` and the `X-RateLimit-*` headers. Clients should accept either body.
+
+        '
+      headers:
+        Retry-After:
+          description: Seconds to wait before retrying.
+          schema:
+            type: string
+      content:
+        application/json:
+          schema:
+            oneOf:
+            - $ref: '#/components/schemas/ErrorEnvelope'
+            - $ref: '#/components/schemas/RateLimitError'
   securitySchemes:
     bearerApiKey:
       type: http

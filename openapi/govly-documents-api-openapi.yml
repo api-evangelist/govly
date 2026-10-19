@@ -1,10 +1,14 @@
 openapi: 3.2.0
 info:
-  title: Govly Tools API (Alpha) Documents API
+  title: Govly Tools Documents API
   version: 1.0.0-alpha
   description: 'ALPHA / UNSTABLE: This API is still in active development. Endpoint behavior, request fields, response fields, error codes, and operation names may change before the Tools API is declared stable.
 
-    REST-callable tool surface for agent and automation workflows. Agents are the primary consumer, but integrations can be built on this API. Responses are JSON for typed clients; MCP tools may render action results into text-oriented formats separately.'
+    REST-callable tool surface for agent and automation workflows. Agents are the primary consumer, but integrations can be built on this API. Responses are JSON for typed clients; MCP tools may render action results into text-oriented formats separately.
+
+    Validating requests: validate against this schema in your client before sending. Govly ignores a request field it does not recognize rather than rejecting it, so a misspelled filter name is not applied — the response returns 200 with a broader result set than you intended, and nothing marks the difference. Where a request body declares `additionalProperties: false`, strict client-side validation is what catches that. Fields sent with the wrong type are rejected with 400 on most endpoints; validate types in your client too rather than relying on it.
+
+    Rate limits: each resource (for example awards, opportunities, or workspaces) allows 70 requests per minute per user. Exceeding it returns 429 with the standard error envelope, `code: rate_limited`, and a `Retry-After` header. Keys sent in the `X-API-KEY` header are also subject to the Enterprise API limit of 300 requests per minute per key; see the Rate Limits page.'
 servers:
 - url: https://app.govly.com
 security:
@@ -84,6 +88,8 @@ paths:
           $ref: '#/components/responses/Error'
         '422':
           $ref: '#/components/responses/Error'
+        '429':
+          $ref: '#/components/responses/RateLimited'
   /api/tools/v1/documents/download:
     get:
       tags:
@@ -117,6 +123,8 @@ paths:
           $ref: '#/components/responses/Error'
         '422':
           $ref: '#/components/responses/Error'
+        '429':
+          $ref: '#/components/responses/RateLimited'
 components:
   schemas:
     DocumentReadMeta:
@@ -142,13 +150,39 @@ components:
             - string
             - 'null'
             description: Opaque continuation token. Present only in meta and non-null when hasMore is true.
-    DocumentType:
-      type: string
-      enum:
-      - opportunity_attachment
-      - workspace_attachment
-      - session_attachment
-      - document
+    DocumentContentRange:
+      type: object
+      required:
+      - pageStart
+      - pageEnd
+      properties:
+        pageStart:
+          type: integer
+          minimum: 1
+        pageEnd:
+          type: integer
+          minimum: 1
+    AvailableAction:
+      type: object
+      required:
+      - name
+      - description
+      - arguments
+      - idPaths
+      properties:
+        name:
+          type: string
+          description: MCP/tool operation name.
+        description:
+          type: string
+        arguments:
+          type: object
+          description: Static arguments to pass to the action.
+        idPaths:
+          type: array
+          description: JSON paths where IDs for this action can be found in the current response.
+          items:
+            type: string
     DocumentReadEnvelope:
       type: object
       required:
@@ -159,6 +193,100 @@ components:
           $ref: '#/components/schemas/DocumentRead'
         meta:
           $ref: '#/components/schemas/DocumentReadMeta'
+    DocumentDownload:
+      type: object
+      required:
+      - id
+      - documentType
+      - filename
+      - url
+      - expiresAt
+      properties:
+        id:
+          type: string
+        documentType:
+          $ref: '#/components/schemas/DocumentType'
+        filename:
+          type: string
+        contentType:
+          type: string
+        byteSize:
+          type: integer
+        url:
+          type: string
+          format: uri
+          description: Temporary presigned URL for the original file.
+        expiresAt:
+          type: string
+          format: date-time
+    RateLimitError:
+      type: object
+      required:
+      - error
+      properties:
+        error:
+          type: string
+    ErrorEnvelope:
+      type: object
+      required:
+      - errors
+      properties:
+        errors:
+          type: array
+          items:
+            type: object
+            required:
+            - status
+            - code
+            - title
+            - detail
+            properties:
+              status:
+                type: string
+              code:
+                type: string
+              title:
+                type: string
+              detail:
+                type: string
+              source:
+                type: object
+                properties:
+                  pointer:
+                    type: string
+    DocumentRepresentation:
+      type: string
+      enum:
+      - text
+      - positioned_text
+      default: text
+    DocumentType:
+      type: string
+      enum:
+      - opportunity_attachment
+      - workspace_attachment
+      - session_attachment
+      - document
+    ActionMeta:
+      type: object
+      properties:
+        availableActions:
+          type: array
+          description: Structured hints for useful follow-up actions. These are advisory; clients should still rely on tool schemas and authorization.
+          items:
+            $ref: '#/components/schemas/AvailableAction'
+        sourceCoverage:
+          type: object
+          description: Result-local source inventory and guidance for claims that require opportunity attachment content.
+          required:
+          - opportunityAttachmentCount
+          - guidance
+          properties:
+            opportunityAttachmentCount:
+              type: integer
+              minimum: 0
+            guidance:
+              type: string
     DocumentRead:
       type: object
       required:
@@ -207,41 +335,6 @@ components:
         message:
           type: string
           description: Guidance when extraction is processing or a requested representation is unavailable.
-    ActionMeta:
-      type: object
-      properties:
-        availableActions:
-          type: array
-          description: Structured hints for useful follow-up actions. These are advisory; clients should still rely on tool schemas and authorization.
-          items:
-            $ref: '#/components/schemas/AvailableAction'
-    AvailableAction:
-      type: object
-      required:
-      - name
-      - description
-      - arguments
-      - idPaths
-      properties:
-        name:
-          type: string
-          description: MCP/tool operation name.
-        description:
-          type: string
-        arguments:
-          type: object
-          description: Static arguments to pass to the action.
-        idPaths:
-          type: array
-          description: JSON paths where IDs for this action can be found in the current response.
-          items:
-            type: string
-    DocumentRepresentation:
-      type: string
-      enum:
-      - text
-      - positioned_text
-      default: text
     DocumentDownloadEnvelope:
       type: object
       required:
@@ -249,72 +342,6 @@ components:
       properties:
         data:
           $ref: '#/components/schemas/DocumentDownload'
-    ErrorEnvelope:
-      type: object
-      required:
-      - errors
-      properties:
-        errors:
-          type: array
-          items:
-            type: object
-            required:
-            - status
-            - code
-            - title
-            - detail
-            properties:
-              status:
-                type: string
-              code:
-                type: string
-              title:
-                type: string
-              detail:
-                type: string
-              source:
-                type: object
-                properties:
-                  pointer:
-                    type: string
-    DocumentContentRange:
-      type: object
-      required:
-      - pageStart
-      - pageEnd
-      properties:
-        pageStart:
-          type: integer
-          minimum: 1
-        pageEnd:
-          type: integer
-          minimum: 1
-    DocumentDownload:
-      type: object
-      required:
-      - id
-      - documentType
-      - filename
-      - url
-      - expiresAt
-      properties:
-        id:
-          type: string
-        documentType:
-          $ref: '#/components/schemas/DocumentType'
-        filename:
-          type: string
-        contentType:
-          type: string
-        byteSize:
-          type: integer
-        url:
-          type: string
-          format: uri
-          description: Temporary presigned URL for the original file.
-        expiresAt:
-          type: string
-          format: date-time
   responses:
     Error:
       description: Error response
@@ -322,6 +349,21 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/ErrorEnvelope'
+    RateLimited:
+      description: 'Too many requests. Two limiters can produce this status and they use different bodies. The per-user limit of 70 requests per minute for each resource returns the standard error envelope with `code: rate_limited` and a `Retry-After` header. Keys sent in the `X-API-KEY` header are also subject to the Enterprise API limit of 300 requests per minute per key, which returns the plain `error` form with `Retry-After` and the `X-RateLimit-*` headers. Clients should accept either body.
+
+        '
+      headers:
+        Retry-After:
+          description: Seconds to wait before retrying.
+          schema:
+            type: string
+      content:
+        application/json:
+          schema:
+            oneOf:
+            - $ref: '#/components/schemas/ErrorEnvelope'
+            - $ref: '#/components/schemas/RateLimitError'
   securitySchemes:
     bearerApiKey:
       type: http

@@ -1,10 +1,14 @@
 openapi: 3.2.0
 info:
-  title: Govly Tools API (Alpha) Workspaces API
+  title: Govly Tools Workspaces API
   version: 1.0.0-alpha
   description: 'ALPHA / UNSTABLE: This API is still in active development. Endpoint behavior, request fields, response fields, error codes, and operation names may change before the Tools API is declared stable.
 
-    REST-callable tool surface for agent and automation workflows. Agents are the primary consumer, but integrations can be built on this API. Responses are JSON for typed clients; MCP tools may render action results into text-oriented formats separately.'
+    REST-callable tool surface for agent and automation workflows. Agents are the primary consumer, but integrations can be built on this API. Responses are JSON for typed clients; MCP tools may render action results into text-oriented formats separately.
+
+    Validating requests: validate against this schema in your client before sending. Govly ignores a request field it does not recognize rather than rejecting it, so a misspelled filter name is not applied — the response returns 200 with a broader result set than you intended, and nothing marks the difference. Where a request body declares `additionalProperties: false`, strict client-side validation is what catches that. Fields sent with the wrong type are rejected with 400 on most endpoints; validate types in your client too rather than relying on it.
+
+    Rate limits: each resource (for example awards, opportunities, or workspaces) allows 70 requests per minute per user. Exceeding it returns 429 with the standard error envelope, `code: rate_limited`, and a `Retry-After` header. Keys sent in the `X-API-KEY` header are also subject to the Enterprise API limit of 300 requests per minute per key; see the Rate Limits page.'
 servers:
 - url: https://app.govly.com
 security:
@@ -51,6 +55,8 @@ paths:
           $ref: '#/components/responses/Error'
         '422':
           $ref: '#/components/responses/Error'
+        '429':
+          $ref: '#/components/responses/RateLimited'
     post:
       tags:
       - Workspaces
@@ -100,6 +106,166 @@ paths:
           $ref: '#/components/responses/Error'
         '422':
           $ref: '#/components/responses/Error'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+  /api/tools/v1/workspaces/search:
+    post:
+      tags:
+      - Workspaces
+      operationId: search_workspaces
+      summary: Search active workspaces
+      description: Searches the authenticated organization's workspaces with exact totals and opaque cursor pagination. The default scope is current, open workspaces with an opportunity primary focus or no primary focus. Explicit participants narrow organization participation and never grant access. A user participant ID of me selects the authenticated user without embedding their organization-user ID. A workspace without a primary focus is represented by includeWithoutPrimaryFocus; primaryFocusTypes never uses a standalone sentinel.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              properties:
+                query:
+                  type: string
+                  maxLength: 30000
+                  description: Search workspace name/description, opportunity display name/title, and your organization's text/select custom-field values.
+                cursor:
+                  type: string
+                  description: Opaque nextCursor from the previous page, bound to the actor and all filters.
+                perPage:
+                  type: integer
+                  default: 25
+                  maximum: 100
+                primaryFocusTypes:
+                  type: array
+                  items:
+                    type: string
+                    enum:
+                    - opportunity
+                  description: Primary focus types to include. This beta supports opportunity only.
+                includeWithoutPrimaryFocus:
+                  type: boolean
+                  default: true
+                  description: Include workspaces whose primary focus is absent.
+                lifecycle:
+                  type: string
+                  enum:
+                  - current
+                  - archived
+                  default: current
+                  description: Workspace archive state. Current excludes archived Workspaces. Opportunity dates are constrained only by explicit Opportunity filters.
+                statusGroup:
+                  type: string
+                  enum:
+                  - open
+                  - closed
+                  default: open
+                statusCategories:
+                  type: array
+                  items:
+                    type: string
+                    enum:
+                    - triage
+                    - planned
+                    - in_progress
+                    - completed
+                    - canceled
+                  description: Exact workspace categories, intersected with statusGroup.
+                workspaceStatusIds:
+                  type: array
+                  items:
+                    type: string
+                  description: Current-organization custom workspace status IDs.
+                participants:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/WorkspaceSearchParticipantInput'
+                  description: Current-organization users or teams that participate in the workspace. A user ID may be me for the authenticated user.
+                participantOperator:
+                  type: string
+                  enum:
+                  - any
+                  - all
+                  default: any
+                labelIds:
+                  type: array
+                  items:
+                    type: string
+                  description: Include workspaces with any selected label belonging to the authenticated organization.
+                excludeLabelIds:
+                  type: array
+                  items:
+                    type: string
+                  description: Exclude workspaces with any selected label belonging to the authenticated organization.
+                opportunityWorkWindow:
+                  type: string
+                  enum:
+                  - active
+                  - active_or_recently_ended
+                  - ended
+                  description: Filters the primary Opportunity only. Active means Respond By is not past and cancellation is absent. Active or recently ended allows Respond By up to 14 days past and cancellation absent or up to 72 hours past. For both, missing Respond By requires Posted At within the past 3 calendar months, evaluated in UTC. Ended means deadline beyond 14 days, missing deadline with Posted At older than 3 months, or cancellation beyond 72 hours. Missing both dates does not establish recency or expiration. Award status does not independently exclude results. Omit for no work-window restriction; other filters are intersected.
+                opportunityWorkWindowOperator:
+                  type: string
+                  enum:
+                  - is
+                  - is_not
+                  default: is
+                  description: Requires opportunityWorkWindow. Negation complements the window within Opportunities only; not active is not an alias for ended.
+                opportunityRespondByOperator:
+                  type: string
+                  enum:
+                  - is
+                  - is_not
+                  default: is
+                  description: Requires opportunityRespondBy. Negation complements the entire range including includeMissing within Opportunities only.
+                opportunityRespondBy:
+                  type: object
+                  additionalProperties: false
+                  anyOf:
+                  - required:
+                    - from
+                  - required:
+                    - to
+                  description: Inclusive Respond By range on the workspace's primary Opportunity (workable), not related attachments. Relative days are 24-hour offsets evaluated per request. Include missing dates includes only Opportunities without a deadline, not other or null primary focuses. Omit this filter to leave deadline membership unrestricted.
+                  properties:
+                    from:
+                      $ref: '#/components/schemas/WorkspaceDeadlineBound'
+                    to:
+                      $ref: '#/components/schemas/WorkspaceDeadlineBound'
+                    includeMissing:
+                      type: boolean
+                      default: false
+                customFields:
+                  type: array
+                  maxItems: 50
+                  description: Typed custom-field filters for the authenticated organization. Text uses contains; select uses is_any_of/is_not_any_of; multiselect uses includes/includes_all/excludes; number uses equals/gt/gte/lt/lte; date uses on/before/after with YYYY-MM-DD. Every type also supports is_set/is_not_set without value. Option operators require an array.
+                  items:
+                    $ref: '#/components/schemas/WorkspaceCustomFieldFilterInput'
+      responses:
+        '200':
+          description: Matching workspaces
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - data
+                - meta
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/WorkspaceSearchResult'
+                  meta:
+                    $ref: '#/components/schemas/WorkspaceSearchMeta'
+        '400':
+          $ref: '#/components/responses/Error'
+        '401':
+          $ref: '#/components/responses/Error'
+        '403':
+          $ref: '#/components/responses/Error'
+        '500':
+          $ref: '#/components/responses/Error'
+        '429':
+          $ref: '#/components/responses/RateLimited'
   /api/tools/v1/workspaces/{id}:
     get:
       tags:
@@ -121,6 +287,8 @@ paths:
           $ref: '#/components/responses/Error'
         '404':
           $ref: '#/components/responses/Error'
+        '429':
+          $ref: '#/components/responses/RateLimited'
     patch:
       tags:
       - Workspaces
@@ -166,154 +334,10 @@ paths:
           $ref: '#/components/responses/Error'
         '422':
           $ref: '#/components/responses/Error'
+        '429':
+          $ref: '#/components/responses/RateLimited'
 components:
-  parameters:
-    id:
-      name: id
-      in: path
-      required: true
-      schema:
-        type: string
-    associatedType:
-      name: associatedType
-      in: query
-      required: true
-      schema:
-        type: string
-        enum:
-        - opportunity
-    associatedId:
-      name: associatedId
-      in: query
-      required: true
-      schema:
-        type: string
   schemas:
-    PrimaryFocusInput:
-      type: object
-      required:
-      - type
-      - id
-      properties:
-        type:
-          type: string
-          enum:
-          - opportunity
-        id:
-          type: string
-    Comment:
-      type: object
-      required:
-      - id
-      - body
-      - createdAt
-      - attachments
-      properties:
-        id:
-          type: string
-        body:
-          type: string
-          description: Markdown body for the comment.
-        attachments:
-          type: array
-          description: Workspace attachments tied to this comment.
-          items:
-            $ref: '#/components/schemas/WorkspaceAttachment'
-        createdAt:
-          type: string
-          format: date-time
-        updatedAt:
-          type: string
-          format: date-time
-    WorkspaceEnvelope:
-      type: object
-      required:
-      - data
-      properties:
-        data:
-          $ref: '#/components/schemas/Workspace'
-        meta:
-          $ref: '#/components/schemas/ActionMeta'
-    WorkspaceAttachment:
-      type: object
-      required:
-      - id
-      - workspaceId
-      - filename
-      properties:
-        id:
-          type: string
-        workspaceId:
-          type: string
-        commentId:
-          type: string
-          nullable: true
-        filename:
-          type: string
-        contentType:
-          type: string
-        byteSize:
-          type: integer
-        createdAt:
-          type: string
-          format: date-time
-        file:
-          description: Present only on the workspace attachments endpoint. Workspace show responses surface attachments without download metadata.
-          $ref: '#/components/schemas/AttachmentFile'
-    ActionMeta:
-      type: object
-      properties:
-        availableActions:
-          type: array
-          description: Structured hints for useful follow-up actions. These are advisory; clients should still rely on tool schemas and authorization.
-          items:
-            $ref: '#/components/schemas/AvailableAction'
-    AvailableAction:
-      type: object
-      required:
-      - name
-      - description
-      - arguments
-      - idPaths
-      properties:
-        name:
-          type: string
-          description: MCP/tool operation name.
-        description:
-          type: string
-        arguments:
-          type: object
-          description: Static arguments to pass to the action.
-        idPaths:
-          type: array
-          description: JSON paths where IDs for this action can be found in the current response.
-          items:
-            type: string
-    AttachmentFile:
-      type: object
-      description: Presigned download metadata. Omitted when the attachment is redacted or URLs are excluded.
-      required:
-      - url
-      - expiresAt
-      properties:
-        url:
-          type: string
-          format: uri
-        expiresAt:
-          type: string
-          format: date-time
-    AssociatedEntity:
-      type: object
-      required:
-      - type
-      - id
-      properties:
-        type:
-          type: string
-          enum:
-          - opportunity
-        id:
-          type: string
     Workspace:
       type: object
       required:
@@ -341,6 +365,9 @@ components:
           - category
           - label
           properties:
+            id:
+              type: string
+              description: Exact custom workspace status ID, when assigned.
             category:
               type: string
               description: Coarse status bucket. Triage is the default for newly created workspaces.
@@ -359,6 +386,275 @@ components:
           description: Workspace attachments. Only present on show/create/update responses.
           items:
             $ref: '#/components/schemas/WorkspaceAttachment'
+        customFields:
+          type: array
+          description: Your organization's custom field values for this workspace, ordered by field id. Search responses include populated fields plus any explicitly filtered field, using null for an unset filtered field. Show/create/update responses include every field your organization has defined, using null for unset fields.
+          items:
+            $ref: '#/components/schemas/WorkspaceCustomField'
+    WorkspaceCustomField:
+      type: object
+      required:
+      - id
+      - name
+      - type
+      - value
+      properties:
+        id:
+          type: string
+          description: Stable custom field id, unique within your organization.
+        name:
+          type: string
+          description: Display name. Names are not guaranteed unique; use id as the key.
+        type:
+          type: string
+          enum:
+          - text
+          - select
+          - number
+          - date
+          - multiselect
+          description: Native Workspace custom field type.
+        value:
+          description: Raw stored value, or null when the field is unset for this workspace. Shape depends on the field type (select fields store the option label as a string); keys of object-shaped values are camelized.
+    AvailableAction:
+      type: object
+      required:
+      - name
+      - description
+      - arguments
+      - idPaths
+      properties:
+        name:
+          type: string
+          description: MCP/tool operation name.
+        description:
+          type: string
+        arguments:
+          type: object
+          description: Static arguments to pass to the action.
+        idPaths:
+          type: array
+          description: JSON paths where IDs for this action can be found in the current response.
+          items:
+            type: string
+    WorkspaceSearchParticipantInput:
+      type: object
+      additionalProperties: false
+      required:
+      - type
+      - id
+      properties:
+        type:
+          type: string
+          enum:
+          - user
+          - team
+        id:
+          type: string
+          description: Organization-user or team ID. The value me is accepted when type is user.
+    RateLimitError:
+      type: object
+      required:
+      - error
+      properties:
+        error:
+          type: string
+    AttachmentFile:
+      type: object
+      description: Presigned download metadata. Omitted when attachment content is unavailable or URLs are excluded.
+      required:
+      - url
+      - expiresAt
+      properties:
+        url:
+          type: string
+          format: uri
+        expiresAt:
+          type: string
+          format: date-time
+    WorkspaceSearchMeta:
+      type: object
+      required:
+      - total
+      - perPage
+      properties:
+        total:
+          type: integer
+          description: Exact number of matching workspaces.
+        perPage:
+          type: integer
+        nextCursor:
+          type: string
+          description: Opaque cursor for the next page. Absent on the final page.
+    ActionMeta:
+      type: object
+      properties:
+        availableActions:
+          type: array
+          description: Structured hints for useful follow-up actions. These are advisory; clients should still rely on tool schemas and authorization.
+          items:
+            $ref: '#/components/schemas/AvailableAction'
+        sourceCoverage:
+          type: object
+          description: Result-local source inventory and guidance for claims that require opportunity attachment content.
+          required:
+          - opportunityAttachmentCount
+          - guidance
+          properties:
+            opportunityAttachmentCount:
+              type: integer
+              minimum: 0
+            guidance:
+              type: string
+    WorkspaceEnvelope:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          $ref: '#/components/schemas/Workspace'
+        meta:
+          $ref: '#/components/schemas/ActionMeta'
+    WorkspaceDeadlineBound:
+      oneOf:
+      - type: object
+        additionalProperties: false
+        required:
+        - daysFromNow
+        properties:
+          daysFromNow:
+            type: integer
+            minimum: -36500
+            maximum: 36500
+      - type: object
+        additionalProperties: false
+        required:
+        - at
+        properties:
+          at:
+            type: string
+            format: date-time
+            description: ISO8601 timestamp with explicit timezone offset.
+    WorkspaceCustomFieldFilterInput:
+      type: object
+      additionalProperties: false
+      required:
+      - workspaceColumnId
+      - operator
+      properties:
+        workspaceColumnId:
+          type: string
+        operator:
+          type: string
+          enum:
+          - contains
+          - is_any_of
+          - is_not_any_of
+          - includes
+          - includes_all
+          - excludes
+          - equals
+          - gt
+          - gte
+          - lt
+          - lte
+          - 'on'
+          - before
+          - after
+          - is_set
+          - is_not_set
+        value:
+          oneOf:
+          - type: string
+          - type: number
+          - type: array
+            items:
+              type: string
+    WorkspaceSearchLabel:
+      type: object
+      required:
+      - id
+      - name
+      - color
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        color:
+          type: string
+        description:
+          type: string
+        domain:
+          type: string
+    Comment:
+      type: object
+      required:
+      - id
+      - body
+      - createdAt
+      - attachments
+      properties:
+        id:
+          type: string
+        body:
+          type: string
+          description: Markdown body for the comment.
+        attachments:
+          type: array
+          description: Workspace attachments tied to this comment.
+          items:
+            $ref: '#/components/schemas/WorkspaceAttachment'
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    WorkspaceSearchParticipant:
+      type: object
+      required:
+      - type
+      - id
+      properties:
+        type:
+          type: string
+          enum:
+          - user
+          - team
+        id:
+          type: string
+        name:
+          type: string
+        email:
+          type: string
+          format: email
+    WorkspaceAttachment:
+      type: object
+      required:
+      - id
+      - workspaceId
+      - filename
+      properties:
+        id:
+          type: string
+        workspaceId:
+          type: string
+        commentId:
+          type: string
+          nullable: true
+        filename:
+          type: string
+        contentType:
+          type: string
+        byteSize:
+          type: integer
+        createdAt:
+          type: string
+          format: date-time
+        file:
+          description: Present only on the workspace attachments endpoint. Workspace show responses surface attachments without download metadata.
+          $ref: '#/components/schemas/AttachmentFile'
     ErrorEnvelope:
       type: object
       required:
@@ -387,6 +683,88 @@ components:
                 properties:
                   pointer:
                     type: string
+    WorkspaceSearchResult:
+      allOf:
+      - $ref: '#/components/schemas/Workspace'
+      - type: object
+        required:
+        - updatedAt
+        - privateAccess
+        - organization
+        - participants
+        - labels
+        - customFields
+        properties:
+          archivedAt:
+            type: string
+            format: date-time
+          privateAccess:
+            type: boolean
+          organization:
+            type: object
+            required:
+            - id
+            - name
+            properties:
+              id:
+                type: string
+              name:
+                type: string
+          participants:
+            type: array
+            items:
+              $ref: '#/components/schemas/WorkspaceSearchParticipant'
+          labels:
+            type: array
+            items:
+              $ref: '#/components/schemas/WorkspaceSearchLabel'
+    PrimaryFocusInput:
+      type: object
+      required:
+      - type
+      - id
+      properties:
+        type:
+          type: string
+          enum:
+          - opportunity
+        id:
+          type: string
+    AssociatedEntity:
+      type: object
+      required:
+      - type
+      - id
+      properties:
+        type:
+          type: string
+          enum:
+          - opportunity
+          - award
+          - contact
+        id:
+          type: string
+  parameters:
+    id:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: string
+    associatedId:
+      name: associatedId
+      in: query
+      required: true
+      schema:
+        type: string
+    associatedType:
+      name: associatedType
+      in: query
+      required: true
+      schema:
+        type: string
+        enum:
+        - opportunity
   responses:
     Error:
       description: Error response
@@ -394,6 +772,21 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/ErrorEnvelope'
+    RateLimited:
+      description: 'Too many requests. Two limiters can produce this status and they use different bodies. The per-user limit of 70 requests per minute for each resource returns the standard error envelope with `code: rate_limited` and a `Retry-After` header. Keys sent in the `X-API-KEY` header are also subject to the Enterprise API limit of 300 requests per minute per key, which returns the plain `error` form with `Retry-After` and the `X-RateLimit-*` headers. Clients should accept either body.
+
+        '
+      headers:
+        Retry-After:
+          description: Seconds to wait before retrying.
+          schema:
+            type: string
+      content:
+        application/json:
+          schema:
+            oneOf:
+            - $ref: '#/components/schemas/ErrorEnvelope'
+            - $ref: '#/components/schemas/RateLimitError'
   securitySchemes:
     bearerApiKey:
       type: http

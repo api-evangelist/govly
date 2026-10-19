@@ -1,10 +1,14 @@
 openapi: 3.2.0
 info:
-  title: Govly Tools API (Alpha) Workspace Members API
+  title: Govly Tools Workspace Members API
   version: 1.0.0-alpha
   description: 'ALPHA / UNSTABLE: This API is still in active development. Endpoint behavior, request fields, response fields, error codes, and operation names may change before the Tools API is declared stable.
 
-    REST-callable tool surface for agent and automation workflows. Agents are the primary consumer, but integrations can be built on this API. Responses are JSON for typed clients; MCP tools may render action results into text-oriented formats separately.'
+    REST-callable tool surface for agent and automation workflows. Agents are the primary consumer, but integrations can be built on this API. Responses are JSON for typed clients; MCP tools may render action results into text-oriented formats separately.
+
+    Validating requests: validate against this schema in your client before sending. Govly ignores a request field it does not recognize rather than rejecting it, so a misspelled filter name is not applied — the response returns 200 with a broader result set than you intended, and nothing marks the difference. Where a request body declares `additionalProperties: false`, strict client-side validation is what catches that. Fields sent with the wrong type are rejected with 400 on most endpoints; validate types in your client too rather than relying on it.
+
+    Rate limits: each resource (for example awards, opportunities, or workspaces) allows 70 requests per minute per user. Exceeding it returns 429 with the standard error envelope, `code: rate_limited`, and a `Retry-After` header. Keys sent in the `X-API-KEY` header are also subject to the Enterprise API limit of 300 requests per minute per key; see the Rate Limits page.'
 servers:
 - url: https://app.govly.com
 security:
@@ -20,6 +24,7 @@ paths:
       - Workspace Members
       operationId: add_workspace_member
       summary: Add a user or team member to a workspace
+      description: Adds a member, reactivates a previously removed one, or updates an existing active member's notifications. Provide exactly one of userId or teamId; both are resolved within the calling user's own organization, so a member from another organization returns 404. state accepts only "following" — remove a member with DELETE on this path rather than by writing an inactive state.
       parameters:
       - $ref: '#/components/parameters/workspaceId'
       requestBody:
@@ -31,15 +36,24 @@ paths:
               properties:
                 userId:
                   type: string
+                  description: Organization user ID. Provide this or teamId, not both.
                 teamId:
                   type: string
+                  description: Organization team ID. Provide this or userId, not both.
                 notifications:
                   type: string
+                  enum:
+                  - user_setting
+                  - email
+                  - muted
                 state:
                   type: string
+                  enum:
+                  - following
+                  description: Omit to default to following. Use DELETE to remove a member.
       responses:
         '201':
-          description: Created workspace membership
+          description: Created or updated workspace membership
           content:
             application/json:
               schema:
@@ -53,24 +67,103 @@ paths:
           $ref: '#/components/responses/Error'
         '403':
           $ref: '#/components/responses/Error'
+        '404':
+          $ref: '#/components/responses/Error'
         '422':
           $ref: '#/components/responses/Error'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+    delete:
+      tags:
+      - Workspace Members
+      operationId: remove_workspace_member
+      summary: Remove a user or team member from a workspace
+      description: 'Removes a member from the workspace. Idempotent: removing a member who is absent or already removed succeeds with data null and meta.noOp true rather than 404, and never reports whether an id exists. Users may always remove themselves, unless their only membership is through a team. Removing anyone else requires belonging to the workspace''s own organization; a denial is 401. Unlike the add operation, removal reaches members from other organizations and members whose user account has been archived; neither can be added back by a caller from this workspace''s organization, only by someone from that member''s own organization. Removal ends the membership and mutes notifications, but on a private workspace it does not by itself revoke that person''s access. Note also that updatedAt on the returned membership is not advanced by a removal, so it cannot be used to detect one; read state instead.'
+      parameters:
+      - $ref: '#/components/parameters/workspaceId'
+      - name: userId
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Organization user ID to remove. Provide this or teamId, not both.
+      - name: teamId
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Organization team ID to remove. Provide this or userId, not both.
+      responses:
+        '200':
+          description: Removed workspace membership, or a no-op when there was nothing to remove
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - data
+                - meta
+                properties:
+                  data:
+                    description: The cleared membership, or null on a no-op.
+                    oneOf:
+                    - $ref: '#/components/schemas/WorkspaceMember'
+                    - type: 'null'
+                  meta:
+                    type: object
+                    required:
+                    - noOp
+                    properties:
+                      noOp:
+                        type: boolean
+                        description: True when no membership was changed.
+        '401':
+          $ref: '#/components/responses/Error'
+        '403':
+          $ref: '#/components/responses/Error'
+        '404':
+          $ref: '#/components/responses/Error'
+        '422':
+          $ref: '#/components/responses/Error'
+        '429':
+          $ref: '#/components/responses/RateLimited'
 components:
-  parameters:
-    workspaceId:
-      name: workspaceId
-      in: path
-      required: true
-      schema:
-        type: string
-  responses:
-    Error:
-      description: Error response
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorEnvelope'
   schemas:
+    RateLimitError:
+      type: object
+      required:
+      - error
+      properties:
+        error:
+          type: string
+    ErrorEnvelope:
+      type: object
+      required:
+      - errors
+      properties:
+        errors:
+          type: array
+          items:
+            type: object
+            required:
+            - status
+            - code
+            - title
+            - detail
+            properties:
+              status:
+                type: string
+              code:
+                type: string
+              title:
+                type: string
+              detail:
+                type: string
+              source:
+                type: object
+                properties:
+                  pointer:
+                    type: string
     WorkspaceMember:
       type: object
       required:
@@ -114,34 +207,35 @@ components:
                   type: string
                 name:
                   type: string
-    ErrorEnvelope:
-      type: object
-      required:
-      - errors
-      properties:
-        errors:
-          type: array
-          items:
-            type: object
-            required:
-            - status
-            - code
-            - title
-            - detail
-            properties:
-              status:
-                type: string
-              code:
-                type: string
-              title:
-                type: string
-              detail:
-                type: string
-              source:
-                type: object
-                properties:
-                  pointer:
-                    type: string
+  responses:
+    Error:
+      description: Error response
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorEnvelope'
+    RateLimited:
+      description: 'Too many requests. Two limiters can produce this status and they use different bodies. The per-user limit of 70 requests per minute for each resource returns the standard error envelope with `code: rate_limited` and a `Retry-After` header. Keys sent in the `X-API-KEY` header are also subject to the Enterprise API limit of 300 requests per minute per key, which returns the plain `error` form with `Retry-After` and the `X-RateLimit-*` headers. Clients should accept either body.
+
+        '
+      headers:
+        Retry-After:
+          description: Seconds to wait before retrying.
+          schema:
+            type: string
+      content:
+        application/json:
+          schema:
+            oneOf:
+            - $ref: '#/components/schemas/ErrorEnvelope'
+            - $ref: '#/components/schemas/RateLimitError'
+  parameters:
+    workspaceId:
+      name: workspaceId
+      in: path
+      required: true
+      schema:
+        type: string
   securitySchemes:
     bearerApiKey:
       type: http

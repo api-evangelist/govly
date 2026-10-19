@@ -1,0 +1,206 @@
+openapi: 3.2.0
+info:
+  title: Govly Tools Shares API
+  version: 1.0.0-alpha
+  description: 'ALPHA / UNSTABLE: This API is still in active development. Endpoint behavior, request fields, response fields, error codes, and operation names may change before the Tools API is declared stable.
+
+    REST-callable tool surface for agent and automation workflows. Agents are the primary consumer, but integrations can be built on this API. Responses are JSON for typed clients; MCP tools may render action results into text-oriented formats separately.
+
+    Validating requests: validate against this schema in your client before sending. Govly ignores a request field it does not recognize rather than rejecting it, so a misspelled filter name is not applied — the response returns 200 with a broader result set than you intended, and nothing marks the difference. Where a request body declares `additionalProperties: false`, strict client-side validation is what catches that. Fields sent with the wrong type are rejected with 400 on most endpoints; validate types in your client too rather than relying on it.
+
+    Rate limits: each resource (for example awards, opportunities, or workspaces) allows 70 requests per minute per user. Exceeding it returns 429 with the standard error envelope, `code: rate_limited`, and a `Retry-After` header. Keys sent in the `X-API-KEY` header are also subject to the Enterprise API limit of 300 requests per minute per key; see the Rate Limits page.'
+servers:
+- url: https://app.govly.com
+security:
+- bearerApiKey: []
+- headerApiKey: []
+tags:
+- name: Shares
+  description: Share opportunities, awards, and contacts with colleagues by email.
+paths:
+  /api/tools/v1/shares:
+    post:
+      tags:
+      - Shares
+      operationId: share_entity
+      summary: Share an opportunity, award, or contact by email
+      description: 'Send an opportunity, award, or contact to one or more recipients by email. Delivery is queued immediately and is at-least-once, so a transient failure may redeliver to recipients who already received the message.
+
+
+        Recipients can be any email address, including people outside your organization who do not have a Govly account. An address with no Govly account may also receive a separate invitation to join Govly, so a single request can send more than the share itself.
+
+
+        The identifier form depends on the type. Opportunities take the numeric Govly ID. Awards may be addressed by numeric ID or by uniqueKey; the uniqueKey returned from award search is accepted directly.
+
+
+        Sharing an opportunity sends one email per recipient rather than one email addressed to everyone. Award and contact shares send a single email when no teams are named; naming any team in email_recipient_groups gives their remaining recipients one email each as well.
+
+
+        A share may send at most 20 emails per request: each team is one email, and each recipient outside a named team is one more. An ungrouped award or contact share is a single send and is not limited by that count. A second limit applies to addresses rather than emails: a request may name at most 20 recipients outside a named team, which is what bounds an ungrouped award or contact share.
+
+
+        A third limit spans requests: across every share surface, a user may send at most 300 messages per day to addresses outside their organization, counting the join-Govly invitations those shares trigger. A request that would cross that limit is refused with a 422 and sends nothing.'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - type
+              - id
+              - subject
+              - recipients
+              properties:
+                type:
+                  type: string
+                  enum:
+                  - award
+                  - contact
+                  - opp
+                  - opportunity
+                  description: Entity type to share. opp is accepted as an opportunity alias.
+                id:
+                  type: string
+                  description: Govly entity ID. Opportunities take the numeric ID; awards also accept a uniqueKey.
+                subject:
+                  type: string
+                  description: Subject line for the email.
+                custom_message:
+                  type: string
+                  description: Optional note included above the record details.
+                recipients:
+                  type: array
+                  minItems: 1
+                  description: 'Recipients to email. Any address, including people outside your organization. At most 20 outside a named team.
+
+                    '
+                  items:
+                    type: object
+                    required:
+                    - email
+                    properties:
+                      email:
+                        type: string
+                      name:
+                        type: string
+                      company:
+                        type: string
+                email_recipient_groups:
+                  type: array
+                  description: 'Groups recipients already listed above into one email per team. Does not add recipients.
+
+                    '
+                  items:
+                    type: object
+                    properties:
+                      team_id:
+                        type: string
+      responses:
+        '201':
+          description: Recipients the share was sent to
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - data
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        email:
+                          type: string
+                        name:
+                          type: string
+                        company:
+                          type: string
+                  meta:
+                    type: object
+                    properties:
+                      entityType:
+                        type: string
+                      entityId:
+                        type: string
+                      recipientCount:
+                        type: integer
+        '401':
+          $ref: '#/components/responses/Error'
+        '403':
+          $ref: '#/components/responses/Error'
+        '404':
+          $ref: '#/components/responses/Error'
+        '422':
+          $ref: '#/components/responses/Error'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+components:
+  schemas:
+    ErrorEnvelope:
+      type: object
+      required:
+      - errors
+      properties:
+        errors:
+          type: array
+          items:
+            type: object
+            required:
+            - status
+            - code
+            - title
+            - detail
+            properties:
+              status:
+                type: string
+              code:
+                type: string
+              title:
+                type: string
+              detail:
+                type: string
+              source:
+                type: object
+                properties:
+                  pointer:
+                    type: string
+    RateLimitError:
+      type: object
+      required:
+      - error
+      properties:
+        error:
+          type: string
+  responses:
+    RateLimited:
+      description: 'Too many requests. Two limiters can produce this status and they use different bodies. The per-user limit of 70 requests per minute for each resource returns the standard error envelope with `code: rate_limited` and a `Retry-After` header. Keys sent in the `X-API-KEY` header are also subject to the Enterprise API limit of 300 requests per minute per key, which returns the plain `error` form with `Retry-After` and the `X-RateLimit-*` headers. Clients should accept either body.
+
+        '
+      headers:
+        Retry-After:
+          description: Seconds to wait before retrying.
+          schema:
+            type: string
+      content:
+        application/json:
+          schema:
+            oneOf:
+            - $ref: '#/components/schemas/ErrorEnvelope'
+            - $ref: '#/components/schemas/RateLimitError'
+    Error:
+      description: Error response
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorEnvelope'
+  securitySchemes:
+    bearerApiKey:
+      type: http
+      scheme: bearer
+      bearerFormat: API key
+    headerApiKey:
+      type: apiKey
+      in: header
+      name: X-API-KEY

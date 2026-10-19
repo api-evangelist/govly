@@ -1,0 +1,370 @@
+openapi: 3.2.0
+info:
+  title: Govly Tools Contacts API
+  version: 1.0.0-alpha
+  description: 'ALPHA / UNSTABLE: This API is still in active development. Endpoint behavior, request fields, response fields, error codes, and operation names may change before the Tools API is declared stable.
+
+    REST-callable tool surface for agent and automation workflows. Agents are the primary consumer, but integrations can be built on this API. Responses are JSON for typed clients; MCP tools may render action results into text-oriented formats separately.
+
+    Validating requests: validate against this schema in your client before sending. Govly ignores a request field it does not recognize rather than rejecting it, so a misspelled filter name is not applied — the response returns 200 with a broader result set than you intended, and nothing marks the difference. Where a request body declares `additionalProperties: false`, strict client-side validation is what catches that. Fields sent with the wrong type are rejected with 400 on most endpoints; validate types in your client too rather than relying on it.
+
+    Rate limits: each resource (for example awards, opportunities, or workspaces) allows 70 requests per minute per user. Exceeding it returns 429 with the standard error envelope, `code: rate_limited`, and a `Retry-After` header. Keys sent in the `X-API-KEY` header are also subject to the Enterprise API limit of 300 requests per minute per key; see the Rate Limits page.'
+servers:
+- url: https://app.govly.com
+security:
+- bearerApiKey: []
+- headerApiKey: []
+tags:
+- name: Contacts
+  description: Search and inspect government points of contact.
+paths:
+  /api/tools/v1/contacts/{id}:
+    get:
+      tags:
+      - Contacts
+      operationId: show_contact
+      summary: Show a contact
+      description: Show a single government point of contact by Govly contact id, with titles and associated buyers, vendors, and contract vehicles. Email and phone are included for paid callers.
+      parameters:
+      - $ref: '#/components/parameters/id'
+      responses:
+        '200':
+          description: Contact
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - data
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Contact'
+        '401':
+          $ref: '#/components/responses/Error'
+        '403':
+          $ref: '#/components/responses/Error'
+        '404':
+          $ref: '#/components/responses/Error'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+  /api/tools/v1/contacts/search:
+    post:
+      tags:
+      - Contacts
+      operationId: search_contacts
+      summary: Search contacts
+      description: Search government points of contact with the constrained public parameter set shared by MCP search_contacts. Email and phone are never returned in search results; use show_contact for a single contact. jurisdictionLevel defaults to federal.
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              properties:
+                query:
+                  type: string
+                  description: Search text. Matches names, titles, vendors, buyers, and products. Supports quoted phrases and boolean operators such as AND, OR, and NOT.
+                cursor:
+                  type: string
+                  description: 'Opaque pagination token from the previous response''s meta.nextCursor. Omit for the first page. Tokens are bound to the query, filters, and sort inputs and carry no format guarantee.
+
+                    '
+                perPage:
+                  type: integer
+                  default: 25
+                  maximum: 100
+                sort:
+                  type: string
+                  enum:
+                  - last_active
+                  - opp_count
+                  description: Sort field. Defaults to last_active (most recently active first).
+                sortDirection:
+                  type: string
+                  enum:
+                  - asc
+                  - desc
+                jurisdictionLevel:
+                  type: string
+                  enum:
+                  - federal
+                  - regional
+                  description: Filter by government level - federal (country-level) or regional (state/local). Defaults to federal when omitted. Contacts whose jurisdiction was never recorded omit jurisdictionLevels from the response entirely, and may still match the federal default.
+                placeIds:
+                  type: array
+                  items:
+                    type: string
+                  description: 'Canonical Govly Place ids to filter by. A contact''s places are the union of every opportunity they are attached to, so this means "has ever worked in". jurisdictionLevel defaults to federal, so set it explicitly when filtering by a state or local place.
+
+                    '
+                placeIdsNone:
+                  type: array
+                  items:
+                    type: string
+                  description: 'Canonical Govly Place ids to exclude. Because a contact''s places come from all their opportunities, this excludes anyone whose opportunities ever touched the place, not merely those based there.
+
+                    '
+                buyerIds:
+                  type: array
+                  items:
+                    type: string
+                  description: Filter to contacts associated with any of these Govly buyer (government entity) ids.
+                buyerDomains:
+                  type: array
+                  items:
+                    type: string
+                  description: Filter to contacts associated with any of these buyer email domains, such as gsa.gov.
+                vendorNames:
+                  type: array
+                  items:
+                    type: string
+                  description: Filter to contacts associated with any of these vendor names.
+                titles:
+                  type: array
+                  items:
+                    type: string
+                  description: Filter to contacts holding any of these job titles, such as Contracting Officer.
+      responses:
+        '200':
+          description: Matching contacts
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - data
+                - meta
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Contact'
+                  meta:
+                    $ref: '#/components/schemas/CursorMeta'
+        '400':
+          $ref: '#/components/responses/Error'
+        '401':
+          $ref: '#/components/responses/Error'
+        '403':
+          $ref: '#/components/responses/Error'
+        '422':
+          $ref: '#/components/responses/Error'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+components:
+  parameters:
+    id:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: string
+  schemas:
+    Contact:
+      type: object
+      required:
+      - id
+      description: 'Stable external contact shape. Empty members are omitted. Search responses (search_contacts) return the summary shape without email or phone; detail responses (show_contact) add email and phoneNumbers for paid callers.
+
+        '
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        names:
+          type: array
+          items:
+            type: string
+        active:
+          type: boolean
+        lastActive:
+          type: string
+        oppCount:
+          type: integer
+        titles:
+          type: array
+          items:
+            type: string
+        jurisdictionLevels:
+          type: array
+          items:
+            type: string
+        contactUrl:
+          type: string
+          deprecated: true
+          description: Deprecated alias of links.self. Retained for Tools API v1 compatibility.
+        links:
+          type: object
+          description: Canonical links for this contact. Omitted for inactive contacts.
+          required:
+          - self
+          properties:
+            self:
+              type: string
+              format: uri
+              description: Canonical Govly app link for this contact.
+        buyers:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+              name:
+                type: string
+        vendors:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+              name:
+                type: string
+        contractVehicles:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+              slug:
+                type: string
+              name:
+                type: string
+        setAsides:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+              code:
+                type: string
+              name:
+                type: string
+        placeLocations:
+          type: array
+          items:
+            type: object
+            properties:
+              label:
+                type: string
+              city:
+                type: string
+              region:
+                type: string
+              postalCode:
+                type: string
+        publicEntity:
+          type: object
+          description: The government entity this contact belongs to. Detail responses only.
+          properties:
+            id:
+              type: string
+            name:
+              type: string
+        email:
+          type: string
+          description: Returned on show for paid callers; never present in search results.
+        phoneNumbers:
+          type: array
+          items:
+            type: string
+          description: Returned on show for paid callers; never present in search results.
+    RateLimitError:
+      type: object
+      required:
+      - error
+      properties:
+        error:
+          type: string
+    ErrorEnvelope:
+      type: object
+      required:
+      - errors
+      properties:
+        errors:
+          type: array
+          items:
+            type: object
+            required:
+            - status
+            - code
+            - title
+            - detail
+            properties:
+              status:
+                type: string
+              code:
+                type: string
+              title:
+                type: string
+              detail:
+                type: string
+              source:
+                type: object
+                properties:
+                  pointer:
+                    type: string
+    CursorMeta:
+      type: object
+      required:
+      - count
+      properties:
+        count:
+          type: integer
+          description: Number of records in this page.
+        totalCount:
+          type: integer
+          description: 'Total matching records (award and contact search), capped at 10,000 by the search engine. Pagination via nextCursor is not limited by this cap.
+
+            '
+        perPage:
+          type: integer
+        searchType:
+          type: string
+          enum:
+          - fed
+          - sled
+          - international
+          description: 'Market actually searched (opportunity and award search only). Echoes the resolved searchType, including the value defaulted from the user''s market focus when the request omitted it.
+
+            '
+        nextCursor:
+          type:
+          - string
+          - 'null'
+  responses:
+    Error:
+      description: Error response
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorEnvelope'
+    RateLimited:
+      description: 'Too many requests. Two limiters can produce this status and they use different bodies. The per-user limit of 70 requests per minute for each resource returns the standard error envelope with `code: rate_limited` and a `Retry-After` header. Keys sent in the `X-API-KEY` header are also subject to the Enterprise API limit of 300 requests per minute per key, which returns the plain `error` form with `Retry-After` and the `X-RateLimit-*` headers. Clients should accept either body.
+
+        '
+      headers:
+        Retry-After:
+          description: Seconds to wait before retrying.
+          schema:
+            type: string
+      content:
+        application/json:
+          schema:
+            oneOf:
+            - $ref: '#/components/schemas/ErrorEnvelope'
+            - $ref: '#/components/schemas/RateLimitError'
+  securitySchemes:
+    bearerApiKey:
+      type: http
+      scheme: bearer
+      bearerFormat: API key
+    headerApiKey:
+      type: apiKey
+      in: header
+      name: X-API-KEY

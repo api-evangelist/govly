@@ -1,10 +1,14 @@
 openapi: 3.2.0
 info:
-  title: Govly Tools API (Alpha) Follows API
+  title: Govly Tools Follows API
   version: 1.0.0-alpha
   description: 'ALPHA / UNSTABLE: This API is still in active development. Endpoint behavior, request fields, response fields, error codes, and operation names may change before the Tools API is declared stable.
 
-    REST-callable tool surface for agent and automation workflows. Agents are the primary consumer, but integrations can be built on this API. Responses are JSON for typed clients; MCP tools may render action results into text-oriented formats separately.'
+    REST-callable tool surface for agent and automation workflows. Agents are the primary consumer, but integrations can be built on this API. Responses are JSON for typed clients; MCP tools may render action results into text-oriented formats separately.
+
+    Validating requests: validate against this schema in your client before sending. Govly ignores a request field it does not recognize rather than rejecting it, so a misspelled filter name is not applied — the response returns 200 with a broader result set than you intended, and nothing marks the difference. Where a request body declares `additionalProperties: false`, strict client-side validation is what catches that. Fields sent with the wrong type are rejected with 400 on most endpoints; validate types in your client too rather than relying on it.
+
+    Rate limits: each resource (for example awards, opportunities, or workspaces) allows 70 requests per minute per user. Exceeding it returns 429 with the standard error envelope, `code: rate_limited`, and a `Retry-After` header. Keys sent in the `X-API-KEY` header are also subject to the Enterprise API limit of 300 requests per minute per key; see the Rate Limits page.'
 servers:
 - url: https://app.govly.com
 security:
@@ -20,7 +24,7 @@ paths:
       - Follows
       operationId: follow_entity
       summary: Follow a Govly entity
-      description: Follow, track, or subscribe to changes for a Govly entity. For opportunities, this creates or reuses the default opportunity workspace and follows that workspace for the authenticated user.
+      description: Follow, track, or subscribe to changes for a Govly entity. For opportunities, awards, or contacts, this creates or reuses the entity's default workspace and follows that workspace for the authenticated user.
       requestBody:
         required: true
         content:
@@ -36,6 +40,8 @@ paths:
                   enum:
                   - opportunity
                   - opp
+                  - award
+                  - contact
                   description: Entity type to follow. opp is accepted as an alias for opportunity.
                 id:
                   type: string
@@ -78,8 +84,237 @@ paths:
           $ref: '#/components/responses/Error'
         '422':
           $ref: '#/components/responses/Error'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+    delete:
+      tags:
+      - Follows
+      operationId: unfollow_entity
+      summary: Unfollow a Govly entity
+      description: 'Stops following an opportunity, award, or contact for the authenticated user. Whether anything is cleared is decided entirely by the caller''s follow on the entity''s default workspace. When that follow is in the following state, it is cleared along with the caller''s follows on every other workspace for the same entity, not only the default one returned in the response, and a subsequent follow restores the default workspace alone. When there is no default workspace for the entity, or the caller''s follow on it is in any other state, nothing is cleared anywhere and meta.noOp is true — including when the caller holds an active follow on a non-default workspace, which this operation cannot clear. Idempotent: the call succeeds without writing anything and reports meta.noOp true with a null workspace and membership whenever there is no follow to clear. Only follows in the following state are cleared — a follow in any other state (considered, assigned, invited, disinterested, or already unfollowed) is left unchanged and also reports meta.noOp true, so meta.noOp true does not by itself mean the user has no workspace membership for the entity. A 404 means the target is not currently visible to the caller and does not imply that no follow exists; a follow on a target that has left the caller''s visibility cannot be cleared through this operation. This applies to contacts, which are resolvable only while active, and to opportunities, whose visibility depends on the caller''s access; awards are resolved without a visibility filter, so a 404 for an award means it does not exist. Unfollowing emits no event, activity, or webhook. The notifications parameter is not accepted here and is ignored if sent.'
+      parameters:
+      - name: type
+        in: query
+        required: true
+        schema:
+          type: string
+          enum:
+          - opportunity
+          - opp
+          - award
+          - contact
+        description: Entity type to unfollow. opp is accepted as an alias for opportunity.
+      - name: id
+        in: query
+        required: true
+        schema:
+          type: string
+        description: Govly entity ID.
+      responses:
+        '200':
+          description: Follow cleared, or already absent
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - data
+                - meta
+                properties:
+                  data:
+                    type: object
+                    required:
+                    - workspace
+                    - membership
+                    properties:
+                      workspace:
+                        oneOf:
+                        - $ref: '#/components/schemas/Workspace'
+                        - type: 'null'
+                      membership:
+                        oneOf:
+                        - $ref: '#/components/schemas/WorkspaceMember'
+                        - type: 'null'
+                  meta:
+                    type: object
+                    required:
+                    - entityType
+                    - entityId
+                    - noOp
+                    properties:
+                      entityType:
+                        type: string
+                      entityId:
+                        type: string
+                      noOp:
+                        type: boolean
+                        description: 'True when the call changed nothing — either no follow exists, or the existing follow was not in the following state.
+
+                          '
+        '401':
+          $ref: '#/components/responses/Error'
+        '403':
+          $ref: '#/components/responses/Error'
+        '404':
+          $ref: '#/components/responses/Error'
+        '422':
+          $ref: '#/components/responses/Error'
+        '429':
+          $ref: '#/components/responses/RateLimited'
 components:
   schemas:
+    WorkspaceAttachment:
+      type: object
+      required:
+      - id
+      - workspaceId
+      - filename
+      properties:
+        id:
+          type: string
+        workspaceId:
+          type: string
+        commentId:
+          type: string
+          nullable: true
+        filename:
+          type: string
+        contentType:
+          type: string
+        byteSize:
+          type: integer
+        createdAt:
+          type: string
+          format: date-time
+        file:
+          description: Present only on the workspace attachments endpoint. Workspace show responses surface attachments without download metadata.
+          $ref: '#/components/schemas/AttachmentFile'
+    Workspace:
+      type: object
+      required:
+      - id
+      - name
+      - status
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        commentsCount:
+          type: integer
+        status:
+          type: object
+          required:
+          - category
+          - label
+          properties:
+            id:
+              type: string
+              description: Exact custom workspace status ID, when assigned.
+            category:
+              type: string
+              description: Coarse status bucket. Triage is the default for newly created workspaces.
+            label:
+              type: string
+              description: Human-readable status name. Falls back to the category label when no custom status is set.
+        primaryFocus:
+          $ref: '#/components/schemas/AssociatedEntity'
+        comments:
+          type: array
+          description: Recent comments. Only present on show/create/update responses, capped at the most recent 20.
+          items:
+            $ref: '#/components/schemas/Comment'
+        attachments:
+          type: array
+          description: Workspace attachments. Only present on show/create/update responses.
+          items:
+            $ref: '#/components/schemas/WorkspaceAttachment'
+        customFields:
+          type: array
+          description: Your organization's custom field values for this workspace, ordered by field id. Search responses include populated fields plus any explicitly filtered field, using null for an unset filtered field. Show/create/update responses include every field your organization has defined, using null for unset fields.
+          items:
+            $ref: '#/components/schemas/WorkspaceCustomField'
+    RateLimitError:
+      type: object
+      required:
+      - error
+      properties:
+        error:
+          type: string
+    AttachmentFile:
+      type: object
+      description: Presigned download metadata. Omitted when attachment content is unavailable or URLs are excluded.
+      required:
+      - url
+      - expiresAt
+      properties:
+        url:
+          type: string
+          format: uri
+        expiresAt:
+          type: string
+          format: date-time
+    ErrorEnvelope:
+      type: object
+      required:
+      - errors
+      properties:
+        errors:
+          type: array
+          items:
+            type: object
+            required:
+            - status
+            - code
+            - title
+            - detail
+            properties:
+              status:
+                type: string
+              code:
+                type: string
+              title:
+                type: string
+              detail:
+                type: string
+              source:
+                type: object
+                properties:
+                  pointer:
+                    type: string
+    WorkspaceCustomField:
+      type: object
+      required:
+      - id
+      - name
+      - type
+      - value
+      properties:
+        id:
+          type: string
+          description: Stable custom field id, unique within your organization.
+        name:
+          type: string
+          description: Display name. Names are not guaranteed unique; use id as the key.
+        type:
+          type: string
+          enum:
+          - text
+          - select
+          - number
+          - date
+          - multiselect
+          description: Native Workspace custom field type.
+        value:
+          description: Raw stored value, or null when the field is unset for this workspace. Shape depends on the field type (select fields store the option label as a string); keys of object-shaped values are camelized.
     Comment:
       type: object
       required:
@@ -104,6 +339,20 @@ components:
         updatedAt:
           type: string
           format: date-time
+    AssociatedEntity:
+      type: object
+      required:
+      - type
+      - id
+      properties:
+        type:
+          type: string
+          enum:
+          - opportunity
+          - award
+          - contact
+        id:
+          type: string
     WorkspaceMember:
       type: object
       required:
@@ -147,130 +396,6 @@ components:
                   type: string
                 name:
                   type: string
-    WorkspaceAttachment:
-      type: object
-      required:
-      - id
-      - workspaceId
-      - filename
-      properties:
-        id:
-          type: string
-        workspaceId:
-          type: string
-        commentId:
-          type: string
-          nullable: true
-        filename:
-          type: string
-        contentType:
-          type: string
-        byteSize:
-          type: integer
-        createdAt:
-          type: string
-          format: date-time
-        file:
-          description: Present only on the workspace attachments endpoint. Workspace show responses surface attachments without download metadata.
-          $ref: '#/components/schemas/AttachmentFile'
-    AttachmentFile:
-      type: object
-      description: Presigned download metadata. Omitted when the attachment is redacted or URLs are excluded.
-      required:
-      - url
-      - expiresAt
-      properties:
-        url:
-          type: string
-          format: uri
-        expiresAt:
-          type: string
-          format: date-time
-    AssociatedEntity:
-      type: object
-      required:
-      - type
-      - id
-      properties:
-        type:
-          type: string
-          enum:
-          - opportunity
-        id:
-          type: string
-    Workspace:
-      type: object
-      required:
-      - id
-      - name
-      - status
-      properties:
-        id:
-          type: string
-        name:
-          type: string
-        description:
-          type: string
-        createdAt:
-          type: string
-          format: date-time
-        updatedAt:
-          type: string
-          format: date-time
-        commentsCount:
-          type: integer
-        status:
-          type: object
-          required:
-          - category
-          - label
-          properties:
-            category:
-              type: string
-              description: Coarse status bucket. Triage is the default for newly created workspaces.
-            label:
-              type: string
-              description: Human-readable status name. Falls back to the category label when no custom status is set.
-        primaryFocus:
-          $ref: '#/components/schemas/AssociatedEntity'
-        comments:
-          type: array
-          description: Recent comments. Only present on show/create/update responses, capped at the most recent 20.
-          items:
-            $ref: '#/components/schemas/Comment'
-        attachments:
-          type: array
-          description: Workspace attachments. Only present on show/create/update responses.
-          items:
-            $ref: '#/components/schemas/WorkspaceAttachment'
-    ErrorEnvelope:
-      type: object
-      required:
-      - errors
-      properties:
-        errors:
-          type: array
-          items:
-            type: object
-            required:
-            - status
-            - code
-            - title
-            - detail
-            properties:
-              status:
-                type: string
-              code:
-                type: string
-              title:
-                type: string
-              detail:
-                type: string
-              source:
-                type: object
-                properties:
-                  pointer:
-                    type: string
   responses:
     Error:
       description: Error response
@@ -278,6 +403,21 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/ErrorEnvelope'
+    RateLimited:
+      description: 'Too many requests. Two limiters can produce this status and they use different bodies. The per-user limit of 70 requests per minute for each resource returns the standard error envelope with `code: rate_limited` and a `Retry-After` header. Keys sent in the `X-API-KEY` header are also subject to the Enterprise API limit of 300 requests per minute per key, which returns the plain `error` form with `Retry-After` and the `X-RateLimit-*` headers. Clients should accept either body.
+
+        '
+      headers:
+        Retry-After:
+          description: Seconds to wait before retrying.
+          schema:
+            type: string
+      content:
+        application/json:
+          schema:
+            oneOf:
+            - $ref: '#/components/schemas/ErrorEnvelope'
+            - $ref: '#/components/schemas/RateLimitError'
   securitySchemes:
     bearerApiKey:
       type: http
