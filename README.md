@@ -64,6 +64,148 @@
 > Full detail: **[Where this data comes from](https://apievangelist.com/about/where-our-data-comes-from)**
 <!-- API-EVANGELIST-PROVENANCE:END -->
 
-Govly is a company surfaced as a portfolio company of insight-partners and added to the API Evangelist network as a stub for enrichment. Sector: government. This profile is a lead awaiting the enrichment pipeline.
+Govly is an AI-powered market network for government contractors — primes, OEMs, VARs, and distributors — that ingests, parses, and analyzes federal and SLED (state, local, education) procurement data to surface RFQ/RFI opportunities and contract awards across 40+ federal contract vehicles and state/local procurement portals. The platform provides pipeline building, award tracking, competitor intelligence, AI matching agents, shared opportunity workspaces, and quote submission automation. Govly exposes an enterprise Tools API (agent- and automation-oriented, REST/JSON over HTTPS with API-key auth), a hosted MCP server for AI clients, webhooks for real-time opportunity and workspace events, and CRM integrations (Salesforce, HubSpot). Govly is SOC 2 Type I and CMMC compliant, hosted on AWS in the USA, and backed by Insight Partners.
 
-Backed by: insight-partners — https://www.govly.com/
+**Areas:** Company · Government · Public Sector · Procurement · Government Contracting · GovTech · Market Intelligence · Awards · Opportunities · Agents
+
+## Govly on APIs.io
+
+Everything profiled for Govly is published on APIs.io rather than in this repository. Start at the provider page — **[apis.io/providers/govly/](https://apis.io/providers/govly/)** — or go straight to one of the APIs or properties below.
+
+### APIs (11)
+
+- [Govly Awards API](https://apis.io/apis/govly/govly-awards-api/) — Search and inspect awarded government contracts.
+- [Govly Documents API](https://apis.io/apis/govly/govly-documents-api/) — Read document representations and request temporary original-file downloads.
+- [Govly Follows API](https://apis.io/apis/govly/govly-follows-api/) — Follow opportunities and related workspace activity.
+- [Govly Inbox API](https://apis.io/apis/govly/govly-inbox-api/) — Read and triage the authenticated user's matched inbox items.
+- [Govly Opportunities API](https://apis.io/apis/govly/govly-opportunities-api/) — Search, fetch, and inspect Govly opportunity records.
+- [Govly Quote Submissions API](https://apis.io/apis/govly/govly-quote-submissions-api/) — Inspect quote submission requirements, submit quotes, and poll submission status.
+- [Govly Saved Searches API](https://apis.io/apis/govly/govly-saved-searches-api/) — List saved opportunity searches and cached matches.
+- [Govly Workspace Attachments API](https://apis.io/apis/govly/govly-workspace-attachments-api/) — List and upload workspace attachments.
+- [Govly Workspace Comments API](https://apis.io/apis/govly/govly-workspace-comments-api/) — Post comments to workspaces.
+- [Govly Workspace Members API](https://apis.io/apis/govly/govly-workspace-members-api/) — Add users and teams to workspaces.
+- [Govly Workspaces API](https://apis.io/apis/govly/govly-workspaces-api/) — Create, update, and inspect opportunity workspaces.
+
+### Published properties
+
+Each property below is a page on APIs.io carrying the machine-readable artifact and what it says.
+
+#### AsyncAPI (1)
+
+Event-driven and webhook contracts.
+
+- [Govly Webhooks](https://apis.io/asyncapis/govly/govly-webhooks/)
+
+#### MCP servers (1)
+
+Model Context Protocol servers that expose the API to agents.
+
+- [govly](https://apis.io/servers/govly/govly/)
+
+#### Agentic access (1)
+
+Which operations an agent can call, which act, and which need a human in the loop.
+
+- [Govly Agentic Access](https://apis.io/agentic-access/govly/govly-agentic-access/)
+
+#### Collections (11)
+
+Postman and Open Collection request collections.
+
+- [Govly Tools API (Alpha) Awards API](https://apis.io/collections/govly/open-govly-awards-api/)
+- [Govly Tools API (Alpha) Awards Documents API](https://apis.io/collections/govly/open-govly-documents-api/)
+- [Govly Tools API (Alpha) Awards Follows API](https://apis.io/collections/govly/open-govly-follows-api/)
+- [Govly Tools API (Alpha) Awards Inbox API](https://apis.io/collections/govly/open-govly-inbox-api/)
+- [Govly Tools API (Alpha) Awards Opportunities API](https://apis.io/collections/govly/open-govly-opportunities-api/)
+- [Govly Tools API (Alpha) Awards Quote Submissions API](https://apis.io/collections/govly/open-govly-quote-submissions-api/)
+- [Govly Tools API (Alpha) Awards Saved Searches API](https://apis.io/collections/govly/open-govly-saved-searches-api/)
+- [Govly Tools API (Alpha) Awards Workspace Attachments API](https://apis.io/collections/govly/open-govly-workspace-attachments-api/)
+- [Govly Tools API (Alpha) Awards Workspace Comments API](https://apis.io/collections/govly/open-govly-workspace-comments-api/)
+- [Govly Tools API (Alpha) Awards Workspace Members API](https://apis.io/collections/govly/open-govly-workspace-members-api/)
+- [Govly Tools API (Alpha) Awards Workspaces API](https://apis.io/collections/govly/open-govly-workspaces-api/)
+
+#### Overlays (1)
+
+OpenAPI overlays, including conversational phrasing for each operation.
+
+- [Govly Tools V1 Overlay](https://apis.io/overlays/govly/govly-tools-v1-overlay/)
+
+#### Security (3)
+
+Authentication, trust centre, and vulnerability disclosure.
+
+- [Govly Authentication](https://apis.io/security/govly/govly-authentication/)
+- [Govly Domain Security](https://apis.io/security/govly/govly-domain-security/)
+- [Govly Trust Center](https://apis.io/security/govly/govly-trust-center/)
+
+## Where to find this API
+
+Links to the company's own pages. This repository publishes no copy of their specifications — the canonical document is theirs and lives at the URLs below.
+
+- [Website](https://www.govly.com/)
+- [Documentation](https://docs.govly.com/getting-started/introduction)
+- [Getting started](https://docs.govly.com/getting-started/introduction)
+- [API reference](https://docs.govly.com/api-reference/tools-v1/opportunities/search-opportunities)
+- [Pricing](https://www.govly.com/pricing)
+- [Support](https://intercom.help/govly/en)
+- [Blog](https://www.govly.com/blog)
+- [Compliance](https://docs.govly.com/enterprise/security)
+- [Trust centre](https://security.govly.com)
+- [Terms of service](https://www.govly.com/terms)
+- [Privacy policy](https://www.govly.com/privacy)
+- [Status](https://status.govly.com)
+
+## API Evangelist rating
+
+**Kin Score 48.3** — developing · rubric 0.25.0 · scored 2026-10-23
+
+| Facet | Score |
+|---|---|
+| Discoverability | 75.0 |
+| Contract quality | 56.4 |
+| Contract governance | 18.2 |
+| Operational transparency | 23.7 |
+| Developer ergonomics | 58.9 |
+| Access clarity | 39.5 |
+
+**Agent readiness 58.9** — agent-ready (gated down from agent-native)
+
+| Agent-readiness dimension | Result |
+|---|---|
+| Spec Presence | yes |
+| Agentic Access | derived (partial credit) |
+| Reversibility Documented | documented (partial credit) |
+| MCP Server | verified |
+| Auth Clarity | served (partial credit) |
+| Idempotency | — |
+| Error Semantics | derived (partial credit) |
+| OpenAPI Examples | partial |
+| Rate Limit Signal | verified |
+| Event Surface Described | yes |
+| Agent Skills | derived (partial credit) |
+| Well Known Catalog | — |
+| Consent Identity | — |
+| Agent Card | — |
+| Dry Run Mode | yes |
+| Delegated Identity | served (partial credit) |
+| Protected Resource Metadata | verified |
+| Dynamic Client Registration | yes |
+| Agentic Commerce | — |
+| Pagination Ratio | — |
+| Operation Distinctiveness | distinct |
+
+**Regulatory alignment 29.4** — Government & Public Sector
+
+The rubric is published at [github.com/api-evangelist/kin-score](https://github.com/api-evangelist/kin-score). The per-check breakdown behind these numbers — which checks were earned, partial or missed — along with score history and how this provider compares to its peers, is available at [apis.io/providers/govly/](https://apis.io/providers/govly/).
+
+## How this profile is made
+
+API Evangelist profiles a company's public API surface the way a developer would find it: the website, developer portal and documentation, the specifications it publishes, its public repositories, and its pricing, status and changelog pages. From that it derives the properties above — contracts split per API, workflows, schemas, collections, governance rules, plans and rate limits — and scores them against the published [Kin Score rubric](https://github.com/api-evangelist/kin-score).
+
+The artifacts are published on [APIs.io](https://apis.io), not in this repository. This repository is the public record for Govly: the place to say something is wrong, missing or out of date, and to ask for a re-score or a removal.
+
+## Open an issue
+
+- **Something about this listing** — a wrong description, a missing API, a stale artifact or a question about the rating: [open an issue on this repository](https://github.com/api-evangelist/govly/issues/new).
+- **A new API, or one that is not in the catalog yet** — [submit it on APIs.io](https://apis.io/add/).
+- **Anything else** — [the APIs.io inbox](https://github.com/api-search/inbox/issues/new) or [info@apievangelist.com](mailto:info@apievangelist.com).
